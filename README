@@ -1,0 +1,46 @@
+== Features ==
+
+* Managment WEBrick/Mongrel
+* Display color log file
+* Switch beetwin Action/View
+* TextMate like snippets (snippets.el)
+* Automatic generate TAGS in RAILS_ROOT directory
+* Quick access to configuration files
+* Search in documentation using ri or chm file
+* Quick start svn-status in RAILS_ROOT
+
+== Install ==
+
+Download:
+* http://www.kazmier.com/computer/snippet.el
+* http://www.webweavertech.com/ovidiu/emacs/find-recursive.txt
+and place into directory where emacs can find it.
+
+Add to your .emacs file:
+----------------------------------
+  (defun try-complete-abbrev (old)
+   (if (expand-abbrev) t nil))
+
+  (setq hippie-expand-try-functions-list
+       '(try-complete-abbrev
+         try-complete-file-name
+         try-expand-dabbrev))
+
+  (require 'rails)
+----------------------------------
+
+If you want to use Mongrel instead of WEBrick, add this to you .emacs file:
+(setq rails-use-mongrel t)
+
+For Windows users only:
+
+If you want to use CHM file for help (by default used ri), add this to your .emacs file:
+(setq rails-chm-file "<full_path_to_rails_chm_manual>")
+Download and install KeyHH.exe from http://www.keyworks.net/keyhh.htm
+
+For more howtos, see
+* http://scott.elitists.net/users/scott/posts/rails-on-emacs
+* http://www.emacswiki.org/cgi-bin/wiki/RubyMode
+
+== History ==
+empty
