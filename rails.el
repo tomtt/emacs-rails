@@ -694,7 +694,7 @@
   (string-match "\\.rhtml$" (buffer-file-name)))
 
 (defun rails-open-log (env)
-  (rails-core:root
+  (rails-core:with-root
    (root)
    (if (file-exists-p (concat root "/log/" env ".log"))
        (progn

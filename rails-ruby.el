@@ -29,6 +29,6 @@
 
 (defun rails-minor-mode-for-ruby (keymap menubar)
   "Apply fetures for ruby-mode"
-    (define-key menubàr [rails switch-view-action] '("Switch Action/View" . rails-switch-view-action)))
+    (define-key menubar [rails switch-view-action] '("Switch Action/View" . rails-switch-view-action)))
 
 (provide 'rails-ruby)
