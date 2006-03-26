@@ -1,5 +1,9 @@
+2006-03-22  dima  <dima.exe@gmail.com>
+
+	* rails-core.el: add macro rails-core:local-add-to-rails-menubar
+
 2006-03-21  dima  <dima.exe@gmail.com>
 
-	* rails.el rails-code.el: split into two files
+	* rails.el: split into two files
 	* rails-core.el: move to this all helper function and macros
 

@@ -1,10 +1,10 @@
-;;; rails-ruby.el --- provide features for support rails in ruby-mode
+;;; rails-ruby.el --- provide features for ruby-mode
 
 ;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
 
 ;; Keywords: ruby rails languages oop
-;; $URL: svn+ssh://rubyforge/var/svn/emacs-rails/rails.el $
-;; $Id: rails.el 2 2006-03-21 19:32:15Z dimaexe $
+;; $URL$
+;; $Id$
 
 ;;; License
 
@@ -24,11 +24,18 @@
 
 ;;; Code:
 
-(defun rails-minor-mode-for-ruby-menubar (map)
-  "Apply keys and menu items for MAP")
+(defun ruby-indent-or-complete ()
+  "Complete if point is at end of a word, otherwise indent line."
+  (interactive)
+  (if snippet
+      (snippet-next-field)
+    (if (looking-at "\\>")
+        (hippie-expand nil)
+      (ruby-indent-command))))
 
-(defun rails-minor-mode-for-ruby (keymap menubar)
-  "Apply fetures for ruby-mode"
-    (define-key menubar [rails switch-view-action] '("Switch Action/View" . rails-switch-view-action)))
+(defun ruby-newline-and-indent ()
+  (interactive)
+  (newline)
+  (ruby-indent-command))
 
 (provide 'rails-ruby)

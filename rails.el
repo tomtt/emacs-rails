@@ -29,7 +29,8 @@
   (require 'ruby-mode))
 
 (require 'rails-core)
-(require 'rails-ruby)
+(require 'rails-lib)
+(require 'rails-webrick)
 
 (require 'ansi-color)
 (require 'snippet)
@@ -40,20 +41,14 @@
 
 (defvar rails-version "0.3")
 (defvar rails-ruby-command "ruby")
-(defvar rails-webrick-buffer-name "*WEBrick*")
-(defvar rails-webrick-port "3000")
-(defvar rails-webrick-default-env "development")
-(defvar rails-webrick-url (concat "http://localhost:" rails-webrick-port))
 (defvar rails-templates-list '("rhtml" "rxml" "rjs"))
 (defvar rails-chm-file nil "Path to CHM file or nil")
 (defvar rails-use-another-define-key nil )
-(defvar rails-use-mongrel nil "Non nil using Mongrel, else WEBrick")
 
-(defvar rails-apply-to-list
-  "(FILE-EXTENSION MODE KEYMAP FILE-REGEX)"
-  '((".rb"     'rails-minor-mode-for-ruby  'rails-minor-mode-for-ruby-menubar nil )
-    (".rhtml"  'rails-minor-mode-for-rhtml 'rails-minor-mode-for-rhtml-menubar nil )
-    (".rjs"    'rails-minor-mode-for-ruby  'rails-minor-mode-for-ruby-menubar nil )
+(defvar rails-for-alist
+  '(
+    ("rhtml" rails-for-rhtml)
+    ("rb" rails-for-controller (lambda (root) (string-match (concat root "app/controllers") buffer-file-name)))
     ))
 
 ;;;;;;;; def-snips stuff ;;;;
@@ -415,284 +410,67 @@
     (define-key map [rails webrick] (cons "WEBrick" (make-sparse-keymap "WEBrick")))
 
     (define-key map [rails webrick mongrel]
-      '(menu-item "Use Mongrel" rails-toggle-use-mongrel
-                  :enable (not (rails-webrick-process-status))
+      '(menu-item "Use Mongrel" rails-webrick:toggle-use-mongrel
+                  :enable (not (rails-webrick:status))
                   :button (:toggle
-                           . (and (boundp 'rails-use-mongrel)
-                                  rails-use-mongrel))))
+                           . (and (boundp 'rails-webrick:use-mongrel)
+                                  rails-webrick:use-mongrel))))
 
     (define-key map [rails webrick separator] '("--"))
 
-    (define-key map [rails webrick buffer]
-      '(menu-item "Show buffer"
-                  rails-webrick-open-buffer
-                  :enable (rails-webrick-process-status)))
     (define-key map [rails webrick url]
       '(menu-item "Open browser"
-                  rails-webrick-open-browser
-                  :enable (rails-webrick-process-status)))
+                  rails-webrick:open-browser
+                  :enable (rails-webrick:status)))
     (define-key map [rails webrick stop]
       '(menu-item "Stop"
-                  rails-webrick-process-stop
-                  :enable (rails-webrick-process-status)))
+                  rails-webrick:stop
+                  :enable (rails-webrick:status)))
     (define-key map [rails webrick test]
       '(menu-item "Start test"
-                  (lambda() (interactive)
-                    (rails-webrick-process "test"))
-                  :enable (not (rails-webrick-process-status))))
+                  (lambda() (interactive) (rails-webrick:start "test"))
+                  :enable (not (rails-webrick:status))))
     (define-key map [rails webrick production]
       '(menu-item "Start production"
-                  (lambda() (interactive)
-                    (rails-webrick-process "production"))
-                  :enable (not (rails-webrick-process-status))))
+                  (lambda() (interactive) (rails-webrick:start "production"))
+                  :enable (not (rails-webrick:status))))
     (define-key map [rails webrick development]
       '(menu-item "Start development"
-                  (lambda() (interactive)
-                    (rails-webrick-process "development"))
-                  :enable (not (rails-webrick-process-status))))
+                  (lambda() (interactive) (rails-webrick:start "development"))
+                  :enable (not (rails-webrick:status))))
 
     (define-key map [rails separator2] '("--"))
 
-;;     (define-key map [rails create-partial]
-;;       '(menu-item "Create partial from selection"
-;;                   rails-create-partial-from-selection
-;;                   :enable (rails-is-current-buffer-rhtml)))
-
-;;     (define-key map [rails create-helper]
-;;       '(menu-item "Create helper function"
-;;                   rails-create-helper-from-block
-;;                   :enable (rails-is-current-buffer-rhtml)))
-
-;;     (define-key map [rails switch-va] '("Switch Action/View" . rails-switch-view-action))
+    (define-key map [rails goto-models] '("Goto models" . rails-lib:goto-models))
+    (define-key map [rails goto-controllers] '("Goto controllers" . rails-lib:goto-controllers))
+    (define-key map [rails goto-helpers] '("Goto helpers" . rails-lib:goto-helpers))
+    (define-key map [rails goto-layouts] '("Goto layouts" . rails-lib:goto-layouts))
+    (define-key map [rails goto-stylesheets] '("Goto stylesheets" . rails-lib:goto-stylesheets))
+    (define-key map [rails goto-javascripts] '("Goto javascripts" . rails-lib:goto-javascripts))
+    (define-key map [rails goto-migrate] '("Goto migrate" . rails-lib:goto-migrate))
     map))
 
 (define-keys rails-minor-mode-map
   ([menu-bar] rails-minor-mode-menu-bar-map)
-  ((kbd "C-c <up>")  'rails-switch-view-action)
-  ((kbd "\C-c p") 'rails-create-partial-from-selection)
-  ((kbd "\C-c b") 'rails-create-helper-from-block)
-  ((kbd "\C-c t m") 'rails-goto-model)
-  ((kbd "\C-c t c") 'rails-goto-controller)
+  ;; Goto
+  ((kbd "\C-c g m") 'rails-lib:goto-models)
+  ((kbd "\C-c g c") 'rails-lib:goto-controllers)
+  ((kbd "\C-c g h") 'rails-lib:goto-helpers)
+  ((kbd "\C-c g l") 'rails-lib:goto-layouts)
+  ((kbd "\C-c g s") 'rails-lib:goto-stylesheets)
+  ((kbd "\C-c g j") 'rails-lib:goto-javascripts)
+  ((kbd "\C-c g g") 'rails-lib:goto-migrate)
 
-  ((kbd "\C-c m") 'rails-open-model)
-  ((kbd "\C-c s") 'rails-run-console)
-  ((kbd "\C-c v") 'rails-svn-status)
-  ((kbd "\C-c l") 'rails-open-log)
-  ((kbd "\C-c o") 'rails-open-config)
-  ((kbd "\C-c \C-t") 'rails-create-tags)
-  ;; Scripts
-  ((kbd "\C-c g c") 'rails-generate-controller)
-  ((kbd "\C-c g m") 'rails-generate-model)
-  ((kbd "\C-c g s") 'rails-generate-scaffold)
-  ((kbd "\C-c g i") 'rails-generate-migration)
-  ((kbd "\C-c d c") 'rails-destroy-controller)
-  ((kbd "\C-c d m") 'rails-destroy-model)
-  ((kbd "\C-c d s") 'rails-destroy-scaffold)
-  ;; Rails finds
-  ((kbd "\C-c \C-f c") 'rails-find-controller)
-  ((kbd "\C-c \C-f v") 'rails-find-view)
-  ((kbd "\C-c \C-f l") 'rails-find-layout)
-  ((kbd "\C-c \C-f d") 'rails-find-db)
-  ((kbd "\C-c \C-f p") 'rails-find-public)
-  ((kbd "\C-c \C-f h") 'rails-find-helpers)
   ;;; Doc
   ([f1]  'rails-search-doc)
   ([f9]  'rails-svn-status-into-root))
 
-(defun ruby-indent-or-complete ()
-  "Complete if point is at end of a word, otherwise indent line."
-  (interactive)
-  (if snippet
-      (snippet-next-field)
-    (if (looking-at "\\>")
-        (hippie-expand nil)
-      (ruby-indent-command))))
-
-(defun ruby-newline-and-indent ()
-  (interactive)
-  (newline)
-  (ruby-indent-command))
-
 (defun rails-svn-status-into-root ()
   (interactive)
-  (rails-core:with-root
-   (root)
-   (svn-status root)))
-
-(defun rails-switch-to-view()
-  (save-excursion
-    (let ((root (rails-core:root))
-          action controller files)
-      (goto-char (line-end-position))
-      (search-backward-regexp "^[ ]*def \\([a-z_]+\\)")
-      (setq action (match-string 1))
-      (search-backward-regexp "^[ ]*class \\([a-zA-Z0-9_:]+\\)[ ]+<")
-      (setq controller (match-string 1))
-      (setq files (rails-core:get-view-files controller action))
-
-      (if (= 1 (list-length files)) ;; one view
-          (progn
-            (find-file (car files))
-            (message (concat controller "#" action))))
-
-      (if (< 1 (list-length files)) ;; multiple views
-          (let ((items (list))
-                (tmp files)
-                (mouse-coord (if (functionp 'posn-at-point) ; mouse position at point
-                                 (nth 2 (posn-at-point))
-                               (cons 200 100)))
-                file)
-            (while (car tmp)
-              (add-to-list 'items (cons (replace-regexp-in-string "\\(.*/\\)\\([^/]+\\)$" "\\2" (car tmp)) (car tmp)))
-              (setq tmp (cdr tmp)))
-
-            (setq file
-                  (x-popup-menu
-                   (list (list (car mouse-coord) (cdr mouse-coord)) (selected-window))
-                   (list "Please select.." (cons "Please select.." items ))))
-            (if file
-                (progn
-                  (find-file file)
-                  (message (concat controller "#" action))))))
-
-      (if (> 1 (list-length files)) ;; view not found
-          (if (y-or-n-p (format "View for %s#%s not found, create %s.rhtml? " controller action action))
-              (let ((file (concat root "app/views/"
-                                  (replace-regexp-in-string "_controller" ""
-                                                            (rails-core:file-by-class controller t)))))
-                (make-directory file t)
-                (find-file (format "%s/%s.rhtml" file action))))))))
-
-(defun rails-switch-to-action()
-  (let ((file buffer-file-name))
-    (rails-core:with-root
-     (root)
-     (if (string-match "app/views/\\(.*\\)/\\([a-z_]+\\)\.[a-z]+$" file)
-         (let ((controller (concat root "app/controllers/" (match-string 1 file) "_controller.rb"))
-               (action (match-string 2 file)))
-           (if (file-exists-p controller)
-               (let ((controller-class-name (rails-core:class-by-file controller)))
-                 (find-file controller)
-                 (goto-char (point-min))
-                 (message (concat controller-class-name "#" action))
-                 (if (search-forward-regexp (concat "^[ ]*def[ ]*" action))
-                     (recenter)))))))))
-
-(defun rails-switch-view-action()
-  (interactive)
-  (if (string-match "\\.rb$" buffer-file-name)
-      (rails-switch-to-view)
-    (rails-switch-to-action)))
-
-(defun rails-goto-file-with-menu (dir title)
-  "Make menu to choose files and find-file it"
-  (let (file
-        files
-        (mouse-coord (if (functionp 'posn-at-point) ; mouse position at point
-                         (nth 2 (posn-at-point))
-                       (cons 200 100))))
-    (setq files (find-recursive-directory-relative-files dir "" "\\.rb$"))
-    (setq files (sort files 'string<))
-    (setq files (reverse files))
-    (setq files (mapcar (lambda(f) (cons (rails-core:class-by-file f) f))
-                        files))
-    (setq file (x-popup-menu
-                (list (list (car mouse-coord) (cdr mouse-coord)) (selected-window))
-                (list title (cons title files ))))
-    (if file
-        (find-file (concat dir file)))))
-
-(defun rails-goto-controller ()
-  "Goto Controller"
-  (interactive)
-  (rails-core:with-root
-   (root)
-   (rails-goto-file-with-menu (concat root "app/controllers/") "Go to controller..")))
-
-(defun rails-goto-model ()
-  "Goto Model"
-  (interactive)
-  (rails-core:with-root
-   (root)
-   (rails-goto-file-with-menu (concat root "app/models/") "Go to model..")))
-
-;; functions for view
-(defun rails-create-partial-from-selection ()
-  "Create partial from selection"
-  (interactive)
-  (if (and mark-active
-           transient-mark-mode
-           (rails-is-current-buffer-rhtml))
-      (save-excursion
-        (let ((name (read-string "Partial name? "))
-              (content (buffer-substring-no-properties (region-beginning) (region-end))))
-          (kill-region (region-beginning) (region-end))
-          (insert (concat "<%= render :partial => \"" name "\" %>"))
-          (split-window-vertically)
-          (other-window 1)
-          (find-file (concat "_" name ".rhtml"))
-          (goto-char (point-min))
-          (insert content)
-          (other-window -1)
-          (mmm-parse-region (line-beginning-position) (line-end-position))))))
-
-(defun rails-create-helper-from-block (&optional helper-name)
-  "Create helper function from current erb block (<% .. %>)"
-  (interactive)
-  (rails-core:with-root
-   (root)
-   (let ((current-pos (point))
-         (file buffer-file-name)
-         begin-pos end-pos)
-     (save-excursion
-       (setq begin-pos (search-backward "<%" nil t))
-       (setq end-pos (search-forward "%>" nil t)))
-     (if (and begin-pos
-              end-pos
-              (> current-pos begin-pos)
-              (< current-pos end-pos)
-              (string-match "app/views/\\(.*\\)/\\([a-z_]+\\)\.[a-z]+$" file))
-         (let* ((helper-file (concat root "app/helpers/" (match-string 1 file) "_helper.rb"))
-                (content (buffer-substring-no-properties begin-pos end-pos))
-                (helper-alist (if helper-name helper-name (read-string "Enter helper function name with args: ")))
-                (helper-alist (split-string helper-alist)))
-           (if (file-exists-p helper-file)
-               (let (start-point-in-helper helper-func-name)
-                 (setq helper-func-name (concat "def " (car helper-alist) " ("))
-                 (setq helper-alist (cdr helper-alist))
-                 (mapcar (lambda (arg) (setq helper-func-name (concat helper-func-name arg ", "))) helper-alist)
-                 (setq helper-func-name (concat (substring helper-func-name 0 -2) ")" ))
-                 (kill-region begin-pos end-pos)
-                 (insert (concat "<%= " helper-func-name " -%>" ))
-                 (mmm-parse-region (line-beginning-position) (line-end-position))
-                 (split-window-vertically)
-                 (other-window 1)
-                 (find-file helper-file)
-                 (goto-char (point-min))
-                 (search-forward-regexp "module +[a-zA-Z0-9:]+")
-                 (newline)
-                 (setq start-point-in-helper (point))
-                 (insert helper-func-name)
-                 (ruby-indent-command)
-                 (newline)
-                 (insert content)
-                 (insert "\nend\n")
-;;                  (while (and (re-search-forward "\\(<%=?\\|-?%>\\)" nil t)
-;;                              (< (point) start-point-in-helper))
-;;                    (replace-match "" nil nil))
-                 (replace-regexp "\\(<%=?\\|-?%>\\)" "" nil start-point-in-helper (point))
-                 (goto-char start-point-in-helper)
-                 (ruby-indent-exp)
-                 (other-window -1))
-             (message "helper not found")))
-       (message "block not found")))))
+  (rails-core:with-root (root)
+                        (svn-status root)))
 
 ;; helper functions/macros
-
-(defun rails-is-current-buffer-rhtml()
-  "Return non nil if current buffer is rhtml file"
-  (string-match "\\.rhtml$" (buffer-file-name)))
-
 (defun rails-open-log (env)
   (rails-core:with-root
    (root)
@@ -709,62 +487,6 @@
          (setq auto-window-vscroll t)
          (auto-revert-tail-mode t)))))
 
-
-(defun rails-webrick-open-browser()
-  (interactive)
-  (browse-url rails-webrick-url))
-
-(defun rails-webrick-open-buffer()
-  (interactive)
-  (switch-to-buffer rails-webrick-buffer-name))
-
-(defun rails-webrick-sentinel (proc msg)
-  (if (memq (process-status proc) '(exit signal))
-        (message
-         (concat
-          (if rails-use-mongrel "Mongrel" "WEBrick") " stopped"))))
-
-(defun rails-webrick-process-status()
-  (let (st)
-    (setq st (get-buffer-process rails-webrick-buffer-name))
-    (if st t nil)))
-
-(defun rails-webrick-process-stop()
-  (interactive)
-  (let (proc)
-    (setq proc (get-buffer-process rails-webrick-buffer-name))
-    (if proc
-        (kill-process proc))))
-
-(defun rails-webrick-process(env)
-  (rails-core:with-root
-   (root)
-   (let ((proc (get-buffer-process rails-webrick-buffer-name))
-         (dir default-directory))
-     (unless proc
-       (progn
-         (setq default-directory root)
-         (if rails-use-mongrel
-             (setq proc
-                   (apply 'start-process-shell-command
-                          "mongrel_rails"
-                          rails-webrick-buffer-name
-                          "mongrel_rails"
-                          (list "start" "0.0.0.0" rails-webrick-port)))
-           (setq proc
-                 (apply 'start-process-shell-command
-                        rails-ruby-command
-                        rails-webrick-buffer-name
-                        rails-ruby-command
-                        (list (concat root "script/server")
-                              (concat " -e " env)
-                              (concat " -p " rails-webrick-port)))))
-         (set-process-sentinel proc 'rails-webrick-sentinel)
-         (setq default-directory dir)
-         (message (format "%s (%s) starting with port %s"
-                          (if rails-use-mongrel "Mongrel" "Webrick")
-                          env
-                          rails-webrick-port)))))))
 
 (defun rails-search-doc (&optional item)
   (interactive)
@@ -800,9 +522,31 @@
     (setq default-directory dir)
     (visit-tags-table tags-file-name))))
 
-(defun rails-toggle-use-mongrel()
-  (interactive)
-  (setq rails-use-mongrel (not rails-use-mongrel)))
+(defun rails-run-for-alist(root)
+  (let ((ret nil)
+        (alist rails-for-alist))
+    (while (car alist)
+      (let* ((it (car alist))
+             (ext (concat "\\." (nth 0 it) "$"))
+             (for-func (nth 1 it))
+             (for-lambda (nth 2 it)))
+        (if (string-match ext buffer-file-name)
+            (progn
+              (if (and for-lambda
+                       (apply for-lambda (list root)))
+                  (progn
+                    (setq alist nil)
+                    (require for-func)
+                    (apply for-func nil)
+                    (setq ret t)))
+              (unless for-lambda
+                (progn
+                  (setq alist nil)
+                  (require for-func)
+                  (apply for-func nil)
+                  (setq ret t))))))
+      (setq alist (cdr alist)))
+    ret))
 
 (define-minor-mode rails-minor-mode
   "RubyOnRails"
@@ -810,15 +554,13 @@
   " RoR"
   rails-minor-mode-map
 
-  (rails-minor-mode-for-ruby rails-minor-mode-map rails-minor-mode-menu-bar-map)
-
   (abbrev-mode -1)
   (make-local-variable 'tags-file-name)
   (setq tags-file-name (concat (rails-core:root) "TAGS")))
 
 (add-hook 'ruby-mode-hook
           (lambda()
-            (rails-minor-mode t)
+            (require 'rails-ruby)
             (local-set-key (kbd "C-.") 'complete-tag)
             (local-set-key (if rails-use-another-define-key (kbd "TAB") (kbd "<tab>")) 'ruby-indent-or-complete)
             (local-set-key (if rails-use-another-define-key (kbd "RET") (kbd "<return>")) 'ruby-newline-and-indent)))
@@ -829,23 +571,22 @@
 
 (add-hook 'find-file-hooks
           (lambda()
-            (if (and (rails-is-current-buffer-rhtml)
-                     (rails-core:root))
-                (progn
-                  (add-hook 'local-write-file-hooks
-                            '(lambda()
-                               (save-excursion
-                                 (untabify (point-min) (point-max))
-                                 (delete-trailing-whitespace))))
-                  (rails-minor-mode t)
-                  (local-set-key "\C-cp" 'rails-create-partial-from-selection)
-                  (local-set-key "\C-cb" 'rails-create-helper-from-block)
-                  (local-set-key (if rails-use-another-define-key "TAB" (kbd "<tab>"))
-                                 '(lambda() (interactive)
-                                    (if snippet
-                                        (snippet-next-field)
-                                      (if (looking-at "\\>")
-                                          (hippie-expand nil)
-                                        (indent-for-tab-command)))))))))
+            (rails-core:with-root
+             (root)
+             (progn
+               (add-hook 'local-write-file-hooks
+                         '(lambda()
+                            (save-excursion
+                              (untabify (point-min) (point-max))
+                              (delete-trailing-whitespace))))
+               (rails-minor-mode t)
+               (rails-run-for-alist root)
+               (local-set-key (if rails-use-another-define-key "TAB" (kbd "<tab>"))
+                              '(lambda() (interactive)
+                                 (if snippet
+                                     (snippet-next-field)
+                                   (if (looking-at "\\>")
+                                       (hippie-expand nil)
+                                     (indent-for-tab-command)))))))))
 
 (provide 'rails)

@@ -102,5 +102,9 @@
     (mapcar (lambda (it) (setq reg-string (concat reg-string it "\\|"))) rails-templates-list)
     (concat (substring reg-string 0 -1) ")$")))
 
-(provide 'rails-core)
+(defmacro rails-core:add-to-rails-menubar (item &rest prefix)
+  "Add to ITEM local rails menubar
+   ITEM is (cons \"Menu title\" 'func)"
+  `(local-set-key [menu-bar file ,@prefix]  ,item))
 
+(provide 'rails-core)
