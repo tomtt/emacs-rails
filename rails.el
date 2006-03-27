@@ -364,9 +364,10 @@
 
     (define-key map [rails webrick separator] '("--"))
 
-    (define-key map [rails brows] '("Open browser..." . rails-webrick:open-browser-on-controller))
+    (define-key map [rails webrick brows]
+      '("Open browser..." . rails-webrick:open-browser-on-controller))
 
-    (define-key map [rails auto-brows]
+    (define-key map [rails webrick auto-brows]
       '("Open browser on current action" . rails-webrick:auto-open-browser))
 
     (define-key map [rails webrick url]
