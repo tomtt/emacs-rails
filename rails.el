@@ -31,6 +31,7 @@
 (require 'rails-core)
 (require 'rails-lib)
 (require 'rails-webrick)
+(require 'rails-navigation)
 
 (require 'ansi-color)
 (require 'snippet)
@@ -225,6 +226,12 @@
                   :enable (rails-core:root)))
     (define-key map [rails tag] '("Update TAGS file" . rails-create-tags))
     (define-key map [rails ri] '("Search documentation" . rails-search-doc))
+    (define-key map [rails goto-file-by-line]
+      '("Goto file by line" . rails-goto-file-on-current-line))
+    (define-key map [rails switch-file-menu]
+      '("Switch file menu..." . rails-goto-file-from-file-with-menu))
+    (define-key map [rails switch-file]
+      '("Switch file" . rails-goto-file-from-file))
     (define-key map [rails separator] '("--"))
 
     (define-key map [rails snip] (cons "Snippets" (make-sparse-keymap "Snippets")))
@@ -412,6 +419,10 @@
   ((kbd "\C-c g s") 'rails-lib:goto-stylesheets)
   ((kbd "\C-c g j") 'rails-lib:goto-javascripts)
   ((kbd "\C-c g g") 'rails-lib:goto-migrate)
+  ;; Navigation
+  ((kbd "<C-return>") 'rails-goto-file-on-current-line)
+  ((kbd "<M-S-down>") 'rails-goto-file-from-file-with-menu)
+  ((kbd "<M-S-up>")   'rails-goto-file-from-file)
 
   ;; Browser
   ((kbd "\C-c <f5>") 'rails-webrick:auto-open-browser)

@@ -1,4 +1,6 @@
 2006-03-27  CrazyPit  <crazypit13@gmail.com>	
+	* rails-navigation.el: rails-goto-file-on-current-line and 
+	  rails-goto-file-from-file function with stuff added from test branch
 	* rails-lib.el: many helper functions from test branch added 
 	* rails-core.el: functions from test branch added, class-by-file updated + 
 	  new variable rails-core:class-dirs, get-model-view updated

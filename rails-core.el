@@ -125,6 +125,19 @@
 
 ;;;;;;;;;; Files ;;;;;;;;;;
 
+(defun rails-model-file (model-name) ;(!)
+  "Return model file by model name"
+  ;; Rename me
+  (concat "app/models/" (rails-core:file-by-class model-name))) 
+
+(defun rails-controller-file (controller-name) ;(!)
+  "Return path to controller ``controller-name''"
+  ;; Rename me
+  (concat "app/controllers/"
+	  (rails-core:file-by-class
+	   (rails-core:short-controller-name controller-name) t)
+	  "_controller.rb"))
+
 (defun rails-core:file (file-name)
   "Return full path for ``file-name'' in rails-root"
   (when-bind (root (rails-core:root))
@@ -180,6 +193,18 @@
 (defun rails-core:stylesheet-name (name)
   "Return file name of stylesheet NAME"
   (concat "public/stylesheets/" name ".css"))
+
+(defun rails-core:full-controller-name (controller)
+  "Return contoller classname for rel controller name.
+   Bar in Foo dir -> Foo::Bar"
+  (rails-core:class-by-file
+   (if (eq (elt controller 0) 47) ;;; 47 == '/'
+       (subseq controller 1)
+     (let ((current-controller (rails-core:current-controller)))
+       (if (string-match ":" current-controller)
+	   (concat (replace-regexp-in-string "[^:]*$" "" current-controller)
+		   controller)
+	 controller)))))
 
 ;;;;;;;;;; Functions that return collection of Rails objects  ;;;;;;;;;;
 
@@ -346,5 +371,21 @@
 (defun rails-core:short-controller-name (controller)
   "Convert NewsController -> News"
   (remove-postfix  controller "Controller" ))
+
+(defun rails-core:erb-block-string ()
+  "Return string of current ERb block"
+  (save-excursion
+    (save-match-data
+      (let ((start (point)))
+	(search-backward-regexp "<%[=]?")
+	(let ((from (match-end 0)))
+	  (search-forward "%>")
+	  (let ((to (match-beginning 0)))
+	    (when (>= to start)
+	      (buffer-substring-no-properties from to))))))))
+
+(defun rails-core:rhtml-buffer-p () 
+  "Return non nil if current buffer is rhtml file"
+  (string-match "\\.rhtml$" (buffer-file-name)))
 
 (provide 'rails-core)
