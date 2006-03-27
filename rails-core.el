@@ -2,6 +2,9 @@
 
 ;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
 
+;; Authors: Galinsky Dmitry <dima dot exe at gmail dot com>,
+;;          Rezikov Peter <crazypit13 (at) gmail.com>
+
 ;; Keywords: ruby rails languages oop
 ;; $URL$
 ;; $Id$
@@ -51,10 +54,20 @@
       (flet ((rails-core:root () ,root))
         ,@body))))
 
-(defun rails-core:class-by-file (filename)
-  "Return Class associated for FILENAME"
+(defvar rails-core:class-dirs
+  '("app/controllers" "app/views" "app/models" "app/helpers"
+    "test/unit" "test/functional" "test/fixtures")
+  "Dirs with Rails classes")
+
+(defun rails-core:class-by-file (filename) 
+  "Return Class associated for FILENAME
+   <rails-root>/(app/models|app/controllers|app/helpers|test/unit|test/functional)/foo/bar_baz
+                --> Foo::BarBaz"
   (let* ((case-fold-search nil)
-         (path (capitalize (replace-regexp-in-string "\\(.*app/\\(controllers\\|models\\)/\\)?\\([^\.]+\\)\\(.*\\)?" "\\3" filename)))
+         (path (capitalize (replace-regexp-in-string
+			    (format 
+			     "\\(.*\\(%s\\)/\\)?\\([^\.]+\\)\\(.*\\)?"
+			     (strings-join "\\|" rails-core:class-dirs)) "\\3" filename)))
          (path (replace-regexp-in-string "/" "::" path)))
     (replace-regexp-in-string "_" "" path)))
 
@@ -85,15 +98,11 @@
 
 (defun rails-core:get-view-files (controller-class action)
   "Retrun list contains views for CONTROLLER-CLASS#ACTON"
-  (let ((controller (rails-core:file-by-class controller-class)))
     (rails-core:with-root
      (root)
-     (directory-files (concat root
-                              "app/views/"
-                              (replace-regexp-in-string "_controller\\.rb$" "/"
-                                                        controller))
-                      t
-                      (concat "^" action (rails-core:regex-for-match-view))))))
+     (directory-files (rails-core:file (rails-core:views-dir
+					(rails-core:short-controller-name controller-class))) t
+                      (concat "^" action (rails-core:regex-for-match-view)))))
 
 (defun rails-core:regex-for-match-view ()
   "Return regex to match rails view templates.
@@ -106,5 +115,236 @@
   "Add to ITEM local rails menubar
    ITEM is (cons \"Menu title\" 'func)"
   `(local-set-key [menu-bar file ,@prefix]  ,item))
+
+;;;;;;;;;; Project ;;;;;;;;;;
+
+(defun rails-core:project-name ()
+  "Return name of current rails project"
+  (replace-regexp-in-string "^.*/\\(.*\\)/$" "\\1"
+			    (directory-name (rails-core:root))))
+
+;;;;;;;;;; Files ;;;;;;;;;;
+
+(defun rails-core:file (file-name)
+  "Return full path for ``file-name'' in rails-root"
+  (when-bind (root (rails-core:root))
+	     (concat root file-name)))
+
+(defun rails-core:find-file (file-name)
+  "Open file ``file-name'' in rails-root"
+  (when-bind (file (rails-core:file file-name))
+	     (find-file file)))
+
+(defun rails-core:find-file-if-exist (file-name)
+  "Open file ``file-name'' in rails-root if this file exists"
+  (let ((file-name (rails-core:file file-name)))
+    (when (file-exists-p file-name)
+	(find-file file-name))))
+
+(defun rails-core:find-or-ask-to-create (question file)
+  "Open file in Rails root if exist.
+   If not exist ask to create it."
+  (find-or-ask-to-create question (rails-core:file file)))
+
+;; Funtions, that retrun Rails objects full pathes
+
+(defun rails-core:layout-file (layout)
+  "Return PATH to layout file from Rails root"
+  (concat "app/views/layouts/" layout ".rhtml"))
+
+(defun rails-core:partial-name (name)
+  "Return file name of partial NAME"
+  (concat "_" name ".rhtml"))
+
+(defun rails-core:helper-file (controller)
+  "Return helper file name of CONTROLLER"
+  (format "app/helpers/%s_helper.rb" (rails-core:file-by-class controller t)))
+
+(defun rails-core:functional-test-file (controller)
+  "Return functional test file name of CONTROLLER"
+  (format "test/functional/%s_controller_test.rb" (rails-core:file-by-class controller t)))
+
+(defun rails-core:unit-test-file (model)
+  "Return unit test file name of MODEL"
+  (format "test/unit/%s_test.rb" (rails-core:file-by-class model t)))
+
+(defun rails-core:fixtures-file (model)
+  "Return unit test file name of MODEL"
+  ;;; Buggy: plurality conversion does not right
+  (format "test/fixtures/%ss.yml" (rails-core:file-by-class model t)))
+
+(defun rails-core:views-dir (controller)
+  "Return view directory name of Controller"
+  (format "app/views/%s/" (rails-core:file-by-class controller t)))
+
+(defun rails-core:stylesheet-name (name)
+  "Return file name of stylesheet NAME"
+  (concat "public/stylesheets/" name ".css"))
+
+;;;;;;;;;; Functions that return collection of Rails objects  ;;;;;;;;;;
+
+(defun rails-core:controllers (&optional cut-contoller-suffix)
+  "Return list of Rails controllers, cut '_contoller' suffix if
+   cut-contoller-suffix non nil"
+  (mapcar
+   (lambda (controller)
+     (rails-core:class-by-file
+      (if cut-contoller-suffix
+	  (replace-regexp-in-string "_controller\." "\." controller)
+	controller)))
+   (find-recursive-files "_controller\\.rb$" (rails-core:file "app/controllers/"))))
+
+(defun rails-core:models ()
+  "Return list of Rails models"
+  (mapcar
+   #'rails-core:class-by-file
+   (find-recursive-files "\\.rb$" (rails-core:file "app/models/"))))
+
+(defun rails-core:extract-ancestors (classes)
+  "Return prent classes from list of classes"
+  (delete ""
+   (uniq-list
+   (mapcar (lambda (class)
+	     (replace-regexp-in-string
+	      "::[^:]*$" "::"
+	      (replace-regexp-in-string "^[^:]*$" "" class)))
+	   classes))))
+
+(defun rails-core:models-ancestors ()
+  "Return parent classes of models"
+  (rails-core:extract-ancestors (rails-core:models))) 
+
+(defun rails-core:controllers-ancestors ()
+  "Return parent classes of controller"
+  (rails-core:extract-ancestors (rails-core:controllers)))
+
+;;;;;;;;;; Getting Controllers/Model/Action from current buffer ;;;;;;;;;;
+
+(defun rails-core:current-controller () 
+  "Return current Rails controller"
+  (let ((file-class (rails-core:class-by-file (buffer-file-name))))
+    (case (rails-core:buffer-type)
+      (:controller (rails-core:short-controller-name file-class))
+      (:view (rails-core:class-by-file
+	      (directory-file-name (directory-of-file (buffer-file-name)))))
+      (:helper (remove-postfix file-class "Helper"))
+      (:functional-test (remove-postfix file-class "ControllerTest")))))
+
+(defun rails-core:current-model () 
+  "Return current Rails model"
+  (let ((file-class (rails-core:class-by-file (buffer-file-name))))
+    (case (rails-core:buffer-type)
+      (:model file-class)
+      (:unit-test (remove-postfix file-class "Test"))
+      ;;BUG!
+      (:fixtures file-class)))) 
+
+(defun rails-core:current-action ()
+  (case (rails-core:buffer-type)
+    (:controller (save-excursion
+		   (when (search-backward-regexp "^[ ]*def \\([a-z_]+\\)" nil t)
+		     (match-string 1))))
+    (:view (string-match "/\\([a-z_]+\\)\.[a-z]+$" (buffer-file-name))
+	   (match-string 1 (buffer-file-name)))))
+
+;;;;;;;;;; Determination of buffer type ;;;;;;;;;;
+
+(defun rails-core:buffer-file-match (regexp) 
+  "Match current buffer file name with RAILS ROOT + REGEXP"
+  (string-match (rails-core:file regexp)
+		(buffer-file-name (current-buffer))))
+
+(defvar rails-core:directroy<-->types 
+  '((:controller       "app/controllers/")
+    (:view             "app/views/")
+    (:model            "app/models/")
+    (:helper           "app/helpers/")    
+    (:unit-test        "test/unit/")
+    (:functional-test  "test/functional/")
+    (:fixtures         "test/fixtures/"))
+  "Rails file types -- rails dirs map") 
+
+(defun rails-core:buffer-type ()
+  "Return type of current rails file or nil if can't determinate"
+  (loop for (type dir) in rails-core:directroy<-->types
+	when (rails-core:buffer-file-match dir)
+	do (return type)))
+
+;;;;;;;;;; Openning of controller + action in controller and view ;;;;;;;;;;
+
+(defun rails-core:open-controller+action-view (controller action)
+  "Open ACTION file for CONTROLLER in views."
+  (let ((controller (rails-core:file-by-class
+		     (rails-core:short-controller-name controller) t)))
+    (if action
+	(let ((views (rails-core:get-view-files controller action)))
+	  (cond
+	   ((= (length views) 1) (find-file (first views)))
+	   ((= (length views) 0)
+	    (rails-core:find-or-ask-to-create
+	     (format "View for %s#%s does not exist, create it?" controller action)
+	     (format "app/views/%s/%s.rhtml" controller action)))
+	   (t (find-file
+	       (rails-core:menu
+		(list "Please select view.."
+		      (cons "Please select view.."
+			    (loop for view in views collect
+				  (list
+				   (replace-regexp-in-string ".*\.r\\([A-Za-z]+\\)$" "\\1" view)
+				   view)))))))))
+      (dired (rails-core:file (concat "app/views/" controller))))))
+
+(defun rails-core:open-controller+action-controller (controller action)
+  "Open CONTROLLER and goto ACTION"
+  (if (rails-core:find-file-if-exist  (rails-controller-file controller))
+      (progn
+	(goto-char (point-min))
+	(when action
+	  (if (search-forward-regexp (concat "^[ ]*def[ ]*" action))
+	      (recenter)))
+	t)
+    (error "Controller %s does not exist" controller)))
+
+(defun rails-core:open-controller+action (where controller action)
+  "Go to CONTROLLER/ACTION in WHERE"
+  (ecase where
+    (:view (rails-core:open-controller+action-view controller action))
+    (:controller (rails-core:open-controller+action-controller controller action)))
+  (message (concat controller (if action "#") action)))
+
+
+
+;;;;;;;;;; Rails minor mode logs ;;;;;;;;;;
+
+(defun rails-log-add (message)
+  "Add ``message'' to rails monor mode log in ``rails-root''"
+  (rails-core:with-root
+   (root)
+   (append-string-to-file (rails-core:file "log/rails-minor-mode.log")
+    (format "%s: %s\n"
+	    (format-time-string "%Y/%m/%d %H:%M:%S") message))))
+
+(defun rails-logged-shell-command (command buffer)
+  "Execute shell command in buffer and write results to
+  rails minor mode log"
+  (shell-command command buffer)
+  (rails-log-add
+   (format "\n%s> %s\n%s" (rails-core:project-name)
+	   command (buffer-string-by-name buffer))))
+
+;;;;;;;;;; Rails menu ;;;;;;;;;;
+
+(defun rails-core:menu (menu)
+  "Show menu"
+  (first
+   (if rails-use-text-menu
+       (tmm-prompt menu)      
+     (x-popup-menu (list '(200 100) (selected-window)) menu))))
+
+;;;;;;;;;; Misc ;;;;;;;;;;
+
+(defun rails-core:short-controller-name (controller)
+  "Convert NewsController -> News"
+  (remove-postfix  controller "Controller" ))
 
 (provide 'rails-core)

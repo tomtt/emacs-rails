@@ -27,7 +27,7 @@
 (defvar rails-webrick:buffer-name "*WEBrick*")
 (defvar rails-webrick:port "3000")
 (defvar rails-webrick:default-env "development")
-(defvar rails-webrick:open-url (concat "http://localhost:" rails-webrick:port))
+(defvar rails-webrick:open-url (concat "http://localhost:" rails-webrick:port "/"))
 (defvar rails-webrick:use-mongrel nil "Non nil using Mongrel, else WEBrick")
 
 (defun rails-webrick:status()
@@ -87,8 +87,38 @@
     (if proc
         (kill-process proc))))
 
-(defun rails-webrick:open-browser()
+;;;;;;;;;; Open browser ;;;;;;;;;;
+
+(defun rails-webrick:open-browser (&optional address)
+  "Open browser for address on current Rails project server"
   (interactive)
-  (browse-url rails-webrick:open-url))
+  (let ((url (concat rails-webrick:open-url  address )))
+    (message "Opening browser: %s" url)
+    (browse-url url)))
+
+(defun rails-webrick:open-browser-on-controller (&optional controller action params)
+  "Open browser on controller/action/id"
+  (interactive
+   (list
+    (completing-read "Controller name: "
+		     (list->alist (rails-core:controllers t)))
+    (read-from-minibuffer "Action name: ")
+    (read-from-minibuffer "Params: ")))
+  (rails-core:with-root
+   (root)
+   (when (string-not-empty controller)
+     (rails-webrick:open-browser
+      (concat (rails-core:file-by-class controller t) "/"
+	      (if (string-not-empty action) (concat action "/")) params)))))
+
+(defun rails-webrick:auto-open-browser (ask-parameters?)
+  "Autodetect current action and open browser on it
+   with prefix ask parameters for action."
+  (interactive "P")
+  (when-bind (controller (rails-core:current-controller))
+	     (rails-webrick:open-browser-on-controller
+	      controller (rails-core:current-action)
+	      (when ask-parameters?
+		(read-from-minibuffer "Parameters: ")))))
 
 (provide 'rails-webrick)

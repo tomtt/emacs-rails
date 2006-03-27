@@ -51,60 +51,6 @@
     ("rb" rails-for-controller (lambda (root) (string-match (concat root "app/controllers") buffer-file-name)))
     ))
 
-;;;;;;;; def-snips stuff ;;;;
-
-(defun snippet-abbrev-function-name (abbrev-table abbrev-name)
-  "Return name of snips abbrev function in abbrev-table for abbrev abbrev-name"
-  (intern (concat "snippet-abbrev-"
-      (snippet-strip-abbrev-table-suffix
-       (symbol-name abbrev-table))
-      "-"
-      abbrev-name)))
-
-(defun snippet-menu-description-variable (table name)
-  "Return variable for menu description of snip abbrev-name in abbrev-table"
-  (intern
-   (concat
-    (symbol-name (snippet-abbrev-function-name table name))
-    "-menu-description")))
-
-(defmacro* def-snips ((&rest abbrev-tables) &rest snips)
-  "Generate snippets with menu documentaion in several ``abbrev-tables''
-  (def-snip (some-mode-abbrev-table other-mode-abbrev-table)
-    (\"abbr\"   \"some snip $${foo}\" \"menu documentation\")
-    (\"anabr\"   \"other snip $${bar}\" \"menu documentation\")
-"
-  `(progn
-     ,@(loop for table in abbrev-tables
-       collect
-       `(snippet-with-abbrev-table ',table
-    ,@(loop for (name template desc) in snips collect
-      `(,name . ,template)))
-       append
-       (loop for (name template desc) in snips collect
-       `(setf ,(snippet-menu-description-variable table name)
-       ,desc)))))
-
-(defun snippet-menu-description (abbrev-table name)
-  "Return menu descripton for snip in ``abbrev-table'' with name ``name''"
-  (concat (symbol-value (snippet-menu-description-variable abbrev-table name)) "\t(" name ")"))
-
-(defun snippet-menu-line (abbrev-table name)
-  "Generate menu line for snip ``name''"
-  (cons
-   (snippet-menu-description abbrev-table name)
-   (snippet-abbrev-function-name abbrev-table name)))
-
-(defmacro define-keys (key-map &rest key-funcs)
-  "Define key bindings for key-map (create key-map, if does not exist"
-  `(progn
-     (unless (boundp ',key-map)
-       (setf ,key-map (make-keymap)))
-     ,@(mapcar
-  #'(lambda (key-func)
-      `(define-key ,key-map ,(first key-func) ,(second key-func)))
-  key-funcs)))
-
 ;;;;;;;; hack ;;;;
 
 ;; replace in autorevert.el
@@ -418,6 +364,11 @@
 
     (define-key map [rails webrick separator] '("--"))
 
+    (define-key map [rails brows] '("Open browser..." . rails-webrick:open-browser-on-controller))
+
+    (define-key map [rails auto-brows]
+      '("Open browser on current action" . rails-webrick:auto-open-browser))
+
     (define-key map [rails webrick url]
       '(menu-item "Open browser"
                   rails-webrick:open-browser
@@ -461,6 +412,8 @@
   ((kbd "\C-c g j") 'rails-lib:goto-javascripts)
   ((kbd "\C-c g g") 'rails-lib:goto-migrate)
 
+  ;; Browser
+  ((kbd "\C-c <f5>") 'rails-webrick:auto-open-browser)
   ;;; Doc
   ([f1]  'rails-search-doc)
   ([f9]  'rails-svn-status-into-root))

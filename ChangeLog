@@ -1,3 +1,11 @@
+2006-03-27  CrazyPit  <crazypit13@gmail.com>	
+	* rails-lib.el: many helper functions from test branch added 
+	* rails-core.el: functions from test branch added, class-by-file updated + 
+	  new variable rails-core:class-dirs, get-model-view updated
+	* rails-webrick.el: open-browser updated, open-browser-on-controller,
+	  auto-open-browser added
+	
+
 2006-03-22  dima  <dima.exe@gmail.com>
 
 	* rails-core.el: add macro rails-core:local-add-to-rails-menubar
