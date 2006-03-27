@@ -32,6 +32,7 @@
 (require 'rails-lib)
 (require 'rails-webrick)
 (require 'rails-navigation)
+(require 'rails-scripts)
 
 (require 'ansi-color)
 (require 'snippet)
@@ -51,6 +52,8 @@
     ("rhtml" rails-for-rhtml)
     ("rb" rails-for-controller (lambda (root) (string-match (concat root "app/controllers") buffer-file-name)))
     ))
+
+(defvar rails-enviroments '("development" "production" "test"))
 
 ;;;;;;;; hack ;;;;
 
@@ -218,196 +221,213 @@
   ("%%"      "<%= $. %>"
              "<%= ... %>"))
 
-(defvar rails-minor-mode-menu-bar-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map [rails] (cons "RubyOnRails" (make-sparse-keymap "RubyOnRails")))
-    (define-key map [rails svn-status]
+(define-keys rails-minor-mode-menu-bar-map
+    ([rails] (cons "RubyOnRails" (make-sparse-keymap "RubyOnRails")))
+    ([rails svn-status]
       '(menu-item "SVN status" rails-svn-status-into-root
                   :enable (rails-core:root)))
-    (define-key map [rails tag] '("Update TAGS file" . rails-create-tags))
-    (define-key map [rails ri] '("Search documentation" . rails-search-doc))
-    (define-key map [rails goto-file-by-line]
+    ([rails tag] '("Update TAGS file" . rails-create-tags))
+    ([rails ri] '("Search documentation" . rails-search-doc))
+    ([rails goto-file-by-line]
       '("Goto file by line" . rails-goto-file-on-current-line))
-    (define-key map [rails switch-file-menu]
+    ([rails switch-file-menu]
       '("Switch file menu..." . rails-goto-file-from-file-with-menu))
-    (define-key map [rails switch-file]
+    ([rails switch-file]
       '("Switch file" . rails-goto-file-from-file))
-    (define-key map [rails separator] '("--"))
+    ([rails separator] '("--"))
 
-    (define-key map [rails snip] (cons "Snippets" (make-sparse-keymap "Snippets")))
-    (define-key map [rails snip render] (cons "render" (make-sparse-keymap "render")))
-    (define-key map [rails snip render sk-ra]  (snippet-menu-line 'ruby-mode-abbrev-table "ra"))
-    (define-key map [rails snip render sk-ral] (snippet-menu-line 'ruby-mode-abbrev-table "ral"))
-    (define-key map [rails snip render sk-rf]  (snippet-menu-line 'ruby-mode-abbrev-table "rf"))
-    (define-key map [rails snip render sk-rfu] (snippet-menu-line 'ruby-mode-abbrev-table "rfu"))
-    (define-key map [rails snip render sk-ri]  (snippet-menu-line 'ruby-mode-abbrev-table "ri"))
-    (define-key map [rails snip render sk-ril] (snippet-menu-line 'ruby-mode-abbrev-table "ril"))
-    (define-key map [rails snip render sk-rit] (snippet-menu-line 'ruby-mode-abbrev-table "rit"))
-    (define-key map [rails snip render sk-rl]  (snippet-menu-line 'ruby-mode-abbrev-table "rl"))
-    (define-key map [rails snip render sk-rn]  (snippet-menu-line 'ruby-mode-abbrev-table "rn"))
-    (define-key map [rails snip render sk-rns] (snippet-menu-line 'ruby-mode-abbrev-table "rns"))
-    (define-key map [rails snip render sk-rp]  (snippet-menu-line 'ruby-mode-abbrev-table "rp"))
-    (define-key map [rails snip render sk-rpc] (snippet-menu-line 'ruby-mode-abbrev-table "rpc"))
-    (define-key map [rails snip render sk-rpl] (snippet-menu-line 'ruby-mode-abbrev-table "rpl"))
-    (define-key map [rails snip render sk-rpo] (snippet-menu-line 'ruby-mode-abbrev-table "rpo"))
-    (define-key map [rails snip render sk-rps] (snippet-menu-line 'ruby-mode-abbrev-table "rps"))
-    (define-key map [rails snip render sk-rt] (snippet-menu-line 'ruby-mode-abbrev-table "rt"))
-    (define-key map [rails snip render sk-rtl] (snippet-menu-line 'ruby-mode-abbrev-table "rtl"))
-    (define-key map [rails snip render sk-rtlt] (snippet-menu-line 'ruby-mode-abbrev-table "rtlt"))
-    (define-key map [rails snip render sk-rcea] (snippet-menu-line 'ruby-mode-abbrev-table "rcea"))
-    (define-key map [rails snip render sk-rcec] (snippet-menu-line 'ruby-mode-abbrev-table "rcec"))
-    (define-key map [rails snip render sk-rceca] (snippet-menu-line 'ruby-mode-abbrev-table "rceca"))
+    ([rails snip] (cons "Snippets" (make-sparse-keymap "Snippets")))
+    ([rails snip render] (cons "render" (make-sparse-keymap "render")))
+    ([rails snip render sk-ra]  (snippet-menu-line 'ruby-mode-abbrev-table "ra"))
+    ([rails snip render sk-ral] (snippet-menu-line 'ruby-mode-abbrev-table "ral"))
+    ([rails snip render sk-rf]  (snippet-menu-line 'ruby-mode-abbrev-table "rf"))
+    ([rails snip render sk-rfu] (snippet-menu-line 'ruby-mode-abbrev-table "rfu"))
+    ([rails snip render sk-ri]  (snippet-menu-line 'ruby-mode-abbrev-table "ri"))
+    ([rails snip render sk-ril] (snippet-menu-line 'ruby-mode-abbrev-table "ril"))
+    ([rails snip render sk-rit] (snippet-menu-line 'ruby-mode-abbrev-table "rit"))
+    ([rails snip render sk-rl]  (snippet-menu-line 'ruby-mode-abbrev-table "rl"))
+    ([rails snip render sk-rn]  (snippet-menu-line 'ruby-mode-abbrev-table "rn"))
+    ([rails snip render sk-rns] (snippet-menu-line 'ruby-mode-abbrev-table "rns"))
+    ([rails snip render sk-rp]  (snippet-menu-line 'ruby-mode-abbrev-table "rp"))
+    ([rails snip render sk-rpc] (snippet-menu-line 'ruby-mode-abbrev-table "rpc"))
+    ([rails snip render sk-rpl] (snippet-menu-line 'ruby-mode-abbrev-table "rpl"))
+    ([rails snip render sk-rpo] (snippet-menu-line 'ruby-mode-abbrev-table "rpo"))
+    ([rails snip render sk-rps] (snippet-menu-line 'ruby-mode-abbrev-table "rps"))
+    ([rails snip render sk-rt] (snippet-menu-line 'ruby-mode-abbrev-table "rt"))
+    ([rails snip render sk-rtl] (snippet-menu-line 'ruby-mode-abbrev-table "rtl"))
+    ([rails snip render sk-rtlt] (snippet-menu-line 'ruby-mode-abbrev-table "rtlt"))
+    ([rails snip render sk-rcea] (snippet-menu-line 'ruby-mode-abbrev-table "rcea"))
+    ([rails snip render sk-rcec] (snippet-menu-line 'ruby-mode-abbrev-table "rcec"))
+    ([rails snip render sk-rceca] (snippet-menu-line 'ruby-mode-abbrev-table "rceca"))
 
-    (define-key map [rails snip redirect_to] (cons "redirect_to" (make-sparse-keymap "redirect_to")))
-    (define-key map [rails snip redirect_to sk-rea] (snippet-menu-line 'ruby-mode-abbrev-table "rea"))
-    (define-key map [rails snip redirect_to sk-reai] (snippet-menu-line 'ruby-mode-abbrev-table "reai"))
-    (define-key map [rails snip redirect_to sk-rec] (snippet-menu-line 'ruby-mode-abbrev-table "rec"))
-    (define-key map [rails snip redirect_to sk-reca] (snippet-menu-line 'ruby-mode-abbrev-table "reca"))
-    (define-key map [rails snip redirect_to sk-recai] (snippet-menu-line 'ruby-mode-abbrev-table "recai"))
+    ([rails snip redirect_to] (cons "redirect_to" (make-sparse-keymap "redirect_to")))
+    ([rails snip redirect_to sk-rea] (snippet-menu-line 'ruby-mode-abbrev-table "rea"))
+    ([rails snip redirect_to sk-reai] (snippet-menu-line 'ruby-mode-abbrev-table "reai"))
+    ([rails snip redirect_to sk-rec] (snippet-menu-line 'ruby-mode-abbrev-table "rec"))
+    ([rails snip redirect_to sk-reca] (snippet-menu-line 'ruby-mode-abbrev-table "reca"))
+    ([rails snip redirect_to sk-recai] (snippet-menu-line 'ruby-mode-abbrev-table "recai"))
 
-    (define-key map [rails snip environment] (cons "environment" (make-sparse-keymap "environment")))
-    (define-key map [rails snip environment sk-flash] (snippet-menu-line 'ruby-mode-abbrev-table "flash"))
-    (define-key map [rails snip environment sk-logi] (snippet-menu-line 'ruby-mode-abbrev-table "logi"))
-    (define-key map [rails snip environment sk-params] (snippet-menu-line 'ruby-mode-abbrev-table "par"))
-    (define-key map [rails snip environment sk-session] (snippet-menu-line 'ruby-mode-abbrev-table "ses"))
+    ([rails snip environment] (cons "environment" (make-sparse-keymap "environment")))
+    ([rails snip environment sk-flash] (snippet-menu-line 'ruby-mode-abbrev-table "flash"))
+    ([rails snip environment sk-logi] (snippet-menu-line 'ruby-mode-abbrev-table "logi"))
+    ([rails snip environment sk-params] (snippet-menu-line 'ruby-mode-abbrev-table "par"))
+    ([rails snip environment sk-session] (snippet-menu-line 'ruby-mode-abbrev-table "ses"))
 
-    (define-key map [rails snip model] (cons "model" (make-sparse-keymap "model")))
-    (define-key map [rails snip model sk-bt] (snippet-menu-line 'ruby-mode-abbrev-table "bt"))
-    (define-key map [rails snip model sk-hm] (snippet-menu-line 'ruby-mode-abbrev-table "hm"))
-    (define-key map [rails snip model sk-ho] (snippet-menu-line 'ruby-mode-abbrev-table "ho"))
-    (define-key map [rails snip model sk-vp] (snippet-menu-line 'ruby-mode-abbrev-table "vp"))
-    (define-key map [rails snip model sk-vu] (snippet-menu-line 'ruby-mode-abbrev-table "vu"))
-    (define-key map [rails snip model sk-vn] (snippet-menu-line 'ruby-mode-abbrev-table "vn"))
-    (define-key map [rails snip migrations] (cons "migrations" (make-sparse-keymap "model")))
-    (define-key map [rails snip migrations mct] (snippet-menu-line 'ruby-mode-abbrev-table "mct"))
-    (define-key map [rails snip migrations mctf] (snippet-menu-line 'ruby-mode-abbrev-table "mctf"))
-    (define-key map [rails snip migrations mdt] (snippet-menu-line 'ruby-mode-abbrev-table "mdt"))
-    (define-key map [rails snip migrations mtcl] (snippet-menu-line 'ruby-mode-abbrev-table "mtcl"))
-    (define-key map [rails snip migrations mac] (snippet-menu-line 'ruby-mode-abbrev-table "mac"))
-    (define-key map [rails snip migrations mcc] (snippet-menu-line 'ruby-mode-abbrev-table "mcc"))
-    (define-key map [rails snip migrations mrec] (snippet-menu-line 'ruby-mode-abbrev-table "mrec"))
-    (define-key map [rails snip migrations mrmc] (snippet-menu-line 'ruby-mode-abbrev-table "mrmc"))
-    (define-key map [rails snip migrations mai] (snippet-menu-line 'ruby-mode-abbrev-table "mai"))
-    (define-key map [rails snip migrations mait] (snippet-menu-line 'ruby-mode-abbrev-table "mait"))
-    (define-key map [rails snip migrations mrmi] (snippet-menu-line 'ruby-mode-abbrev-table "mrmi"))
+    ([rails snip model] (cons "model" (make-sparse-keymap "model")))
+    ([rails snip model sk-bt] (snippet-menu-line 'ruby-mode-abbrev-table "bt"))
+    ([rails snip model sk-hm] (snippet-menu-line 'ruby-mode-abbrev-table "hm"))
+    ([rails snip model sk-ho] (snippet-menu-line 'ruby-mode-abbrev-table "ho"))
+    ([rails snip model sk-vp] (snippet-menu-line 'ruby-mode-abbrev-table "vp"))
+    ([rails snip model sk-vu] (snippet-menu-line 'ruby-mode-abbrev-table "vu"))
+    ([rails snip model sk-vn] (snippet-menu-line 'ruby-mode-abbrev-table "vn"))
+    ([rails snip migrations] (cons "migrations" (make-sparse-keymap "model")))
+    ([rails snip migrations mct] (snippet-menu-line 'ruby-mode-abbrev-table "mct"))
+    ([rails snip migrations mctf] (snippet-menu-line 'ruby-mode-abbrev-table "mctf"))
+    ([rails snip migrations mdt] (snippet-menu-line 'ruby-mode-abbrev-table "mdt"))
+    ([rails snip migrations mtcl] (snippet-menu-line 'ruby-mode-abbrev-table "mtcl"))
+    ([rails snip migrations mac] (snippet-menu-line 'ruby-mode-abbrev-table "mac"))
+    ([rails snip migrations mcc] (snippet-menu-line 'ruby-mode-abbrev-table "mcc"))
+    ([rails snip migrations mrec] (snippet-menu-line 'ruby-mode-abbrev-table "mrec"))
+    ([rails snip migrations mrmc] (snippet-menu-line 'ruby-mode-abbrev-table "mrmc"))
+    ([rails snip migrations mai] (snippet-menu-line 'ruby-mode-abbrev-table "mai"))
+    ([rails snip migrations mait] (snippet-menu-line 'ruby-mode-abbrev-table "mait"))
+    ([rails snip migrations mrmi] (snippet-menu-line 'ruby-mode-abbrev-table "mrmi"))
 
-    (define-key map [rails snip rhtml] (cons "rhtml" (make-sparse-keymap "rhtml")))
-    (define-key map [rails snip rhtml sk-erb-ft] (snippet-menu-line 'html-mode-abbrev-table "ft"))
-    (define-key map [rails snip rhtml sk-erb-lia] (snippet-menu-line 'html-mode-abbrev-table "lia"))
-    (define-key map [rails snip rhtml sk-erb-liai] (snippet-menu-line 'html-mode-abbrev-table "liai"))
-    (define-key map [rails snip rhtml sk-erb-lic] (snippet-menu-line 'html-mode-abbrev-table "lic"))
-    (define-key map [rails snip rhtml sk-erb-lica] (snippet-menu-line 'html-mode-abbrev-table "lica"))
-    (define-key map [rails snip rhtml sk-erb-licai] (snippet-menu-line 'html-mode-abbrev-table "licai"))
-    (define-key map [rails snip rhtml sk-erb-h] (snippet-menu-line 'html-mode-abbrev-table "%h"))
-    (define-key map [rails snip rhtml sk-erb-if] (snippet-menu-line 'html-mode-abbrev-table "%if"))
-    (define-key map [rails snip rhtml sk-erb-unless] (snippet-menu-line 'html-mode-abbrev-table "%unless"))
-    (define-key map [rails snip rhtml sk-erb-ifel] (snippet-menu-line 'html-mode-abbrev-table "%ifel"))
-    (define-key map [rails snip rhtml sk-erb-block] (snippet-menu-line 'html-mode-abbrev-table "%"))
-    (define-key map [rails snip rhtml sk-erb-echo-block] (snippet-menu-line 'html-mode-abbrev-table "%%"))
+    ([rails snip rhtml] (cons "rhtml" (make-sparse-keymap "rhtml")))
+    ([rails snip rhtml sk-erb-ft] (snippet-menu-line 'html-mode-abbrev-table "ft"))
+    ([rails snip rhtml sk-erb-lia] (snippet-menu-line 'html-mode-abbrev-table "lia"))
+    ([rails snip rhtml sk-erb-liai] (snippet-menu-line 'html-mode-abbrev-table "liai"))
+    ([rails snip rhtml sk-erb-lic] (snippet-menu-line 'html-mode-abbrev-table "lic"))
+    ([rails snip rhtml sk-erb-lica] (snippet-menu-line 'html-mode-abbrev-table "lica"))
+    ([rails snip rhtml sk-erb-licai] (snippet-menu-line 'html-mode-abbrev-table "licai"))
+    ([rails snip rhtml sk-erb-h] (snippet-menu-line 'html-mode-abbrev-table "%h"))
+    ([rails snip rhtml sk-erb-if] (snippet-menu-line 'html-mode-abbrev-table "%if"))
+    ([rails snip rhtml sk-erb-unless] (snippet-menu-line 'html-mode-abbrev-table "%unless"))
+    ([rails snip rhtml sk-erb-ifel] (snippet-menu-line 'html-mode-abbrev-table "%ifel"))
+    ([rails snip rhtml sk-erb-block] (snippet-menu-line 'html-mode-abbrev-table "%"))
+    ([rails snip rhtml sk-erb-echo-block] (snippet-menu-line 'html-mode-abbrev-table "%%"))
 
-    (define-key map [rails log] (cons "Open log" (make-sparse-keymap "Open log")))
-    (define-key map [rails log test]
+    ([rails log] (cons "Open log" (make-sparse-keymap "Open log")))
+    ([rails log test]
       '("test.log" . (lambda() (interactive) (rails-open-log "test"))))
-    (define-key map [rails log pro]
+    ([rails log pro]
       '("production.log" . (lambda() (interactive) (rails-open-log "production"))))
-    (define-key map [rails log dev]
+    ([rails log dev]
       '("development.log" . (lambda() (interactive) (rails-open-log "development"))))
 
-    (define-key map [rails config] (cons "Configuration" (make-sparse-keymap "Configuration")))
-    (define-key map [rails config routes]
+    ([rails config] (cons "Configuration" (make-sparse-keymap "Configuration")))
+    ([rails config routes]
       '("routes.rb" .
         (lambda()
           (interactive)
           (let ((root (rails-core:root)))
             (if root (find-file (concat root "config/routes.rb")))))))
 
-    (define-key map [rails config environment]
+    ([rails config environment]
       '("environment.rb" .
         (lambda()
           (interactive)
           (let ((root (rails-core:root)))
             (if root (find-file (concat root "config/environment.rb")))))))
-    (define-key map [rails config database]
+    ([rails config database]
       '("database.yml" .
         (lambda()
           (interactive)
           (let ((root (rails-core:root)))
             (if root (find-file (concat root "config/database.yml")))))))
-    (define-key map [rails config boot]
+    ([rails config boot]
       '("boot.rb" .
         (lambda()
           (interactive)
           (let ((root (rails-core:root)))
             (if root (find-file (concat root "config/boot.rb")))))))
 
-    (define-key map [rails config env] (cons "environments" (make-sparse-keymap "environments")))
-    (define-key map [rails config env test]
+    ([rails config env] (cons "environments" (make-sparse-keymap "environments")))
+    ([rails config env test]
       '("test.rb" .
         (lambda()
           (interactive)
           (let ((root (rails-core:root)))
             (if root (find-file (concat root "config/environments/test.rb")))))))
-    (define-key map [rails config env production]
+    ([rails config env production]
       '("production.rb" .
         (lambda()
           (interactive)
           (let ((root (rails-core:root)))
             (if root (find-file (concat root "config/environments/production.rb")))))))
-    (define-key map [rails config env development]
+    ([rails config env development]
       '("development.rb" .
         (lambda()
           (interactive)
           (let ((root (rails-core:root)))
             (if root (find-file (concat root "config/environments/development.rb")))))))
 
-    (define-key map [rails webrick] (cons "WEBrick" (make-sparse-keymap "WEBrick")))
+    ([rails scr] (cons "Scripts" (make-sparse-keymap "Scripts")))
 
-    (define-key map [rails webrick mongrel]
+    ([rails scr proj] '("Create project" . rails-create-project))
+    ([rails scr console] '("Csonsole" . rails-run-console))
+    ([rails scr break] '("Breakpointer" . rails-run-breakpointer))
+
+    
+    ([rails scr gen] (cons "Generators" (make-sparse-keymap "Generators")))
+    ([rails scr gen migration] '("Migration" . rails-generate-migration))
+    ([rails scr gen scaffold] '("Scaffold" . rails-generate-scaffold))
+    ([rails scr gen model] '("Model" . rails-generate-model))
+    ([rails scr gen controller] '("Controller" . rails-generate-controller))
+
+    ([rails scr destr] (cons "Destroy" (make-sparse-keymap "Generators")))
+    ([rails scr destr controller] '("Controller" . rails-destroy-controller))
+    ([rails scr destr model] '("Model" . rails-destroy-model))
+    ([rails scr destr scaffold] '("Scaffold" . rails-destroy-scaffold))
+
+    
+    ([rails webrick] (cons "WEBrick" (make-sparse-keymap "WEBrick")))
+
+    ([rails webrick mongrel]
       '(menu-item "Use Mongrel" rails-webrick:toggle-use-mongrel
                   :enable (not (rails-webrick:status))
                   :button (:toggle
                            . (and (boundp 'rails-webrick:use-mongrel)
                                   rails-webrick:use-mongrel))))
 
-    (define-key map [rails webrick separator] '("--"))
+    ([rails webrick separator] '("--"))
 
-    (define-key map [rails webrick brows]
+    ([rails webrick brows]
       '("Open browser..." . rails-webrick:open-browser-on-controller))
 
-    (define-key map [rails webrick auto-brows]
+    ([rails webrick auto-brows]
       '("Open browser on current action" . rails-webrick:auto-open-browser))
 
-    (define-key map [rails webrick url]
+    ([rails webrick url]
       '(menu-item "Open browser"
                   rails-webrick:open-browser
                   :enable (rails-webrick:status)))
-    (define-key map [rails webrick stop]
+    ([rails webrick stop]
       '(menu-item "Stop"
                   rails-webrick:stop
                   :enable (rails-webrick:status)))
-    (define-key map [rails webrick test]
+    ([rails webrick test]
       '(menu-item "Start test"
                   (lambda() (interactive) (rails-webrick:start "test"))
                   :enable (not (rails-webrick:status))))
-    (define-key map [rails webrick production]
+    ([rails webrick production]
       '(menu-item "Start production"
                   (lambda() (interactive) (rails-webrick:start "production"))
                   :enable (not (rails-webrick:status))))
-    (define-key map [rails webrick development]
+    ([rails webrick development]
       '(menu-item "Start development"
                   (lambda() (interactive) (rails-webrick:start "development"))
                   :enable (not (rails-webrick:status))))
 
-    (define-key map [rails separator2] '("--"))
+    ([rails separator2] '("--"))
 
-    (define-key map [rails goto-models] '("Goto models" . rails-lib:goto-models))
-    (define-key map [rails goto-controllers] '("Goto controllers" . rails-lib:goto-controllers))
-    (define-key map [rails goto-helpers] '("Goto helpers" . rails-lib:goto-helpers))
-    (define-key map [rails goto-layouts] '("Goto layouts" . rails-lib:goto-layouts))
-    (define-key map [rails goto-stylesheets] '("Goto stylesheets" . rails-lib:goto-stylesheets))
-    (define-key map [rails goto-javascripts] '("Goto javascripts" . rails-lib:goto-javascripts))
-    (define-key map [rails goto-migrate] '("Goto migrate" . rails-lib:goto-migrate))
-    map))
+    ([rails goto-models] '("Goto models" . rails-lib:goto-models))
+    ([rails goto-controllers] '("Goto controllers" . rails-lib:goto-controllers))
+    ([rails goto-helpers] '("Goto helpers" . rails-lib:goto-helpers))
+    ([rails goto-layouts] '("Goto layouts" . rails-lib:goto-layouts))
+    ([rails goto-stylesheets] '("Goto stylesheets" . rails-lib:goto-stylesheets))
+    ([rails goto-javascripts] '("Goto javascripts" . rails-lib:goto-javascripts))
+    ([rails goto-migrate] '("Goto migrate" . rails-lib:goto-migrate)))
 
 (define-keys rails-minor-mode-map
   ([menu-bar] rails-minor-mode-menu-bar-map)
