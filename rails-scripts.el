@@ -54,18 +54,18 @@
 
 (defun rails-destroy-controller (&optional controller-name)
   (interactive
-   (list (completing-read "Controller name: " (list->alist (rails-core:controllers t)))))
+   (list (completing-read "Destroy controller: " (list->alist (rails-core:controllers t)))))
   (when (string-not-empty controller-name)
     (rails-destroy "controller" controller-name)))
 
 (defun rails-destroy-model (&optional model-name)
-  (interactive (list (completing-read "Model name: " (list->alist (rails-core:models)))))
+  (interactive (list (completing-read "Destroy model: " (list->alist (rails-core:models)))))
     (when (string-not-empty model-name)
       (rails-destroy "model" model-name)))
 
 (defun rails-destroy-scaffold (&optional scaffold-name)
   ;; buggy
-  (interactive "MScaffold name: ")
+  (interactive "MDestroy scaffold: ")
   (when (string-not-empty scaffold-name)
     (rails-destroy "scaffold" scaffold-name)))
 

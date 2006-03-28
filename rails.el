@@ -369,11 +369,11 @@
     ([rails scr] (cons "Scripts" (make-sparse-keymap "Scripts")))
 
     ([rails scr proj] '("Create project" . rails-create-project))
-    ([rails scr console] '("Csonsole" . rails-run-console))
+    ([rails scr console] '("Console" . rails-run-console))
     ([rails scr break] '("Breakpointer" . rails-run-breakpointer))
 
 
-    ([rails scr gen] (cons "Generators" (make-sparse-keymap "Generators")))
+    ([rails scr gen] (cons "Generate" (make-sparse-keymap "Generate")))
     ([rails scr gen migration] '("Migration" . rails-generate-migration))
     ([rails scr gen scaffold] '("Scaffold" . rails-generate-scaffold))
     ([rails scr gen model] '("Model" . rails-generate-model))
