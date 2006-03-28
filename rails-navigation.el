@@ -233,4 +233,35 @@ Rule for action/contoller line goto:
   (interactive)
   (rails-goto-file-from-file t))
 
+;;;;;;;;;; Rails finds ;;;;;;;;;;
+
+(defun rails-find (path)
+  "Open find-file in minbuffer for ``path'' in rails-root"
+  (let ((default-directory (rails-core:file path)))
+    (call-interactively rails-find-file-function)))
+
+(defmacro* def-rails-find (name dir)
+  "Define new rails-find function"
+  `(defun ,name ()
+     ,(format "Run find-file in Rails \"%s\" dir" dir)
+     (interactive)
+     (rails-find ,dir)))
+
+(def-rails-find rails-find-controller "app/controllers/")
+
+(def-rails-find rails-find-view "app/views/")
+
+(def-rails-find rails-find-layout "app/views/layouts/")
+
+(def-rails-find rails-find-db "db/")
+
+(def-rails-find rails-find-public "public/")
+
+(def-rails-find rails-find-helpers "app/helpers/")
+
+(def-rails-find rails-find-models "app/models/")
+
+(def-rails-find rails-find-config "config/")
+
+
 (provide 'rails-navigation)

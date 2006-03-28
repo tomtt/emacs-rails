@@ -1,8 +1,12 @@
-2006-03-27  CrazyPit  <crazypit13@gmail.com>	
+2006-03-28  CrazyPit  <crazypit13@gmail.com>	
+	* rails.el: rails-run-sql with stuff
+	* rails-navigation.el: rails finds added 
 	* rails-scipts.el: generators/destroyers, shells and rails-create project added 
 	  from test branch
 	* rails-navigation.el: rails-goto-file-on-current-line and 
 	  rails-goto-file-from-file function with stuff added from test branch
+
+2006-03-27  CrazyPit  <crazypit13@gmail.com>	
 	* rails-lib.el: many helper functions from test branch added 
 	* rails-core.el: functions from test branch added, class-by-file updated + 
 	  new variable rails-core:class-dirs, get-model-view updated

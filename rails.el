@@ -226,6 +226,8 @@
     ([rails svn-status]
       '(menu-item "SVN status" rails-svn-status-into-root
                   :enable (rails-core:root)))
+    ([rails sql] '("SQL Rails buffer" . rails-run-sql))
+
     ([rails tag] '("Update TAGS file" . rails-create-tags))
     ([rails ri] '("Search documentation" . rails-search-doc))
     ([rails goto-file-by-line]
@@ -532,6 +534,57 @@
                   (setq ret t))))))
       (setq alist (cdr alist)))
     ret))
+
+;;;;;;;;;; Database integration ;;;;;;;;;;
+
+(defvar rails-adapters-alist
+  '(("mysql"      . sql-mysql)
+    ("postgresql" . sql-postgres))
+  "Sets emacs sql function for rails adapter names")
+
+(defstruct rails-db-conf adapter database username password)
+
+(defun rails-db-parameters (env)
+  "Return database parameters for enviroment env"
+  (rails-core:with-root
+   (root) 
+   (save-excursion
+     (rails-core:find-file "config/database.yml")
+     (goto-line 1)
+     (search-forward-regexp (format "^%s:" env))
+     (let ((ans
+	    (make-rails-db-conf
+	     :adapter  (yml-next-value "adapter")
+	     :database (yml-next-value "database")
+	     :username (yml-next-value "username")
+	     :password (yml-next-value "password"))))
+       (kill-buffer (current-buffer))
+       ans))))
+
+(defun rails-database-emacs-func (adapter)
+  "Return emacs function, that running sql buffer by rails adapter name"
+  (cdr (assoc adapter rails-adapters-alist)))
+
+(defun rails-read-enviroment-name (&optional default)
+  "Read rails enviroment with autocomplete"
+  (completing-read "Environment name: " (list->alist rails-enviroments) nil nil default))
+
+(defun* rails-run-sql (&optional env)
+  "Run SQL process for current rails project."
+  (interactive (list (rails-read-enviroment-name "development")))
+  (require 'sql)
+  (if (bufferp (sql-find-sqli-buffer))
+      (switch-to-buffer-other-window (sql-find-sqli-buffer))
+    (let ((conf (rails-db-parameters env)))
+      (let ((sql-server "localhost")
+	    (sql-user (rails-db-conf-username conf))
+	    (sql-database (rails-db-conf-database conf))
+	    (sql-password (rails-db-conf-password conf))
+	    (default-process-coding-system '(utf-8 . utf-8)))
+	; Reload localy sql-get-login to avoid asking of confirmation of DB login parameters
+	(flet ((sql-get-login (&rest pars) () t))
+	  (funcall (rails-database-emacs-func (rails-db-conf-adapter conf))))))))
+;;;;
 
 (define-minor-mode rails-minor-mode
   "RubyOnRails"
