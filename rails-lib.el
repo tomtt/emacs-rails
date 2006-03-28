@@ -90,6 +90,16 @@
   (interactive)
   (rails-lib:goto-file-with-menu "db/migrate/" "Go to migrate.." "rb" t))
 
+(defun rails-lib:run-primary-switch ()
+  (interactive)
+  (if rails-primary-switch-func
+      (apply rails-primary-switch-func nil)))
+
+(defun rails-lib:run-secondary-switch ()
+  (interactive)
+  (if rails-primary-switch-func
+      (apply rails-secondary-switch-func nil)))
+
 ;;;;; Non Rails realted helper functions ;;;;;
 
 ;; Syntax macro
@@ -108,14 +118,14 @@
 (defun list->alist (list)
   "Convert (a b c) to ((a . a) (b . b) (c . c))"
   (mapcar #'(lambda (el) (cons el el))
-	  list))
+    list))
 
 (defun uniq-list (list)
   "Retrurn list of uniq elements"
   (let ((result '()))
     (dolist (elem list)
       (when (not (member elem result))
-	(push elem result)))
+  (push elem result)))
     (nreverse result)))
 
 ;; Strings
@@ -131,7 +141,7 @@
 
 (defun current-line-string ()
   "Return string value of current line"
-  (buffer-substring-no-properties 
+  (buffer-substring-no-properties
    (progn (beginning-of-line) (point))
    (progn (end-of-line) (point))))
 
@@ -143,9 +153,9 @@
 (defun strings-join (separator strings)
   "Join all STRINGS with SEPARATOR"
   (let ((new-string
-	 (apply #'concat
-		(mapcar (lambda (str) (concat str separator))
-			strings))))
+   (apply #'concat
+    (mapcar (lambda (str) (concat str separator))
+      strings))))
   (subseq new-string 0 (- (length new-string) (length separator)))))
 
 
@@ -153,11 +163,11 @@
 
 (defun snippet-abbrev-function-name (abbrev-table abbrev-name)
   "Return name of snips abbrev function in abbrev-table for abbrev abbrev-name"
-  (intern (concat "snippet-abbrev-" 
-		  (snippet-strip-abbrev-table-suffix
-		   (symbol-name abbrev-table))
-		  "-"
-		  abbrev-name)))
+  (intern (concat "snippet-abbrev-"
+      (snippet-strip-abbrev-table-suffix
+       (symbol-name abbrev-table))
+      "-"
+      abbrev-name)))
 
 (defun snippet-menu-description-variable (table name)
   "Return variable for menu description of snip abbrev-name in abbrev-table"
@@ -171,17 +181,17 @@
   (def-snip (some-mode-abbrev-table other-mode-abbrev-table)
     (\"abbr\"   \"some snip $${foo}\" \"menu documentation\")
     (\"anabr\"   \"other snip $${bar}\" \"menu documentation\")
-" 
+"
   `(progn
      ,@(loop for table in abbrev-tables
-	     collect
-	     `(snippet-with-abbrev-table ',table
-		,@(loop for (name template desc) in snips collect
-			`(,name . ,template)))
-	     append
-	     (loop for (name template desc) in snips collect
-		   `(setf ,(snippet-menu-description-variable table name)
-			 ,desc)))))
+       collect
+       `(snippet-with-abbrev-table ',table
+    ,@(loop for (name template desc) in snips collect
+      `(,name . ,template)))
+       append
+       (loop for (name template desc) in snips collect
+       `(setf ,(snippet-menu-description-variable table name)
+       ,desc)))))
 
 (defun snippet-menu-description (abbrev-table name)
   "Return menu descripton for snip in ``abbrev-table'' with name ``name''"
@@ -233,11 +243,11 @@
 (defun find-or-ask-to-create (question file)
     "Open file  if exist. If not exist ask to create it."
     (if (file-exists-p file)
-	(find-file file)
+  (find-file file)
       (when (y-or-n-p question)
-	(when (string-match "\\(.*\\)/[^/]+$" file)
-	  (make-directory (match-string 1 file) t))
-	(find-file file))))
+  (when (string-match "\\(.*\\)/[^/]+$" file)
+    (make-directory (match-string 1 file) t))
+  (find-file file))))
 
 (defun directory-of-file (file-name)
   "Return parent directory of file FILE-NAME"

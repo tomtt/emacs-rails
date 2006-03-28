@@ -46,6 +46,8 @@
 (defvar rails-templates-list '("rhtml" "rxml" "rjs"))
 (defvar rails-chm-file nil "Path to CHM file or nil")
 (defvar rails-use-another-define-key nil )
+(defvar rails-primary-switch-func nil)
+(defvar rails-secondary-switch-func nil)
 
 (defvar rails-for-alist
   '(
@@ -370,7 +372,7 @@
     ([rails scr console] '("Csonsole" . rails-run-console))
     ([rails scr break] '("Breakpointer" . rails-run-breakpointer))
 
-    
+
     ([rails scr gen] (cons "Generators" (make-sparse-keymap "Generators")))
     ([rails scr gen migration] '("Migration" . rails-generate-migration))
     ([rails scr gen scaffold] '("Scaffold" . rails-generate-scaffold))
@@ -382,7 +384,7 @@
     ([rails scr destr model] '("Model" . rails-destroy-model))
     ([rails scr destr scaffold] '("Scaffold" . rails-destroy-scaffold))
 
-    
+
     ([rails webrick] (cons "WEBrick" (make-sparse-keymap "WEBrick")))
 
     ([rails webrick mongrel]
@@ -441,6 +443,11 @@
   ((kbd "\C-c g s") 'rails-lib:goto-stylesheets)
   ((kbd "\C-c g j") 'rails-lib:goto-javascripts)
   ((kbd "\C-c g g") 'rails-lib:goto-migrate)
+
+  ;; Switch
+  ((kbd "C-c <up>") 'rails-lib:run-primary-switch)
+  ((kbd "C-c <down>") 'rails-lib:run-secondary-switch)
+
   ;; Navigation
   ((kbd "<C-return>") 'rails-goto-file-on-current-line)
   ((kbd "<M-S-down>") 'rails-goto-file-from-file-with-menu)
@@ -547,17 +554,17 @@
 (defun rails-db-parameters (env)
   "Return database parameters for enviroment env"
   (rails-core:with-root
-   (root) 
+   (root)
    (save-excursion
      (rails-core:find-file "config/database.yml")
      (goto-line 1)
      (search-forward-regexp (format "^%s:" env))
      (let ((ans
-	    (make-rails-db-conf
-	     :adapter  (yml-next-value "adapter")
-	     :database (yml-next-value "database")
-	     :username (yml-next-value "username")
-	     :password (yml-next-value "password"))))
+      (make-rails-db-conf
+       :adapter  (yml-next-value "adapter")
+       :database (yml-next-value "database")
+       :username (yml-next-value "username")
+       :password (yml-next-value "password"))))
        (kill-buffer (current-buffer))
        ans))))
 
@@ -577,13 +584,13 @@
       (switch-to-buffer-other-window (sql-find-sqli-buffer))
     (let ((conf (rails-db-parameters env)))
       (let ((sql-server "localhost")
-	    (sql-user (rails-db-conf-username conf))
-	    (sql-database (rails-db-conf-database conf))
-	    (sql-password (rails-db-conf-password conf))
-	    (default-process-coding-system '(utf-8 . utf-8)))
-	; Reload localy sql-get-login to avoid asking of confirmation of DB login parameters
-	(flet ((sql-get-login (&rest pars) () t))
-	  (funcall (rails-database-emacs-func (rails-db-conf-adapter conf))))))))
+      (sql-user (rails-db-conf-username conf))
+      (sql-database (rails-db-conf-database conf))
+      (sql-password (rails-db-conf-password conf))
+      (default-process-coding-system '(utf-8 . utf-8)))
+  ; Reload localy sql-get-login to avoid asking of confirmation of DB login parameters
+  (flet ((sql-get-login (&rest pars) () t))
+    (funcall (rails-database-emacs-func (rails-db-conf-adapter conf))))))))
 ;;;;
 
 (define-minor-mode rails-minor-mode
@@ -594,6 +601,8 @@
 
   (abbrev-mode -1)
   (make-local-variable 'tags-file-name)
+  (make-local-variable 'rails-primary-switch-func)
+  (make-local-variable 'rails-secondary-switch-func)
   (setq tags-file-name (concat (rails-core:root) "TAGS")))
 
 (add-hook 'ruby-mode-hook

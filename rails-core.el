@@ -59,15 +59,15 @@
     "test/unit" "test/functional" "test/fixtures")
   "Dirs with Rails classes")
 
-(defun rails-core:class-by-file (filename) 
+(defun rails-core:class-by-file (filename)
   "Return Class associated for FILENAME
    <rails-root>/(app/models|app/controllers|app/helpers|test/unit|test/functional)/foo/bar_baz
                 --> Foo::BarBaz"
   (let* ((case-fold-search nil)
          (path (capitalize (replace-regexp-in-string
-			    (format 
-			     "\\(.*\\(%s\\)/\\)?\\([^\.]+\\)\\(.*\\)?"
-			     (strings-join "\\|" rails-core:class-dirs)) "\\3" filename)))
+          (format
+           "\\(.*\\(%s\\)/\\)?\\([^\.]+\\)\\(.*\\)?"
+           (strings-join "\\|" rails-core:class-dirs)) "\\3" filename)))
          (path (replace-regexp-in-string "/" "::" path)))
     (replace-regexp-in-string "_" "" path)))
 
@@ -96,13 +96,18 @@
     (if (file-exists-p (concat root "app/models/" file))
         (concat root "app/models/" file))))
 
-(defun rails-core:get-view-files (controller-class action)
-  "Retrun list contains views for CONTROLLER-CLASS#ACTON"
+(defun rails-core:get-view-files (controller-class &optional action)
+  "Retrun list contains views for CONTROLLER-CLASS#ACTON,
+   if action nil, return all views for this controller"
     (rails-core:with-root
      (root)
-     (directory-files (rails-core:file (rails-core:views-dir
-					(rails-core:short-controller-name controller-class))) t
-                      (concat "^" action (rails-core:regex-for-match-view)))))
+     (directory-files
+      (rails-core:file
+       (rails-core:views-dir
+        (rails-core:short-controller-name controller-class))) t
+        (if action
+            (concat "^" action (rails-core:regex-for-match-view))
+          (rails-core:regex-for-match-view)))))
 
 (defun rails-core:regex-for-match-view ()
   "Return regex to match rails view templates.
@@ -121,38 +126,38 @@
 (defun rails-core:project-name ()
   "Return name of current rails project"
   (replace-regexp-in-string "^.*/\\(.*\\)/$" "\\1"
-			    (directory-name (rails-core:root))))
+          (directory-name (rails-core:root))))
 
 ;;;;;;;;;; Files ;;;;;;;;;;
 
 (defun rails-model-file (model-name) ;(!)
   "Return model file by model name"
   ;; Rename me
-  (concat "app/models/" (rails-core:file-by-class model-name))) 
+  (concat "app/models/" (rails-core:file-by-class model-name)))
 
 (defun rails-controller-file (controller-name) ;(!)
   "Return path to controller ``controller-name''"
   ;; Rename me
   (concat "app/controllers/"
-	  (rails-core:file-by-class
-	   (rails-core:short-controller-name controller-name) t)
-	  "_controller.rb"))
+    (rails-core:file-by-class
+     (rails-core:short-controller-name controller-name) t)
+    "_controller.rb"))
 
 (defun rails-core:file (file-name)
   "Return full path for ``file-name'' in rails-root"
   (when-bind (root (rails-core:root))
-	     (concat root file-name)))
+       (concat root file-name)))
 
 (defun rails-core:find-file (file-name)
   "Open file ``file-name'' in rails-root"
   (when-bind (file (rails-core:file file-name))
-	     (find-file file)))
+       (find-file file)))
 
 (defun rails-core:find-file-if-exist (file-name)
   "Open file ``file-name'' in rails-root if this file exists"
   (let ((file-name (rails-core:file file-name)))
     (when (file-exists-p file-name)
-	(find-file file-name))))
+  (find-file file-name))))
 
 (defun rails-core:find-or-ask-to-create (question file)
   "Open file in Rails root if exist.
@@ -171,11 +176,13 @@
 
 (defun rails-core:helper-file (controller)
   "Return helper file name of CONTROLLER"
-  (format "app/helpers/%s_helper.rb" (rails-core:file-by-class controller t)))
+  (format "app/helpers/%s_helper.rb"
+          (replace-regexp-in-string "_controller" ""
+                                    (rails-core:file-by-class controller t))))
 
 (defun rails-core:functional-test-file (controller)
   "Return functional test file name of CONTROLLER"
-  (format "test/functional/%s_controller_test.rb" (rails-core:file-by-class controller t)))
+  (format "test/functional/%s_test.rb" (rails-core:file-by-class controller t)))
 
 (defun rails-core:unit-test-file (model)
   "Return unit test file name of MODEL"
@@ -202,9 +209,9 @@
        (subseq controller 1)
      (let ((current-controller (rails-core:current-controller)))
        (if (string-match ":" current-controller)
-	   (concat (replace-regexp-in-string "[^:]*$" "" current-controller)
-		   controller)
-	 controller)))))
+     (concat (replace-regexp-in-string "[^:]*$" "" current-controller)
+       controller)
+   controller)))))
 
 ;;;;;;;;;; Functions that return collection of Rails objects  ;;;;;;;;;;
 
@@ -215,8 +222,8 @@
    (lambda (controller)
      (rails-core:class-by-file
       (if cut-contoller-suffix
-	  (replace-regexp-in-string "_controller\." "\." controller)
-	controller)))
+    (replace-regexp-in-string "_controller\." "\." controller)
+  controller)))
    (find-recursive-files "_controller\\.rb$" (rails-core:file "app/controllers/"))))
 
 (defun rails-core:models ()
@@ -230,14 +237,14 @@
   (delete ""
    (uniq-list
    (mapcar (lambda (class)
-	     (replace-regexp-in-string
-	      "::[^:]*$" "::"
-	      (replace-regexp-in-string "^[^:]*$" "" class)))
-	   classes))))
+       (replace-regexp-in-string
+        "::[^:]*$" "::"
+        (replace-regexp-in-string "^[^:]*$" "" class)))
+     classes))))
 
 (defun rails-core:models-ancestors ()
   "Return parent classes of models"
-  (rails-core:extract-ancestors (rails-core:models))) 
+  (rails-core:extract-ancestors (rails-core:models)))
 
 (defun rails-core:controllers-ancestors ()
   "Return parent classes of controller"
@@ -245,89 +252,89 @@
 
 ;;;;;;;;;; Getting Controllers/Model/Action from current buffer ;;;;;;;;;;
 
-(defun rails-core:current-controller () 
+(defun rails-core:current-controller ()
   "Return current Rails controller"
   (let ((file-class (rails-core:class-by-file (buffer-file-name))))
     (case (rails-core:buffer-type)
       (:controller (rails-core:short-controller-name file-class))
       (:view (rails-core:class-by-file
-	      (directory-file-name (directory-of-file (buffer-file-name)))))
+        (directory-file-name (directory-of-file (buffer-file-name)))))
       (:helper (remove-postfix file-class "Helper"))
       (:functional-test (remove-postfix file-class "ControllerTest")))))
 
-(defun rails-core:current-model () 
+(defun rails-core:current-model ()
   "Return current Rails model"
   (let ((file-class (rails-core:class-by-file (buffer-file-name))))
     (case (rails-core:buffer-type)
       (:model file-class)
       (:unit-test (remove-postfix file-class "Test"))
       ;;BUG!
-      (:fixtures file-class)))) 
+      (:fixtures file-class))))
 
 (defun rails-core:current-action ()
   (case (rails-core:buffer-type)
     (:controller (save-excursion
-		   (when (search-backward-regexp "^[ ]*def \\([a-z_]+\\)" nil t)
-		     (match-string 1))))
+       (when (search-backward-regexp "^[ ]*def \\([a-z_]+\\)" nil t)
+         (match-string 1))))
     (:view (string-match "/\\([a-z_]+\\)\.[a-z]+$" (buffer-file-name))
-	   (match-string 1 (buffer-file-name)))))
+     (match-string 1 (buffer-file-name)))))
 
 ;;;;;;;;;; Determination of buffer type ;;;;;;;;;;
 
-(defun rails-core:buffer-file-match (regexp) 
+(defun rails-core:buffer-file-match (regexp)
   "Match current buffer file name with RAILS ROOT + REGEXP"
   (string-match (rails-core:file regexp)
-		(buffer-file-name (current-buffer))))
+    (buffer-file-name (current-buffer))))
 
-(defvar rails-core:directroy<-->types 
+(defvar rails-core:directroy<-->types
   '((:controller       "app/controllers/")
     (:view             "app/views/")
     (:model            "app/models/")
-    (:helper           "app/helpers/")    
+    (:helper           "app/helpers/")
     (:unit-test        "test/unit/")
     (:functional-test  "test/functional/")
     (:fixtures         "test/fixtures/"))
-  "Rails file types -- rails dirs map") 
+  "Rails file types -- rails dirs map")
 
 (defun rails-core:buffer-type ()
   "Return type of current rails file or nil if can't determinate"
   (loop for (type dir) in rails-core:directroy<-->types
-	when (rails-core:buffer-file-match dir)
-	do (return type)))
+  when (rails-core:buffer-file-match dir)
+  do (return type)))
 
 ;;;;;;;;;; Openning of controller + action in controller and view ;;;;;;;;;;
 
 (defun rails-core:open-controller+action-view (controller action)
   "Open ACTION file for CONTROLLER in views."
   (let ((controller (rails-core:file-by-class
-		     (rails-core:short-controller-name controller) t)))
+         (rails-core:short-controller-name controller) t)))
     (if action
-	(let ((views (rails-core:get-view-files controller action)))
-	  (cond
-	   ((= (length views) 1) (find-file (first views)))
-	   ((= (length views) 0)
-	    (rails-core:find-or-ask-to-create
-	     (format "View for %s#%s does not exist, create it?" controller action)
-	     (format "app/views/%s/%s.rhtml" controller action)))
-	   (t (find-file
-	       (rails-core:menu
-		(list "Please select view.."
-		      (cons "Please select view.."
-			    (loop for view in views collect
-				  (list
-				   (replace-regexp-in-string ".*\.r\\([A-Za-z]+\\)$" "\\1" view)
-				   view)))))))))
+  (let ((views (rails-core:get-view-files controller action)))
+    (cond
+     ((= (length views) 1) (find-file (first views)))
+     ((= (length views) 0)
+      (rails-core:find-or-ask-to-create
+       (format "View for %s#%s does not exist, create it?" controller action)
+       (format "app/views/%s/%s.rhtml" controller action)))
+     (t (find-file
+         (rails-core:menu
+    (list "Please select view.."
+          (cons "Please select view.."
+          (loop for view in views collect
+          (list
+           (replace-regexp-in-string ".*\.r\\([A-Za-z]+\\)$" "\\1" view)
+           view)))))))))
       (dired (rails-core:file (concat "app/views/" controller))))))
 
 (defun rails-core:open-controller+action-controller (controller action)
   "Open CONTROLLER and goto ACTION"
   (if (rails-core:find-file-if-exist  (rails-controller-file controller))
       (progn
-	(goto-char (point-min))
-	(when action
-	  (if (search-forward-regexp (concat "^[ ]*def[ ]*" action))
-	      (recenter)))
-	t)
+  (goto-char (point-min))
+  (when action
+    (if (search-forward-regexp (concat "^[ ]*def[ ]*" action))
+        (recenter)))
+  t)
     (error "Controller %s does not exist" controller)))
 
 (defun rails-core:open-controller+action (where controller action)
@@ -347,7 +354,7 @@
    (root)
    (append-string-to-file (rails-core:file "log/rails-minor-mode.log")
     (format "%s: %s\n"
-	    (format-time-string "%Y/%m/%d %H:%M:%S") message))))
+      (format-time-string "%Y/%m/%d %H:%M:%S") message))))
 
 (defun rails-logged-shell-command (command buffer)
   "Execute shell command in buffer and write results to
@@ -355,7 +362,7 @@
   (shell-command command buffer)
   (rails-log-add
    (format "\n%s> %s\n%s" (rails-core:project-name)
-	   command (buffer-string-by-name buffer))))
+     command (buffer-string-by-name buffer))))
 
 ;;;;;;;;;; Rails menu ;;;;;;;;;;
 
@@ -363,7 +370,7 @@
   "Show menu"
   (first
    (if rails-use-text-menu
-       (tmm-prompt menu)      
+       (tmm-prompt menu)
      (x-popup-menu (list '(200 100) (selected-window)) menu))))
 
 ;;;;;;;;;; Misc ;;;;;;;;;;
@@ -377,14 +384,14 @@
   (save-excursion
     (save-match-data
       (let ((start (point)))
-	(search-backward-regexp "<%[=]?")
-	(let ((from (match-end 0)))
-	  (search-forward "%>")
-	  (let ((to (match-beginning 0)))
-	    (when (>= to start)
-	      (buffer-substring-no-properties from to))))))))
+  (search-backward-regexp "<%[=]?")
+  (let ((from (match-end 0)))
+    (search-forward "%>")
+    (let ((to (match-beginning 0)))
+      (when (>= to start)
+        (buffer-substring-no-properties from to))))))))
 
-(defun rails-core:rhtml-buffer-p () 
+(defun rails-core:rhtml-buffer-p ()
   "Return non nil if current buffer is rhtml file"
   (string-match "\\.rhtml$" (buffer-file-name)))
 

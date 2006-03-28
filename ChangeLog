@@ -1,4 +1,29 @@
+2006-03-28  dima  <dima.exe@gmail.com>
+
+	* rails-for-controller.el: new functions
+	rails-controller:get-current-controller-and-action,
+	rails-controller:switch-with-menu
+	(rails-for-controller): setup variables rails-primary-switch-func,
+	rails-secondary-switch-func
+
+	* rails-core.el (rails-core:helper-file): fix invalid path
+	(rails-core:functional-test-file): fix invalid path
+	(rails-core:get-view-files): ACTION is optional parameter
+
+	* rails-for-rhtml.el: new functions rails-rhtml:switch-with-menu,
+	rails-rhtml:switch-to-helper,
+	rails-rhtml:get-current-controller-and-action
+	(rails-for-rhtml): setup variables rails-primary-switch-func,
+	rails-secondary-switch-func
+
+	* rails.el: add variables rails-primary-switch-func,
+	rails-secondary-switch-func
+
+	* rails-lib.el: add interactive functions
+	rails-lib:run-primary-switch-func, rails-lib:run-secondary-switch-func
+
 2006-03-28  CrazyPit  <crazypit13@gmail.com>	
+
 	* rails.el: rails-run-sql with stuff
 	* rails-navigation.el: rails finds added 
 	* rails-scipts.el: generators/destroyers, shells and rails-create project added 
@@ -7,13 +32,13 @@
 	  rails-goto-file-from-file function with stuff added from test branch
 
 2006-03-27  CrazyPit  <crazypit13@gmail.com>	
+
 	* rails-lib.el: many helper functions from test branch added 
 	* rails-core.el: functions from test branch added, class-by-file updated + 
 	  new variable rails-core:class-dirs, get-model-view updated
 	* rails-webrick.el: open-browser updated, open-browser-on-controller,
 	  auto-open-browser added
 	
-
 2006-03-22  dima  <dima.exe@gmail.com>
 
 	* rails-core.el: add macro rails-core:local-add-to-rails-menubar

@@ -93,25 +93,64 @@
              (message "helper not found")))
        (message "block not found")))))
 
-(defun rails-rhtml:switch-to-action()
+(defun rails-rhtml:get-current-controller-and-action ()
+  "Return list contains current controller and action"
+  (let ((file buffer-file-name)
+        controller action)
+    (if (string-match "app/views/\\(.*\\)/\\([a-z_]+\\)\.[a-z]+$" file)
+        (progn
+          (setq controller (match-string-no-properties 1 file))
+          (setq action (match-string-no-properties 2 file))))
+    (list controller action)))
+
+(defun rails-rhtml:switch-to-action ()
   (interactive)
   (let ((file buffer-file-name))
     (rails-core:with-root
      (root)
-     (if (string-match "app/views/\\(.*\\)/\\([a-z_]+\\)\.[a-z]+$" file)
-         (let ((controller (concat root "app/controllers/" (match-string 1 file) "_controller.rb"))
-               (action (match-string 2 file)))
-           (if (file-exists-p controller)
-               (let ((controller-class-name (rails-core:class-by-file controller)))
-                 (find-file controller)
-                 (goto-char (point-min))
-                 (message (concat controller-class-name "#" action))
-                 (if (search-forward-regexp (concat "^[ ]*def[ ]*" action))
-                     (recenter)))))))))
+     (let* ((calist (rails-rhtml:get-current-controller-and-action))
+            (controller (nth 0 calist))
+            (action (nth 1 calist)))
+       (if (and controller action)
+           (progn
+             (setq controller (concat root "app/controllers/" controller "_controller.rb"))
+             (if (file-exists-p controller)
+                 (let ((controller-class-name (rails-core:class-by-file controller)))
+                   (find-file controller)
+                   (goto-char (point-min))
+                   (if (search-forward-regexp (concat "^[ ]*def[ ]*" action) nil t)
+                       (progn
+                         (message (concat controller-class-name "#" action))
+                         (recenter))
+                     (message controller-class-name))))))))))
+
+(defun rails-rhtml:switch-to-helper ()
+  (let* ((root (rails-core:root))
+         (calist (rails-rhtml:get-current-controller-and-action))
+         (controller (nth 0 calist)))
+    (find-file (concat root (rails-core:helper-file (rails-core:class-by-file controller))))))
+
+(defun rails-rhtml:switch-with-menu ()
+  (interactive)
+  (let ((root (rails-core:root))
+        (menu (list))
+        pos item)
+    (add-to-list 'menu (cons "Helper" 'rails-rhtml:switch-to-helper))
+    (add-to-list 'menu (cons "Controller" 'rails-rhtml:switch-to-action))
+    (setq pos (if (functionp 'posn-at-point) ; mouse position at point
+                  (nth 2 (posn-at-point))
+                (cons 200 100)))
+    (setq item
+          (x-popup-menu
+           (list (list (car pos) (cdr pos)) (selected-window))
+           (list "Please select.." (cons "Please select.." menu))))
+    (if item
+        (apply item nil))))
 
 (defun rails-for-rhtml ()
   (interactive)
-  (local-set-key (kbd "C-c <up>") 'rails-rhtml:switch-to-action)
+  (setq rails-primary-switch-func 'rails-rhtml:switch-to-action)
+  (setq rails-secondary-switch-func 'rails-rhtml:switch-with-menu)
   (local-set-key (kbd "\C-c p") 'rails-rhtml:create-partial-from-selection)
   (local-set-key (kbd "\C-c b") 'rails-rhtml:create-helper-from-block))
 
