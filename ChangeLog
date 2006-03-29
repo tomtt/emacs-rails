@@ -1,3 +1,18 @@
+2006-03-28  CrazyPit  <crazypit13@gmail.com>
+	* rails-ui.el: create rails-ui.el, move UI code from rails.el to rails-ui.el
+	* rails-navigation.el: rails-goto-controller-->view, rails-goto-view-->controller
+	  rails-goto-all-->simple, rails-goto-all-->helper, rails-goto-all-->functional-test,
+	  rails-goto-all-->controller extracted to other files. 
+	  Refactoring of rails-goto-file-from-file-actions and rails-goto-file-from-file
+	  now run-time generation and invisible, helper function rails-goto-menu-call.
+	  menu items available.
+	* rails-for-rhtml.el: switch-to-controller-action added
+	* rails-for-controller.el: views-for-current-action. switch-by-current-controller,
+	  switch-to-functional-test, switch-to-helper, switch-to-view2, switch-to-controller --
+	  extracted with renaming from rails-navigation.el. 
+	* rails-core.el: fix in functional-test-file, + long-controller-name added, 
+	  rails-core:menu upadte (posn-at-point call added)
+
 2006-03-28  dima  <dima.exe@gmail.com>
 
 	* rails-for-controller.el: new functions

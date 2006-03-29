@@ -182,7 +182,8 @@
 
 (defun rails-core:functional-test-file (controller)
   "Return functional test file name of CONTROLLER"
-  (format "test/functional/%s_test.rb" (rails-core:file-by-class controller t)))
+  (format "test/functional/%s_test.rb"
+	  (rails-core:file-by-class (rails-core:long-controller-name controller) t)))
 
 (defun rails-core:unit-test-file (model)
   "Return unit test file name of MODEL"
@@ -371,13 +372,23 @@
   (first
    (if rails-use-text-menu
        (tmm-prompt menu)
-     (x-popup-menu (list '(200 100) (selected-window)) menu))))
+     (x-popup-menu (list (if (functionp 'posn-at-point) ; mouse position at point
+			     (destructuring-bind (x . y)
+				 (nth 2 (posn-at-point)) (list x y))
+			   '(200 100))
+			 (selected-window)) menu))))
 
 ;;;;;;;;;; Misc ;;;;;;;;;;
 
 (defun rails-core:short-controller-name (controller)
-  "Convert NewsController -> News"
+  "Convert FooController -> Foo"
   (remove-postfix  controller "Controller" ))
+
+(defun rails-core:long-controller-name (controller)
+  "Convert Foo/FooController -> FooController"
+  (if  (string-match "Controller$" controller)
+      controller
+    (concat controller "Controller")))
 
 (defun rails-core:erb-block-string ()
   "Return string of current ERb block"

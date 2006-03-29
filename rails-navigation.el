@@ -113,50 +113,19 @@ Rule for action/contoller line goto:
 
 ;;;;;;;;;; Goto file from file ;;;;;;;;;;
 
-(defun rails-goto-controller-->view ()
-  (rails-core:open-controller+action
-   :view (rails-core:current-controller) (rails-core:current-action)))
-
-(defun rails-goto-view-->controller ()
-  (rails-core:open-controller+action
-   :controller (rails-core:current-controller) (rails-core:current-action)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun rails-goto-all-->simple (what file-func)
-  (let ((controller (rails-core:current-controller)))
-    (rails-core:find-or-ask-to-create
-     (format "%s for controller %s does not exist, create it? " what controller)
-     (funcall file-func controller))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun rails-goto-all-->helper ()
-  (rails-goto-all-->simple "Helper file" 'rails-core:helper-file))
-
-(defun rails-goto-all-->functional-test ()
-  (rails-goto-all-->simple "Functional test" 'rails-core:functional-test-file))
-
-(defun rails-goto-helper-->view ()
-  (rails-core:open-controller+action
-   :view (rails-core:current-controller) nil))
-
-(defun rails-goto-all-->controller ()
-  (rails-core:open-controller+action
-   :controller (rails-core:current-controller) nil))
 
 
 
 ;;; For Models
 
-(defun rails-goto-model-->simple (what file-func)
+(defun rails-by-model-switch-to (what file-func)
   (let ((model (rails-core:current-model)))
     (rails-core:find-or-ask-to-create
      (format "%s for model %s does not exist, create it? " what model)
      (funcall file-func  model))))
 
-(defun rails-goto-unit-test-->model ()
-  (rails-goto-model-->simple "Model" 'rails-model-file))
+(defun rails-by-model-switch-to-model ()
+  (rails-by-model-switch-to "Model" 'rails-model-file))
 
 
 ;; Plural BUGS!!!
@@ -170,38 +139,42 @@ Rule for action/contoller line goto:
 ;;    "Unit test" 'rails-core:current-model-from-fixtures
 ;;   'rails-core:unit-test-file))
 
+(defun rails-by-model-switch-to-unit-test ()
+  (rails-by-model-switch-to "Unit test" 'rails-core:unit-test-file))
 
-(defun rails-goto-model-->unit-test ()
-  (rails-goto-model-->simple "Unit test" 'rails-core:unit-test-file))
-
-(defun rails-goto-all-->fixtures ()
-  (rails-goto-model-->simple "Fixtures" 'rails-core:fixtures-file))
+(defun rails-by-model-switch-to-fixtures ()
+  (rails-by-model-switch-to "Fixtures" 'rails-core:fixtures-file))
 
 (defvar rails-goto-file-from-file-actions
   '((:controller
-     (rails-goto-controller-->view   "View")
-     (rails-goto-all-->helper "Helper")
-     (rails-goto-all-->functional-test  "Functional test"))
+     (:invisible        rails-for-controller:switch-to-view2)
+     rails-for-controller:views-for-current-action
+     ("Helper"          rails-for-controller:switch-to-helper)
+     ("Functional test" rails-for-controller:switch-to-functional-test))
     (:view
-     (rails-goto-view-->controller   "Controller")
-     (rails-goto-all-->helper       "Helper")
-     (rails-goto-all-->functional-test "Functional test"))
+     ("Controller"      rails-for-rhtml:switch-to-controller-action)
+     ("Helper"          rails-for-controller:switch-to-helper)
+     ("Functional test" rails-for-controller:switch-to-functional-test))
     (:helper
-     (rails-goto-helper-->view       "View")
-     (rails-goto-all-->controller "Controller"))
+     ("Controller"      rails-for-controller:switch-to-controller)
+     ("View"            rails-for-controller:switch-to-views))
     (:functional-test
-     (rails-goto-all-->controller "Controller"))
-    ;;; For Models
+     ("Controller"      rails-for-controller:switch-to-controller))
+;;; For Models
     (:model
-     (rails-goto-model-->unit-test "Unit test")
-     (rails-goto-all-->fixtures  "Fixtures"))
-;; Plural BUGS!!!    
-;;     (rails-core:fixtures-buffer-p
-;;      (rails-goto-fixtures-->model "Model test")
-;;      (rails-goto-fixtures-->unit-test "Unit test"))
+     ("Unit test" rails-by-model-switch-to-unit-test)
+     ("Fixtures"  rails-by-model-switch-to-fixtures))
+    ;; Plural BUGS!!!    
+    ;;     (rails-core:fixtures-buffer-p
+    ;;      (rails-goto-fixtures-->model "Model test")
+    ;;      (rails-goto-fixtures-->unit-test "Unit test"))
     (:unit-test
-     (rails-goto-unit-test-->model "Model")
-     (rails-goto-all-->fixtures   "Fixtures"))))
+     ("Model"      rails-by-model-switch-to-model)
+     ("Fixtures"   rails-by-model-switch-to-fixtures))))
+
+(defun rails-goto-menu-call (goto)
+  (cond ((and (symbolp goto) (fboundp goto)) (funcall goto))
+	((stringp goto) (find-file goto))))
 
 (defun rails-goto-file-from-file (show-menu)
   "Deteminate type of file and goto another file.
@@ -209,24 +182,29 @@ Rule for action/contoller line goto:
   (interactive "P")
   (rails-core:with-root
    (root)
-   (unless
-       (loop with buffer-type = (rails-core:buffer-type)
-	     for (test-type . variants) in rails-goto-file-from-file-actions
-	     when (eq test-type buffer-type)
-	     do (progn
-		  ;; Menu
-		  (if show-menu
-		      (when-bind (goto-func
-				  (rails-core:menu
-				   (list "Go To: "
-					 (cons "goto"
-					       (loop for (func title) in variants
-						     collect `(,title  ,func))))))
-				 (funcall goto-func))
-		    ;;
-		    (funcall (caar variants)))
-		  (return t)))
-     (message "Can't go to some file from this file."))))
+   (let ((variants (rest (find (rails-core:buffer-type)
+			       rails-goto-file-from-file-actions
+			       :key #'first))))
+     (if variants
+	 (let ((variants
+		(loop for variant in variants
+		      when (symbolp variant)
+		      append (funcall variant)
+		      else collect variant)))
+	   (progn
+	     ;; Menu
+	     (if show-menu
+		 (when-bind
+		  (goto (rails-core:menu
+			 (list "Go To: "
+			       (cons "goto"
+				     (loop for (title func) in variants
+					   when (not (eq title :invisible))
+					   collect `(,title  ,func))))))
+		  (rails-goto-menu-call goto))
+	       ;;
+	       (rails-goto-menu-call (second (first variants))))))
+       (message "Can't go to some file from this file.")))))
 
 (defun rails-goto-file-from-file-with-menu ()
   "Deteminate type of file and goto another file (choose type from menu)"
