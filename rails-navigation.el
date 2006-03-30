@@ -52,14 +52,14 @@
 
 (defun rails-goto-file-on-current-line (prefix)
   "Analyze string (or ERb block) and open some file relative with this string.
-F.e. on line with \"renader :partial\" run this function and partial file will by oppend.
-Also this function wor with \"layout 'name'\",
+F.e. on line with \"renader :partial\" run this function and partial file will be opened.
+Also this function work with \"layout 'name'\",
  \"render/redirect-to [:action => 'name',] [controller => 'n']\", stylesheet_link_tag an other.
 
 Rule for action/contoller line goto:
  if you in contoller cursor will be placed on controller action.
  if you in view -- view-file with action will be opened.
- Use prefix before command to change navigation direction."
+ Use prefix before command to change this navigation direction."
   (interactive "P")
   (save-match-data
      (unless

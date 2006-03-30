@@ -27,6 +27,7 @@
 
 (defvar rails-generation-buffer-name "*RailsGeneration*")
 
+
 (defun rails-run-script (script buffer parameters &optional message-format)
   "Run rails script with ``parameters'' in ``buffer''"
   (rails-core:with-root
@@ -140,13 +141,32 @@
 
 ;;;;;;;;;; Shells ;;;;;;;;;;
 
+(defun run-ruby-in-buffer (cmd buf)
+  "Run CMD as ruby process in BUF if BUF not exists"
+  (let ((abuf (concat "*" buf "*")))
+    (if (not (comint-check-proc abuf))
+	(set-buffer (make-comint buf cmd)))
+    (inferior-ruby-mode)
+    (pop-to-buffer abuf)))
+
+(defun rails-run-interactive (name script)
+  "Run interactive shell with script in buffer
+   *rails-<project-name>-<name>*"
+  (rails-core:with-root
+   (root)
+   (run-ruby-in-buffer (rails-core:file script)
+		       (format "rails-%s-%s" (rails-core:project-name) name))))
+
 (defun rails-run-console ()
+  "Run script/console"
   (interactive)
-  (run-ruby (rails-core:file "script/console")))
+  (rails-run-interactive "console" "script/console"))
 
 (defun rails-run-breakpointer ()
+  "Run script/breakpointer"
   (interactive)
-  (run-ruby (rails-core:file "script/breakpointer")))
+  (rails-run-interactive "breakpointer" "script/breakpointer"))
+
 
 ;;;; Rake ;;;;
 
