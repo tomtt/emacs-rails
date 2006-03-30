@@ -148,4 +148,21 @@
   (interactive)
   (run-ruby (rails-core:file "script/breakpointer")))
 
+;;;; Rake ;;;;
+
+(defun rails-rake-tasks ()
+  "Return all task to main Rails Rakefile"
+  (rails-core:in-root
+   (loop for str in (split-string (shell-command-to-string "rake --tasks") "\n")
+	 for task = (when (string-not-empty str)
+		      (string-match "^rake \\([^ ]*\\).*# \\(.*\\)" str)
+		      (match-string 1 str))
+	 when task collect task)))
+
+(defun rails-rake (&optional task)
+  "Run Rake task in Rails root"
+  (interactive (list (completing-read "Rake task: " (list->alist (rails-rake-tasks)))))
+  (rails-core:in-root
+   (shell-command (concat "rake " task) "*Rails Rake Output*" "*Rails Rake Errors*" )))
+
 (provide 'rails-scripts)

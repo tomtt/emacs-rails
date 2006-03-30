@@ -138,14 +138,12 @@
 (defun rails-create-tags()
   "Create tags file"
   (interactive)
-  (rails-core:with-root
-   (root)
+  (rails-core:in-root
    (message "Creating TAGS, please wait...")
-   (let ((default-directory root))
-     (shell-command
-      (format rails-tags-command tags-file-name (rails-core:file "app")))
-     (flet ((yes-or-no-p (p) (y-or-n-p p)))
-       (visit-tags-table tags-file-name)))))     
+   (shell-command
+    (format rails-tags-command tags-file-name (rails-core:file "app")))
+   (flet ((yes-or-no-p (p) (y-or-n-p p)))
+     (visit-tags-table tags-file-name))))
 
 (defun rails-run-for-alist(root)
   (let ((ret nil)

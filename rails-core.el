@@ -54,6 +54,13 @@
       (flet ((rails-core:root () ,root))
         ,@body))))
 
+(defmacro rails-core:in-root (&rest body)
+  "Set default dir to Rails root dir while BODY executed"
+  (let ((root (gensym)))
+   `(rails-core:with-root (,root)
+    (let ((default-dir ,root))
+     ,@body))))
+
 (defvar rails-core:class-dirs
   '("app/controllers" "app/views" "app/models" "app/helpers"
     "test/unit" "test/functional" "test/fixtures")

@@ -311,6 +311,7 @@
     ([rails scr] (cons "Scripts" (make-sparse-keymap "Scripts")))
 
     ([rails scr proj] '("Create project" . rails-create-project))
+    ([rails scr rake] '("Rake ..." . rails-rake))
     ([rails scr console] '("Console" . rails-run-console))
     ([rails scr break] '("Breakpointer" . rails-run-breakpointer))
 
@@ -404,6 +405,7 @@
   ((kbd "\C-c s c")   'rails-run-console)
   ((kbd "\C-c s b")   'rails-run-breakpointer)
   ((kbd "\C-c s s")   'rails-run-sql)
+  ((kbd "\C-c s r")   'rails-rake)
   
   ;; Rails finds
   ((kbd "\C-c f m") 'rails-find-models)

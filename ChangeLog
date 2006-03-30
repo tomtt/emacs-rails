@@ -1,4 +1,6 @@
 2006-03-30  CrazyPit  <crazypit13@gmail.com>
+	* rails-scipts.el: Rake integration - new functions rails-rake and rails-rake-tasks
+	* rails-core.el new macro in-root
 	* rails.el: new variable rails-tags-command, rails-open-log now interactive + cleanup,
 	rails-create-tags cleanup, new hook for dired mode
 	* rails-navigation.el: new variable rails-find-file-function, 3 new rails-finds.
