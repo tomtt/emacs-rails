@@ -51,6 +51,9 @@
 (defvar rails-secondary-switch-func nil)
 (defvar rails-tags-command "ctags -e -a --Ruby-kinds=-f -o %s -R %s"
   "Command, that used for generating TAGS in Rails root")
+(defvar rails-api-root nil
+  "Root of Rails API html documentaion")
+
 
 (defvar rails-for-alist
   '(
@@ -215,7 +218,50 @@
   ; Reload localy sql-get-login to avoid asking of confirmation of DB login parameters
   (flet ((sql-get-login (&rest pars) () t))
     (funcall (rails-database-emacs-func (rails-db-conf-adapter conf))))))))
+
+(defun rails-get-api-entries (name file sexp get-file-func)
+  (save-current-buffer
+      (save-match-data
+	(find-file (concat rails-api-root file))
+	(let* (;(name (replace-regexp-in-string "\?" "\\\?" "asd?"))
+	       (result
+	       (loop for line in (split-string (buffer-string) "\n")
+		     when (string-match (format sexp name) line)
+		     collect (cons (match-string 2 line)
+				   (match-string 1 line)))))
+	  (kill-buffer (current-buffer))
+	  (when-bind (api-file (funcall get-file-func result))
+	   (browse-url (concat "file://" rails-api-root api-file)))))))
+
+
+(defun rails-browse-api-class (class)
+  (rails-get-api-entries
+   class "fr_class_index.html" "<a href=\"\\(.*\\)\">%s<"
+   (lambda (entries)
+     (cond ((= 0 (length entries)) (progn (message "No API Rails doc for class %s." class) nil))
+	   ((= 1 (length entries)) (cdar entries))))))
+
+(defun rails-browse-api-method (method)
+  (rails-get-api-entries
+   method "fr_method_index.html" "<a href=\"\\(.*\\)\">%s[ ]+(\\(.*\\))"
+   (lambda (entries)
+     (cond ((= 0 (length entries)) (progn (message "No API Rails doc for %s" method) nil))
+	   ((= 1 (length entries)) (cdar entries))
+	   (t (cdr (assoc (completing-read "Method %s from what class? " entries)
+			  entries)))))))
+
+(defun rails-browse-api-at-point ()
+  "Open html documentaion on class or method at point."
+  (interactive)
+  (if rails-api-root
+      (let ((current-symbol (thing-at-point 'sexp)))
+	(if (capital-word-p current-symbol)
+	    (rails-browse-api-class current-symbol)
+	  (rails-browse-api-method current-symbol)))
+    (message "Please configure variable rails-api-root.")))
 ;;;;
+
+
 
 (define-minor-mode rails-minor-mode
   "RubyOnRails"

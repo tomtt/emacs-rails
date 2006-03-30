@@ -174,6 +174,9 @@
     ([rails svn-status]
       '(menu-item "SVN status" rails-svn-status-into-root
                   :enable (rails-core:root)))
+
+    ([rails api-doc] '("Rails API doc at point" . rails-browse-api-at-point))
+    
     ([rails sql] '("SQL Rails buffer" . rails-run-sql))
 
     ([rails tag] '("Update TAGS file" . rails-create-tags))
@@ -436,6 +439,7 @@
   ((kbd "\C-c <f5>") 'rails-webrick:auto-open-browser)
   ;;; Doc
   ([f1]  'rails-search-doc)
+  ((kbd "<C-f1>")  'rails-browse-api-at-point)
   ([f9]  'rails-svn-status-into-root))
 
 

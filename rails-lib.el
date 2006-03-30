@@ -158,6 +158,10 @@
       strings))))
   (subseq new-string 0 (- (length new-string) (length separator)))))
 
+(defun capital-word-p (word)
+  "Return t if first letter of WORD is capital"
+  (and (>= (elt word 0) 65)
+       (<= (elt word 0) 90)))
 
 ;;;;;;;; def-snips stuff ;;;;
 
@@ -261,5 +265,6 @@
   (save-excursion
     (set-buffer buffer-name)
     (buffer-string)))
+
 
 (provide 'rails-lib)

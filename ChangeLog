@@ -1,8 +1,11 @@
 2006-03-30  CrazyPit  <crazypit13@gmail.com>
+	* rails.el: interface to Rails HTML API documentaion. rails-browse-api-at-point, 
+	  rails-browse-api-method, rails-browse-api-class, rails-get-api-entries
+	* rails-lib.el: new function capital-word-p
 	* rails-scipts.el: Rake integration - new functions rails-rake and rails-rake-tasks.
 	  Running ruby consoles and breakpointers in separated buffers for each project:
 	  new functions run-ruby-in-buffer, rails-run-interactive and rails-run-console,
-	  rails-run-breakpointer 	  
+	  rails-run-breakpointer updated	  
 	* rails-core.el new macro in-root
 	* rails.el: new variable rails-tags-command, rails-open-log now interactive + cleanup,
 	rails-create-tags cleanup, new hook for dired mode
