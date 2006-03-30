@@ -49,6 +49,8 @@
 (defvar rails-use-another-define-key nil )
 (defvar rails-primary-switch-func nil)
 (defvar rails-secondary-switch-func nil)
+(defvar rails-tags-command "ctags -e -a --Ruby-kinds=-f -o %s -R %s"
+  "Command, that used for generating TAGS in Rails root")
 
 (defvar rails-for-alist
   '(
@@ -57,6 +59,11 @@
     ))
 
 (defvar rails-enviroments '("development" "production" "test"))
+
+(defvar rails-adapters-alist
+  '(("mysql"      . sql-mysql)
+    ("postgresql" . sql-postgres))
+  "Sets emacs sql function for rails adapter names.")          
 
 ;;;;;;;; hack ;;;;
 
@@ -88,11 +95,14 @@
 
 ;; helper functions/macros
 (defun rails-open-log (env)
+  "Open Rails log file for environment ``env''
+   (development, production, test)"
+  (interactive (list (rails-read-enviroment-name)))
   (rails-core:with-root
    (root)
-   (if (file-exists-p (concat root "/log/" env ".log"))
-       (progn
-         (find-file (concat root "/log/" env ".log"))
+   (let ((log-file (rails-core:file (concat "/log/" env ".log"))))
+     (when (file-exists-p log-file)
+         (find-file log-file)
          (set-buffer-file-coding-system 'utf-8)
          (ansi-color-apply-on-region (point-min) (point-max))
          (set-buffer-modified-p nil)
@@ -130,13 +140,12 @@
   (interactive)
   (rails-core:with-root
    (root)
-   (let ((dir default-directory)
-         (cmd "ctags -e -a --Ruby-kinds=-f -o %s -R %s"))
-    (message "Creating TAGS, please wait...")
-    (setq default-directory root)
-    (shell-command (format cmd tags-file-name (concat root "app")))
-    (setq default-directory dir)
-    (visit-tags-table tags-file-name))))
+   (message "Creating TAGS, please wait...")
+   (let ((default-directory root))
+     (shell-command
+      (format rails-tags-command tags-file-name (rails-core:file "app")))
+     (flet ((yes-or-no-p (p) (y-or-n-p p)))
+       (visit-tags-table tags-file-name)))))     
 
 (defun rails-run-for-alist(root)
   (let ((ret nil)
@@ -165,11 +174,6 @@
     ret))
 
 ;;;;;;;;;; Database integration ;;;;;;;;;;
-
-(defvar rails-adapters-alist
-  '(("mysql"      . sql-mysql)
-    ("postgresql" . sql-postgres))
-  "Sets emacs sql function for rails adapter names")
 
 (defstruct rails-db-conf adapter database username password)
 
@@ -257,5 +261,10 @@
                                    (if (looking-at "\\>")
                                        (hippie-expand nil)
                                      (indent-for-tab-command)))))))))
+;;; Run rails-minor-mode in dired
+(add-hook 'dired-mode-hook
+	  (lambda ()
+	    (if (rails-core:root)
+		(rails-minor-mode t))))
 
 (provide 'rails)

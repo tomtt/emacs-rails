@@ -28,6 +28,9 @@
 (defvar rails-use-text-menu nil
   "If t use text menu, popup menu otherwise")
 
+(defvar rails-find-file-function 'find-file
+  "Function witch called by rails finds")
+
 
 ;;;;;;;;;; Goto file on current line ;;;;;;;;;;
 
@@ -240,6 +243,12 @@ Rule for action/contoller line goto:
 (def-rails-find rails-find-models "app/models/")
 
 (def-rails-find rails-find-config "config/")
+
+(def-rails-find rails-find-stylesheets "public/stylesheets/")
+
+(def-rails-find rails-find-javascripts "public/javascripts/")
+
+(def-rails-find rails-find-migrate "db/migrate/")
 
 
 (provide 'rails-navigation)

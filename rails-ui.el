@@ -266,51 +266,47 @@
       '("development.log" . (lambda() (interactive) (rails-open-log "development"))))
 
     ([rails config] (cons "Configuration" (make-sparse-keymap "Configuration")))
-    ([rails config routes]
-      '("routes.rb" .
-        (lambda()
-          (interactive)
-          (let ((root (rails-core:root)))
-            (if root (find-file (concat root "config/routes.rb")))))))
 
+    ([rails config routes]
+     '("routes.rb" . (lambda ()
+		       (interactive)
+		       (rails-core:find-file "config/routes.rb"))))
     ([rails config environment]
-      '("environment.rb" .
-        (lambda()
-          (interactive)
-          (let ((root (rails-core:root)))
-            (if root (find-file (concat root "config/environment.rb")))))))
+     '("environment.rb" .
+       (lambda()
+	 (interactive)
+	 (rails-core:find-file "config/environment.rb"))))
     ([rails config database]
-      '("database.yml" .
-        (lambda()
-          (interactive)
-          (let ((root (rails-core:root)))
-            (if root (find-file (concat root "config/database.yml")))))))
+     '("database.yml" .
+       (lambda()
+	 (interactive)
+	 (rails-core:find-file "config/database.yml"))))
     ([rails config boot]
-      '("boot.rb" .
-        (lambda()
-          (interactive)
-          (let ((root (rails-core:root)))
-            (if root (find-file (concat root "config/boot.rb")))))))
+     '("boot.rb" .
+       (lambda()
+	 (interactive)
+	 (rails-core:find-file "config/boot.rb"))))
 
     ([rails config env] (cons "environments" (make-sparse-keymap "environments")))
     ([rails config env test]
-      '("test.rb" .
-        (lambda()
-          (interactive)
-          (let ((root (rails-core:root)))
-            (if root (find-file (concat root "config/environments/test.rb")))))))
+     '("test.rb" .
+       (lambda()
+	 (interactive)
+	 (rails-core:find-file "config/environments/test.rb"))))
     ([rails config env production]
-      '("production.rb" .
-        (lambda()
-          (interactive)
-          (let ((root (rails-core:root)))
-            (if root (find-file (concat root "config/environments/production.rb")))))))
+     '("production.rb" .
+       (lambda()
+	 (interactive)
+	 (rails-core:find-file "config/environments/production.rb"))))
     ([rails config env development]
-      '("development.rb" .
-        (lambda()
-          (interactive)
-          (let ((root (rails-core:root)))
-            (if root (find-file (concat root "config/environments/development.rb")))))))
+     '("development.rb" .
+       (lambda()
+	 (interactive)
+	 (rails-core:find-file "config/environments/development.rb"))))
+    ([rails config config] '("open config..." . rails-open-config))
+
+
+
 
     ([rails scr] (cons "Scripts" (make-sparse-keymap "Scripts")))
 
@@ -343,19 +339,22 @@
     ([rails webrick separator] '("--"))
 
     ([rails webrick brows]
-      '("Open browser..." . rails-webrick:open-browser-on-controller))
+      '(menu-item "Open browser..."
+		  rails-webrick:open-browser-on-controller
+		  :enable (rails-webrick:status)))
 
     ([rails webrick auto-brows]
-      '("Open browser on current action" . rails-webrick:auto-open-browser))
-
+      '(menu-item "Open browser on current action"
+		  rails-webrick:auto-open-browser
+		  :enable (rails-webrick:status)))
     ([rails webrick url]
       '(menu-item "Open browser"
                   rails-webrick:open-browser
-                  :enable (rails-webrick:status)))
+                  :enable (rails-webrick:status)))    
     ([rails webrick stop]
       '(menu-item "Stop"
                   rails-webrick:stop
-                  :enable (rails-webrick:status)))
+                  :enable (rails-webrick:status)))    
     ([rails webrick test]
       '(menu-item "Start test"
                   (lambda() (interactive) (rails-webrick:start "test"))
@@ -394,10 +393,42 @@
   ((kbd "C-c <up>") 'rails-lib:run-primary-switch)
   ((kbd "C-c <down>") 'rails-lib:run-secondary-switch)
 
+  ;; Scripts & SQL
+  ((kbd "\C-c s g c") 'rails-generate-controller)
+  ((kbd "\C-c s g m") 'rails-generate-model)
+  ((kbd "\C-c s g s") 'rails-generate-scaffold)
+  ((kbd "\C-c s g g") 'rails-generate-migration)
+  ((kbd "\C-c s d c") 'rails-destroy-controller)
+  ((kbd "\C-c s d m") 'rails-destroy-model)
+  ((kbd "\C-c s d s") 'rails-destroy-scaffold)
+  ((kbd "\C-c s c")   'rails-run-console)
+  ((kbd "\C-c s b")   'rails-run-breakpointer)
+  ((kbd "\C-c s s")   'rails-run-sql)
+  
+  ;; Rails finds
+  ((kbd "\C-c f m") 'rails-find-models)
+  ((kbd "\C-c f c") 'rails-find-controller)
+  ((kbd "\C-c f h") 'rails-find-helpers)
+  ((kbd "\C-c f l") 'rails-find-layout)
+  ((kbd "\C-c f s") 'rails-find-stylesheets)
+  ((kbd "\C-c f j") 'rails-find-javascripts)
+  ((kbd "\C-c f g") 'rails-find-migrate)
+
+  ((kbd "\C-c f v") 'rails-find-view)
+  ((kbd "\C-c f d") 'rails-find-db)
+  ((kbd "\C-c f p") 'rails-find-public)
+  ((kbd "\C-c f o") 'rails-find-config)
+
+  
   ;; Navigation
   ((kbd "<C-return>") 'rails-goto-file-on-current-line)
   ((kbd "<M-S-down>") 'rails-goto-file-from-file-with-menu)
   ((kbd "<M-S-up>")   'rails-goto-file-from-file)
+  ((kbd "\C-c l") 'rails-open-log)
+
+  ;; Tags
+  ((kbd "\C-c \C-t") 'rails-create-tags)
+
 
   ;; Browser
   ((kbd "\C-c <f5>") 'rails-webrick:auto-open-browser)

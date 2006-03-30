@@ -1,3 +1,9 @@
+2006-03-30  CrazyPit  <crazypit13@gmail.com>
+	* rails.el: new variable rails-tags-command, rails-open-log now interactive + cleanup,
+	rails-create-tags cleanup, new hook for dired mode
+	* rails-navigation.el: new variable rails-find-file-function, 3 new rails-finds.
+	* rails-ui.el: cleanup, add many new hotkeys
+
 2006-03-28  CrazyPit  <crazypit13@gmail.com>
 	* rails-ui.el: create rails-ui.el, move UI code from rails.el to rails-ui.el
 	* rails-navigation.el: rails-goto-controller-->view, rails-goto-view-->controller
