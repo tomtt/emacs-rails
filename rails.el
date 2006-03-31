@@ -223,12 +223,11 @@
   (save-current-buffer
       (save-match-data
 	(find-file (concat rails-api-root file))
-	(let* (;(name (replace-regexp-in-string "\?" "\\\?" "asd?"))
-	       (result
-	       (loop for line in (split-string (buffer-string) "\n")
-		     when (string-match (format sexp name) line)
-		     collect (cons (match-string 2 line)
-				   (match-string 1 line)))))
+	(let* ((result
+		(loop for line in (split-string (buffer-string) "\n")
+		      when (string-match (format sexp (regexp-quote name)) line)
+		      collect (cons (match-string 2 line)
+				    (match-string 1 line)))))
 	  (kill-buffer (current-buffer))
 	  (when-bind (api-file (funcall get-file-func result))
 	   (browse-url (concat "file://" rails-api-root api-file)))))))
@@ -247,7 +246,7 @@
    (lambda (entries)
      (cond ((= 0 (length entries)) (progn (message "No API Rails doc for %s" method) nil))
 	   ((= 1 (length entries)) (cdar entries))
-	   (t (cdr (assoc (completing-read "Method %s from what class? " entries)
+	   (t (cdr (assoc (completing-read (format "Method %s from what class? " method) entries)
 			  entries)))))))
 
 (defun rails-browse-api-at-point ()

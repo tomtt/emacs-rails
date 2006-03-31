@@ -205,7 +205,8 @@
   "Generate menu line for snip ``name''"
   (cons
    (snippet-menu-description abbrev-table name)
-   (snippet-abbrev-function-name abbrev-table name)))
+   (lexical-let ((func-name (snippet-abbrev-function-name abbrev-table name)))
+     (lambda () (interactive) (funcall func-name)))))
 
 ;;; Define keys
 

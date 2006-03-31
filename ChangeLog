@@ -1,3 +1,7 @@
+2006-03-31 CrazyPit <crazypit13@gmail.com>
+	* rails-lib.el: fix bug in snippet-menu-line
+	* rails.el: fix bug in rails-get-api-entries
+	
 2006-03-30  CrazyPit  <crazypit13@gmail.com>
 	* rails.el: interface to Rails HTML API documentaion. rails-browse-api-at-point, 
 	  rails-browse-api-method, rails-browse-api-class, rails-get-api-entries
@@ -8,7 +12,7 @@
 	  rails-run-breakpointer updated	  
 	* rails-core.el new macro in-root
 	* rails.el: new variable rails-tags-command, rails-open-log now interactive + cleanup,
-	rails-create-tags cleanup, new hook for dired mode
+          rails-create-tags cleanup, new hook for dired mode
 	* rails-navigation.el: new variable rails-find-file-function, 3 new rails-finds.
 	* rails-ui.el: cleanup, add many new hotkeys
 
