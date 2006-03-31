@@ -1,4 +1,7 @@
 2006-03-31 CrazyPit <crazypit13@gmail.com>
+	* rails-navigation.el: rails-goto-file-from-file change, now use funcall instead
+	  rails-goto-menu-call, function rails-goto-menu-call removed.
+	* rails-for-controller.el: views-for-current-action now using lexical closures.
 	* rails-lib.el: fix bug in snippet-menu-line
 	* rails.el: fix bug in rails-get-api-entries
 	

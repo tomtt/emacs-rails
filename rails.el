@@ -116,7 +116,6 @@
          (setq auto-window-vscroll t)
          (auto-revert-tail-mode t)))))
 
-
 (defun rails-search-doc (&optional item)
   (interactive)
   (setq item (if item item (thing-at-point 'sexp)))

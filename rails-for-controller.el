@@ -115,7 +115,8 @@
 (defun rails-for-controller:views-for-current-action ()
   (mapcar (lambda (view-file)
 	    (list (replace-regexp-in-string "\\(.*/\\)\\([^/]+\\)$" "View\: \\2" view-file)
-		  view-file))
+		  (lexical-let ((file view-file))
+		    (lambda () (interactive) (find-file file)))))
 	  (rails-core:get-view-files (rails-core:current-controller)
 				     (rails-core:current-action))))
 

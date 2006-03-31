@@ -70,7 +70,7 @@ Rule for action/contoller line goto:
 		    (current-line-string))))
 	  (loop for func in rails-on-current-line-gotos
 		until (when (funcall func line prefix) (return t))))
-       (message "Can't go to some file form this line."))))
+       (message "Can't switch to some file form this line."))))
 
 (defvar rails-on-current-line-gotos
   '(rails-line-->partial rails-line-->controller+action
@@ -95,7 +95,7 @@ Rule for action/contoller line goto:
    (rails-core:layout-file name)))
 
 (defvar rails-line-to-controller/action-keywords
-  '("render" "redirect_to" "link_to" "form_tag" "start_form_tag"))
+  '("render" "redirect_to" "link_to" "form_tag" "start_form_tag" "render_component"))
 
 (defun rails-line-->controller+action (line prefix)
   (when (loop for keyword in rails-line-to-controller/action-keywords
@@ -175,10 +175,6 @@ Rule for action/contoller line goto:
      ("Model"      rails-by-model-switch-to-model)
      ("Fixtures"   rails-by-model-switch-to-fixtures))))
 
-(defun rails-goto-menu-call (goto)
-  (cond ((and (symbolp goto) (fboundp goto)) (funcall goto))
-	((stringp goto) (find-file goto))))
-
 (defun rails-goto-file-from-file (show-menu)
   "Deteminate type of file and goto another file.
   With prefix show menu with variants."
@@ -204,9 +200,9 @@ Rule for action/contoller line goto:
 				     (loop for (title func) in variants
 					   when (not (eq title :invisible))
 					   collect `(,title  ,func))))))
-		  (rails-goto-menu-call goto))
+		  (funcall goto))
 	       ;;
-	       (rails-goto-menu-call (second (first variants))))))
+	       (funcall (second (first variants))))))
        (message "Can't go to some file from this file.")))))
 
 (defun rails-goto-file-from-file-with-menu ()
