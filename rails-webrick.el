@@ -52,6 +52,7 @@
 (defun rails-webrick:start(&optional env)
   "Start Webrick process with ENV environment
    if ENV not set using rails-webrick:default-env"
+  (interactive (list (rails-read-enviroment-name)))
   (rails-core:with-root
    (root)
    (let ((proc (get-buffer-process rails-webrick:buffer-name))
@@ -118,10 +119,14 @@
   "Autodetect current action and open browser on it
    with prefix ask parameters for action."
   (interactive "P")
-  (when-bind (controller (rails-core:current-controller))
-	     (rails-webrick:open-browser-on-controller
-	      controller (rails-core:current-action)
-	      (when ask-parameters?
-		(read-from-minibuffer "Parameters: ")))))
+  (rails-core:with-root
+   (root)
+   (if (find (rails-core:buffer-type) '(:view :controller))
+       (when-bind (controller (rails-core:current-controller))
+		  (rails-webrick:open-browser-on-controller
+		   controller (rails-core:current-action)
+		   (when ask-parameters?
+		     (read-from-minibuffer "Parameters: "))))
+     (message "You can auto-open browser only in view or controller"))))
 
 (provide 'rails-webrick)

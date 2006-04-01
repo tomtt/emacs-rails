@@ -1,3 +1,12 @@
+2006-04-01 CrazyPit <crazypit13@gmail.com>
+	* rails-core.el: new function js-file, partial-name updated.
+	* rails-navigation.el: new rule for switching line to file (rails-line-->js)
+	* rails-scipts.el: bugfix in run-ruby-in-buffer
+	* rails-ui.el: new snippet %for
+	* rails-webrick.el: rails-webrick:start now interactive, auto-open-browser 
+	  work only in controllers and views.
+        * rails.el: bugfix in rails-create-tags	
+
 2006-03-31 CrazyPit <crazypit13@gmail.com>
 	* rails-navigation.el: rails-goto-file-from-file change, now use funcall instead
 	  rails-goto-menu-call, function rails-goto-menu-call removed.

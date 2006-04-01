@@ -74,7 +74,8 @@ Rule for action/contoller line goto:
 
 (defvar rails-on-current-line-gotos
   '(rails-line-->partial rails-line-->controller+action
-    rails-line-->layout rails-line-->stylesheet)
+    rails-line-->layout rails-line-->stylesheet
+    rails-line-->js)
   "Functions that will calles when to analyze line when rails-goto-file-on-current-line runned.")
 
 (def-goto-line rails-line-->stylesheet (("[ ]*stylesheet_link_tag[ ][\"']\\([^\"']*\\)[\"']"
@@ -85,7 +86,7 @@ Rule for action/contoller line goto:
 
 (def-goto-line rails-line-->partial (("[ ]*render.*:partial[ ]*=>[ ]*[\"']\\([^\"']*\\)[\"']"
 				      (name 1)))
-  (find-or-ask-to-create
+  (rails-core:find-or-ask-to-create
    (format "Partial \"%s\" does not exist do you whant to create it? " name) 
    (rails-core:partial-name name)))
 
@@ -93,6 +94,13 @@ Rule for action/contoller line goto:
   (rails-core:find-or-ask-to-create
    (format "Layout \"%s\" does not exist do you whant to create it? " name) 
    (rails-core:layout-file name)))
+
+(def-goto-line rails-line-->js (("^[ ]*javascript_include_tag[ ]*[\"']\\(.*\\)[\"']"
+				     (name  1)))
+  (rails-core:find-or-ask-to-create
+   (format "JavaScript file \"%s\" does not exist do you whant to create it? " name) 
+   (rails-core:js-file name)))
+
 
 (defvar rails-line-to-controller/action-keywords
   '("render" "redirect_to" "link_to" "form_tag" "start_form_tag" "render_component"))

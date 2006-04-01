@@ -146,8 +146,8 @@
   (let ((abuf (concat "*" buf "*")))
     (if (not (comint-check-proc abuf))
 	(set-buffer (make-comint buf cmd)))
-    (inferior-ruby-mode)
-    (pop-to-buffer abuf)))
+    (pop-to-buffer abuf)
+    (inferior-ruby-mode)))
 
 (defun rails-run-interactive (name script)
   "Run interactive shell with script in buffer

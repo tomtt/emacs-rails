@@ -164,6 +164,9 @@
              "<% if/else/end %>")
   ("%unless" "<% unless $${cond} -%>\n$.\n<% end -%>"
              "<% unless/end %>")
+  ("%for" "<% for $${elem} in @$${list} %>\n$>$.\n<% end %>$>"
+             "<% for/end %>")
+
   ("%"       "<% $. -%>"
              "<% ... %>")
   ("%%"      "<%= $. %>"
@@ -409,6 +412,7 @@
   ((kbd "\C-c s b")   'rails-run-breakpointer)
   ((kbd "\C-c s s")   'rails-run-sql)
   ((kbd "\C-c s r")   'rails-rake)
+  ((kbd "\C-c s w")   'rails-webrick:start)
   
   ;; Rails finds
   ((kbd "\C-c f m") 'rails-find-models)

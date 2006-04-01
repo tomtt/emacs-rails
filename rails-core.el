@@ -177,9 +177,18 @@
   "Return PATH to layout file from Rails root"
   (concat "app/views/layouts/" layout ".rhtml"))
 
+(defun rails-core:js-file (js)
+  "Return PATH to JS file from Rails root"
+  (concat "public/javascripts/" js ".js"))
+
 (defun rails-core:partial-name (name)
   "Return file name of partial NAME"
-  (concat "_" name ".rhtml"))
+  (if (string-match "/" name)
+      (concat "app/views/"
+	      (replace-regexp-in-string "\\([^/]*\\)$" "_\\1.rhtml" name))
+    (concat (rails-core:views-dir (rails-core:current-controller))
+	    "_" name ".rhtml")))
+
 
 (defun rails-core:helper-file (controller)
   "Return helper file name of CONTROLLER"
