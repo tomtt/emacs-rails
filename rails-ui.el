@@ -377,24 +377,24 @@
 
     ([rails separator2] '("--"))
 
-    ([rails goto-models] '("Goto models" . rails-lib:goto-models))
-    ([rails goto-controllers] '("Goto controllers" . rails-lib:goto-controllers))
-    ([rails goto-helpers] '("Goto helpers" . rails-lib:goto-helpers))
-    ([rails goto-layouts] '("Goto layouts" . rails-lib:goto-layouts))
-    ([rails goto-stylesheets] '("Goto stylesheets" . rails-lib:goto-stylesheets))
-    ([rails goto-javascripts] '("Goto javascripts" . rails-lib:goto-javascripts))
-    ([rails goto-migrate] '("Goto migrate" . rails-lib:goto-migrate)))
+    ([rails goto-models] '("Goto models" . rails-nav:goto-models))
+    ([rails goto-controllers] '("Goto controllers" . rails-nav:goto-controllers))
+    ([rails goto-helpers] '("Goto helpers" . rails-nav:goto-helpers))
+    ([rails goto-layouts] '("Goto layouts" . rails-nav:goto-layouts))
+    ([rails goto-stylesheets] '("Goto stylesheets" . rails-nav:goto-stylesheets))
+    ([rails goto-javascripts] '("Goto javascripts" . rails-nav:goto-javascripts))
+    ([rails goto-migrate] '("Goto migrate" . rails-nav:goto-migrate)))
 
 (define-keys rails-minor-mode-map
   ([menu-bar] rails-minor-mode-menu-bar-map)
   ;; Goto
-  ((kbd "\C-c g m") 'rails-lib:goto-models)
-  ((kbd "\C-c g c") 'rails-lib:goto-controllers)
-  ((kbd "\C-c g h") 'rails-lib:goto-helpers)
-  ((kbd "\C-c g l") 'rails-lib:goto-layouts)
-  ((kbd "\C-c g s") 'rails-lib:goto-stylesheets)
-  ((kbd "\C-c g j") 'rails-lib:goto-javascripts)
-  ((kbd "\C-c g g") 'rails-lib:goto-migrate)
+  ((kbd "\C-c g m") 'rails-nav:goto-models)
+  ((kbd "\C-c g c") 'rails-nav:goto-controllers)
+  ((kbd "\C-c g h") 'rails-nav:goto-helpers)
+  ((kbd "\C-c g l") 'rails-nav:goto-layouts)
+  ((kbd "\C-c g s") 'rails-nav:goto-stylesheets)
+  ((kbd "\C-c g j") 'rails-nav:goto-javascripts)
+  ((kbd "\C-c g g") 'rails-nav:goto-migrate)
 
   ;; Switch
   ((kbd "C-c <up>") 'rails-lib:run-primary-switch)
@@ -427,7 +427,6 @@
   ((kbd "\C-c f d") 'rails-find-db)
   ((kbd "\C-c f p") 'rails-find-public)
   ((kbd "\C-c f o") 'rails-find-config)
-
   
   ;; Navigation
   ((kbd "<C-return>") 'rails-goto-file-on-current-line)

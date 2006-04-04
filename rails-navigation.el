@@ -32,6 +32,71 @@
   "Function witch called by rails finds")
 
 
+
+(defun rails-nav:goto-file-with-menu (dir title &optional ext no-inflector)
+  "Make menu to choose files and find-file it"
+  (let* (file
+         files
+         (ext (if ext ext "rb"))
+         (ext (concat "\\." ext "$"))
+         (root (rails-core:root))
+         (dir (concat root dir))
+         (mouse-coord (if (functionp 'posn-at-point) ; mouse position at point
+                         (nth 2 (posn-at-point))
+                       (cons 200 100))))
+    (message dir)
+    (message ext)
+    (message files)
+    (setq files (find-recursive-directory-relative-files dir "" ext))
+    (setq files (sort files 'string<))
+    (setq files (reverse files))
+    (setq files (mapcar
+                 (lambda(f)
+                   (cons (if no-inflector
+                             f
+                           (rails-core:class-by-file f)) f))
+                 files))
+    (setq file (x-popup-menu
+                (list (list (car mouse-coord) (cdr mouse-coord)) (selected-window))
+                (list title (cons title files))))
+    (if file
+        (find-file (concat dir file)))))
+
+(defun rails-nav:goto-controllers ()
+  "Goto Controller"
+  (interactive)
+  (rails-nav:goto-file-with-menu "app/controllers/" "Go to controller.."))
+
+(defun rails-nav:goto-models ()
+  "Goto Model"
+  (interactive)
+  (rails-nav:goto-file-with-menu "app/models/" "Go to model.."))
+
+(defun rails-nav:goto-helpers ()
+  "Goto helper"
+  (interactive)
+  (rails-nav:goto-file-with-menu "app/helpers/" "Go to helper.."))
+
+(defun rails-nav:goto-layouts ()
+  "Goto layout"
+  (interactive)
+  (rails-nav:goto-file-with-menu "app/views/layouts/" "Go to layout.." "rhtml" t))
+
+(defun rails-nav:goto-stylesheets ()
+  "Goto layout"
+  (interactive)
+  (rails-nav:goto-file-with-menu "public/stylesheets/" "Go to stylesheet.." "css" t))
+
+(defun rails-nav:goto-javascripts ()
+  "Goto layout"
+  (interactive)
+  (rails-nav:goto-file-with-menu "public/javascripts/" "Go to stylesheet.." "js" t))
+
+(defun rails-nav:goto-migrate ()
+  "Goto layout"
+  (interactive)
+  (rails-nav:goto-file-with-menu "db/migrate/" "Go to migrate.." "rb" t))
+
 ;;;;;;;;;; Goto file on current line ;;;;;;;;;;
 
 (defmacro* def-goto-line (name (&rest conditions) &rest body)

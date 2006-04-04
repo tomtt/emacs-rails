@@ -305,6 +305,7 @@
 
 (defvar rails-core:directroy<-->types
   '((:controller       "app/controllers/")
+    (:layout           "app/layouts/")
     (:view             "app/views/")
     (:model            "app/models/")
     (:helper           "app/helpers/")
@@ -316,8 +317,8 @@
 (defun rails-core:buffer-type ()
   "Return type of current rails file or nil if can't determinate"
   (loop for (type dir) in rails-core:directroy<-->types
-  when (rails-core:buffer-file-match dir)
-  do (return type)))
+	when (rails-core:buffer-file-match dir)
+	do (return type)))
 
 ;;;;;;;;;; Openning of controller + action in controller and view ;;;;;;;;;;
 
@@ -335,13 +336,13 @@
        (format "app/views/%s/%s.rhtml" controller action)))
      (t (find-file
          (rails-core:menu
-    (list "Please select view.."
+	  (list "Please select view.."
           (cons "Please select view.."
-          (loop for view in views collect
-          (list
-           (replace-regexp-in-string ".*\.r\\([A-Za-z]+\\)$" "\\1" view)
-           view)))))))))
-      (dired (rails-core:file (concat "app/views/" controller))))))
+		(loop for view in views collect
+		      (list
+		       (replace-regexp-in-string ".*\.r\\([A-Za-z]+\\)$" "\\1" view)
+		       view)))))))))
+  (dired (rails-core:file (concat "app/views/" controller))))))
 
 (defun rails-core:open-controller+action-controller (controller action)
   "Open CONTROLLER and goto ACTION"
