@@ -1,6 +1,6 @@
 2006-04-04 CrazyPit <crazypit13@gmail.com>
-	* rails-navigation.el, rails-lib.el, rails-ui.el: rails-lib:goto-* renamed to rails-nav:goto-*
-	  and moved to rails-navigation.el
+	* rails-navigation.el, rails-lib.el, rails-ui.el: rails-lib:goto-* renamed to
+	  rails-nav:goto-* and moved to rails-navigation.el
 
 2006-04-01 CrazyPit <crazypit13@gmail.com>
 	* rails-core.el: new function js-file, partial-name updated.

@@ -149,13 +149,18 @@
     (pop-to-buffer abuf)
     (inferior-ruby-mode)))
 
+(defun rails-interactive-buffer-name (name)
+  "Return name of buffer  *rails-<project-name>-<name>*"
+  (format "rails-%s-%s" (rails-core:project-name) name))
+
 (defun rails-run-interactive (name script)
   "Run interactive shell with script in buffer
    *rails-<project-name>-<name>*"
   (rails-core:with-root
    (root)
    (run-ruby-in-buffer (rails-core:file script)
-		       (format "rails-%s-%s" (rails-core:project-name) name))))
+		       (rails-interactive-buffer-name name))
+   (rails-minor-mode t)))
 
 (defun rails-run-console ()
   "Run script/console"

@@ -309,10 +309,6 @@
        (lambda()
 	 (interactive)
 	 (rails-core:find-file "config/environments/development.rb"))))
-    ([rails config config] '("open config..." . rails-open-config))
-
-
-
 
     ([rails scr] (cons "Scripts" (make-sparse-keymap "Scripts")))
 

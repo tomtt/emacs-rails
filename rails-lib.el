@@ -127,11 +127,11 @@
        collect
        `(snippet-with-abbrev-table ',table
     ,@(loop for (name template desc) in snips collect
-      `(,name . ,template)))
+	    `(,name . ,template)))
        append
        (loop for (name template desc) in snips collect
-       `(setf ,(snippet-menu-description-variable table name)
-       ,desc)))))
+	     `(setf ,(snippet-menu-description-variable table name)
+		    ,desc)))))
 
 (defun snippet-menu-description (abbrev-table name)
   "Return menu descripton for snip in ``abbrev-table'' with name ``name''"
