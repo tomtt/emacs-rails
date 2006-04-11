@@ -25,14 +25,6 @@
 ;; along with this program; if not, write to the Free Software
 ;; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-(defvar rails-use-text-menu nil
-  "If t use text menu, popup menu otherwise")
-
-(defvar rails-find-file-function 'find-file
-  "Function witch called by rails finds")
-
-
-
 (defun rails-nav:goto-file-with-menu (dir title &optional ext no-inflector)
   "Make menu to choose files and find-file it"
   (let* (file
@@ -52,12 +44,11 @@
     (setq files (reverse files))
     (setq files (mapcar
                  (lambda(f)
-                   (cons (if no-inflector
+                   (list (if no-inflector
                              f
                            (rails-core:class-by-file f)) f))
                  files))
-    (setq file (x-popup-menu
-                (list (list (car mouse-coord) (cdr mouse-coord)) (selected-window))
+    (setq file (rails-core:menu
                 (list title (cons title files))))
     (if file
         (find-file (concat dir file)))))
@@ -201,14 +192,14 @@ Rule for action/contoller line goto:
      (funcall file-func  model))))
 
 (defun rails-by-model-switch-to-model ()
-  (rails-by-model-switch-to "Model" 'rails-model-file))
+  (rails-by-model-switch-to "Model" 'rails-core:model-file))
 
 
 ;; Plural BUGS!!!
 ;; (defun rails-goto-fixtures-->model ()
 ;;   (rails-goto-model-->simple
 ;;    "Model" 'rails-core:current-model-from-fixtures
-;;    'rails-model-file))
+;;    'rails-core:model-file))
 
 ;; (defun  rails-goto-fixtures-->unit-test ()
 ;;   (rails-goto-model-->simple
@@ -318,6 +309,5 @@ Rule for action/contoller line goto:
 (def-rails-find rails-find-javascripts "public/javascripts/")
 
 (def-rails-find rails-find-migrate "db/migrate/")
-
 
 (provide 'rails-navigation)

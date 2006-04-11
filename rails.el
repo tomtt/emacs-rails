@@ -68,6 +68,20 @@
     ("postgresql" . sql-postgres))
   "Sets emacs sql function for rails adapter names.")          
 
+(defvar rails-tags-dirs '("app" "lib" "test")
+  "List of directories from RAILS_ROOT where ctags works.")
+
+(defvar rails-ask-when-reload-tags nil
+  "When t, every reloading of TAGS table you must confirm it.")
+
+(defvar rails-use-text-menu nil
+  "If t use text menu, popup menu otherwise")
+
+(defvar rails-find-file-function 'find-file
+  "Function witch called by rails finds")
+
+
+
 ;;;;;;;; hack ;;;;
 
 ;; replace in autorevert.el
@@ -144,8 +158,11 @@
    (message "Creating TAGS, please wait...")
    (let ((tags-file-name (rails-core:file "TAGS")))
      (shell-command
-      (format rails-tags-command tags-file-name (rails-core:file "app")))
-     (flet ((yes-or-no-p (p) (y-or-n-p p)))
+      (format rails-tags-command tags-file-name
+	      (strings-join " " (mapcar #'rails-core:file rails-tags-dirs))))
+     (flet ((yes-or-no-p (p) (if rails-ask-when-reload-tags
+				 (y-or-n-p p)
+			       t)))
        (visit-tags-table tags-file-name)))))
 
 (defun rails-run-for-alist(root)
@@ -179,7 +196,7 @@
 (defstruct rails-db-conf adapter database username password)
 
 (defun rails-db-parameters (env)
-  "Return database parameters for enviroment env"
+  "Return database parameters for enviroment ENV"
   (rails-core:with-root
    (root)
    (save-excursion
@@ -234,6 +251,7 @@
 
 
 (defun rails-browse-api-class (class)
+  "Browse documentation in Rails API for CLASS."
   (rails-get-api-entries
    class "fr_class_index.html" "<a href=\"\\(.*\\)\">%s<"
    (lambda (entries)
@@ -241,6 +259,7 @@
 	   ((= 1 (length entries)) (cdar entries))))))
 
 (defun rails-browse-api-method (method)
+  "Browse documentation in Rails API for METHOD."
   (rails-get-api-entries
    method "fr_method_index.html" "<a href=\"\\(.*\\)\">%s[ ]+(\\(.*\\))"
    (lambda (entries)
@@ -250,7 +269,8 @@
 			  entries)))))))
 
 (defun rails-browse-api-at-point ()
-  "Open html documentaion on class or method at point."
+  "Open html documentaion on class or method at point.
+Please set variable rails-api-root to path for your local(!) Rails API directory"
   (interactive)
   (if rails-api-root
       (let ((current-symbol (thing-at-point 'sexp)))
@@ -272,7 +292,8 @@
   (make-local-variable 'tags-file-name)
   (make-local-variable 'rails-primary-switch-func)
   (make-local-variable 'rails-secondary-switch-func)
-  (setq tags-file-name (concat (rails-core:root) "TAGS")))
+  ;(setq tags-file-name (concat (rails-core:root) "TAGS"))
+  )
 
 (add-hook 'ruby-mode-hook
           (lambda()

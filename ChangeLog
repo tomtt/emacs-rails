@@ -1,3 +1,11 @@
+2006-04-11 CrazyPit <crazypit13@gmail.com>
+	* rails-core: rails-model-file and rails-controller-file renamed
+	  to rails-core:model-file rails-core:controller-file; rails-core:menu updated
+	* rails-nav:goto-file-with-menu now use rails-core:menu
+	* rails.el: rails-create-tags now more flexible: variable rails-tags-dir configure
+	  indexed directories and rails-ask-when-reload-tags configure behavior when reloading
+	  new tags table instead old.
+
 2006-04-04 CrazyPit <crazypit13@gmail.com>
 	* rails-navigation.el, rails-lib.el, rails-ui.el: rails-lib:goto-* renamed to
 	  rails-nav:goto-* and moved to rails-navigation.el

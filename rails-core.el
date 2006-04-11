@@ -89,19 +89,21 @@
     (concat (downcase path)
             (unless do-not-append-ext ".rb"))))
 
-(defun rails-core:get-controller-file (controller-class)
-  "Return file contains controller CONTROLLER-CLASS"
-  (let ((file (rails-core:file-by-class controller-class))
-        (root (rails-core:root)))
-    (if (file-exists-p (concat root "app/controllers/" file))
-        (concat root "app/controllers/" file))))
+;; (defun rails-core:get-controller-file (controller-class)
+;;   "Return file contains controller CONTROLLER-CLASS"
+;;   ;; Does not used
+;;   (let ((file (rails-core:file-by-class controller-class))
+;;         (root (rails-core:root)))
+;;     (if (file-exists-p (concat root "app/controllers/" file))
+;;         (concat root "app/controllers/" file))))
 
-(defun rails-core:get-model-file (model-class)
-  "Return file contains model MODEL-CLASS"
-  (let ((file (rails-core:file-by-class model-class))
-        (root (rails-core:root)))
-    (if (file-exists-p (concat root "app/models/" file))
-        (concat root "app/models/" file))))
+;; (defun rails-core:get-model-file (model-class)
+;;   "Return file contains model MODEL-CLASS"
+;;   ;; Does not used
+;;   (let ((file (rails-core:file-by-class model-class))
+;;         (root (rails-core:root)))
+;;     (if (file-exists-p (concat root "app/models/" file))
+;;         (concat root "app/models/" file))))
 
 (defun rails-core:get-view-files (controller-class &optional action)
   "Retrun list contains views for CONTROLLER-CLASS#ACTON,
@@ -137,19 +139,6 @@
 
 ;;;;;;;;;; Files ;;;;;;;;;;
 
-(defun rails-model-file (model-name) ;(!)
-  "Return model file by model name"
-  ;; Rename me
-  (concat "app/models/" (rails-core:file-by-class model-name)))
-
-(defun rails-controller-file (controller-name) ;(!)
-  "Return path to controller ``controller-name''"
-  ;; Rename me
-  (concat "app/controllers/"
-    (rails-core:file-by-class
-     (rails-core:short-controller-name controller-name) t)
-    "_controller.rb"))
-
 (defun rails-core:file (file-name)
   "Return full path for ``file-name'' in rails-root"
   (when-bind (root (rails-core:root))
@@ -172,6 +161,18 @@
   (find-or-ask-to-create question (rails-core:file file)))
 
 ;; Funtions, that retrun Rails objects full pathes
+
+
+(defun rails-core:model-file (model-name)
+  "Return model file by model name"
+  (concat "app/models/" (rails-core:file-by-class model-name)))
+
+(defun rails-core:controller-file (controller-name)
+  "Return path to controller ``controller-name''"
+  (concat "app/controllers/"
+    (rails-core:file-by-class
+     (rails-core:short-controller-name controller-name) t)
+    "_controller.rb"))
 
 (defun rails-core:layout-file (layout)
   "Return PATH to layout file from Rails root"
@@ -346,7 +347,7 @@
 
 (defun rails-core:open-controller+action-controller (controller action)
   "Open CONTROLLER and goto ACTION"
-  (if (rails-core:find-file-if-exist  (rails-controller-file controller))
+  (if (rails-core:find-file-if-exist  (rails-core:controller-file controller))
       (progn
   (goto-char (point-min))
   (when action
@@ -361,8 +362,6 @@
     (:view (rails-core:open-controller+action-view controller action))
     (:controller (rails-core:open-controller+action-controller controller action)))
   (message (concat controller (if action "#") action)))
-
-
 
 ;;;;;;;;;; Rails minor mode logs ;;;;;;;;;;
 
@@ -386,14 +385,17 @@
 
 (defun rails-core:menu (menu)
   "Show menu"
-  (first
-   (if rails-use-text-menu
-       (tmm-prompt menu)
-     (x-popup-menu (list (if (functionp 'posn-at-point) ; mouse position at point
-			     (destructuring-bind (x . y)
-				 (nth 2 (posn-at-point)) (list x y))
-			   '(200 100))
-			 (selected-window)) menu))))
+  (let ((result
+	 (if rails-use-text-menu
+	     (tmm-prompt menu)
+	   (x-popup-menu (list (if (functionp 'posn-at-point) ; mouse position at point
+				   (destructuring-bind (x . y)
+				       (nth 2 (posn-at-point)) (list x y))
+				 '(200 100))
+			       (selected-window)) menu))))
+    (if (listp result)
+	(first result)
+      result)))
 
 ;;;;;;;;;; Misc ;;;;;;;;;;
 

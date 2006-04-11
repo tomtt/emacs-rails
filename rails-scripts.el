@@ -89,7 +89,7 @@
 		(read-string "Actions (or return to skip): ")))
     (when (string-not-empty controller-name)
 	(rails-generate "controller" controller-name actions)
-	(rails-core:find-file (rails-controller-file controller-name))))
+	(rails-core:find-file (rails-core:controller-file controller-name))))
 
 (defun rails-generate-model (&optional model-name)
   "Generate model and open model file"
@@ -97,7 +97,7 @@
    (list (completing-read "Model name: " (list->alist (rails-core:models-ancestors)))))
   (when (string-not-empty model-name)
     (rails-generate "model" model-name)
-    (rails-core:find-file (rails-model-file model-name))))
+    (rails-core:find-file (rails-core:model-file model-name))))
 
 
 (defun rails-generate-scaffold (&optional model-name controller-name actions)
@@ -108,10 +108,10 @@
     (if (string-not-empty controller-name)
 	(progn
 	  (rails-generate "scaffold" model-name controller-name actions)
-	  (rails-core:find-file (rails-controller-file controller-name)))
+	  (rails-core:find-file (rails-core:controller-file controller-name)))
       (progn
 	(rails-generate "scaffold" model-name)
-	(rails-core:find-file (rails-controller-file model-name))))))
+	(rails-core:find-file (rails-core:controller-file model-name))))))
 
 (defun rails-generate-migration (migration-name)
   "Generate new migration and open migration file"
