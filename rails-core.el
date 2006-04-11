@@ -186,10 +186,9 @@
   "Return file name of partial NAME"
   (if (string-match "/" name)
       (concat "app/views/"
-	      (replace-regexp-in-string "\\([^/]*\\)$" "_\\1.rhtml" name))
+        (replace-regexp-in-string "\\([^/]*\\)$" "_\\1.rhtml" name))
     (concat (rails-core:views-dir (rails-core:current-controller))
-	    "_" name ".rhtml")))
-
+      "_" name ".rhtml")))
 
 (defun rails-core:helper-file (controller)
   "Return helper file name of CONTROLLER"
@@ -200,7 +199,7 @@
 (defun rails-core:functional-test-file (controller)
   "Return functional test file name of CONTROLLER"
   (format "test/functional/%s_test.rb"
-	  (rails-core:file-by-class (rails-core:long-controller-name controller) t)))
+    (rails-core:file-by-class (rails-core:long-controller-name controller) t)))
 
 (defun rails-core:unit-test-file (model)
   "Return unit test file name of MODEL"
@@ -318,8 +317,8 @@
 (defun rails-core:buffer-type ()
   "Return type of current rails file or nil if can't determinate"
   (loop for (type dir) in rails-core:directroy<-->types
-	when (rails-core:buffer-file-match dir)
-	do (return type)))
+  when (rails-core:buffer-file-match dir)
+  do (return type)))
 
 ;;;;;;;;;; Openning of controller + action in controller and view ;;;;;;;;;;
 
@@ -337,12 +336,12 @@
        (format "app/views/%s/%s.rhtml" controller action)))
      (t (find-file
          (rails-core:menu
-	  (list "Please select view.."
+    (list "Please select view.."
           (cons "Please select view.."
-		(loop for view in views collect
-		      (list
-		       (replace-regexp-in-string ".*\.r\\([A-Za-z]+\\)$" "\\1" view)
-		       view)))))))))
+    (loop for view in views collect
+          (list
+           (replace-regexp-in-string ".*\.r\\([A-Za-z]+\\)$" "\\1" view)
+           view)))))))))
   (dired (rails-core:file (concat "app/views/" controller))))))
 
 (defun rails-core:open-controller+action-controller (controller action)
@@ -386,15 +385,15 @@
 (defun rails-core:menu (menu)
   "Show menu"
   (let ((result
-	 (if rails-use-text-menu
-	     (tmm-prompt menu)
-	   (x-popup-menu (list (if (functionp 'posn-at-point) ; mouse position at point
-				   (destructuring-bind (x . y)
-				       (nth 2 (posn-at-point)) (list x y))
-				 '(200 100))
-			       (selected-window)) menu))))
+   (if rails-use-text-menu
+       (tmm-prompt menu)
+     (x-popup-menu (list (if (functionp 'posn-at-point) ; mouse position at point
+           (destructuring-bind (x . y)
+               (nth 2 (posn-at-point)) (list x y))
+         '(200 100))
+             (selected-window)) menu))))
     (if (listp result)
-	(first result)
+        (first result)
       result)))
 
 ;;;;;;;;;; Misc ;;;;;;;;;;

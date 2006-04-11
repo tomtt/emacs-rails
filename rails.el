@@ -57,8 +57,9 @@
 
 (defvar rails-for-alist
   '(
-    ("rhtml" rails-for-rhtml)
     ("rb" rails-for-controller (lambda (root) (string-match (concat root "app/controllers") buffer-file-name)))
+    ("rhtml" rails-for-layout (lambda (root) (string-match (concat root "app/views/layouts") buffer-file-name)))
+    ("rhtml" rails-for-rhtml)
     ))
 
 (defvar rails-enviroments '("development" "production" "test"))
@@ -79,8 +80,6 @@
 
 (defvar rails-find-file-function 'find-file
   "Function witch called by rails finds")
-
-
 
 ;;;;;;;; hack ;;;;
 

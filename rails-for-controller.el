@@ -39,39 +39,33 @@
   (interactive)
   (let* ((calist (rails-controller:get-current-controller-and-action))
          (controller (nth 0 calist))
-         (action (nth 1 calist)))
-
+         (action (nth 1 calist))
+         file tmp)
     (if action
         (let ((root (rails-core:root))
-              files)
-          (setq files (rails-core:get-view-files controller action))
-
+              (files (rails-core:get-view-files controller action)))
+;;
+;; DO NOT UNCOMMENT AND DELETE, WAIT FIXING BUG IN CVS EMACS
+;;
+;;           (if (> 1 (list-length files)) ;; multiple views
+;;               (let ((items (list))
+;;                     (tmp files))
+;;                     file)
+;;                 (while (car tmp)
+;;                   (add-to-list 'items (cons (replace-regexp-in-string "\\(.*/\\)\\([^/]+\\)$" "\\2" (car tmp)) (car tmp)))
+;;                   (setq tmp (cdr tmp)))
+;;                 (setq file
+;;                       (rails-core:menu
+;;                        (list "Please select.." (cons "Please select.." files))))
+;;                 (if file
+;;                     (progn
+;;                       (find-file file)
+;;                       (message (concat controller "#" action)))))
           (if (= 1 (list-length files)) ;; one view
               (progn
                 (find-file (car files))
                 (message (concat controller "#" action))))
-
-          (if (< 1 (list-length files)) ;; multiple views
-              (let ((items (list))
-                    (tmp files)
-                    (mouse-coord (if (functionp 'posn-at-point) ; mouse position at point
-                                     (nth 2 (posn-at-point))
-                                   (cons 200 100)))
-                    file)
-                (while (car tmp)
-                  (add-to-list 'items (cons (replace-regexp-in-string "\\(.*/\\)\\([^/]+\\)$" "\\2" (car tmp)) (car tmp)))
-                  (setq tmp (cdr tmp)))
-
-                (setq file
-                      (x-popup-menu
-                       (list (list (car mouse-coord) (cdr mouse-coord)) (selected-window))
-                       (list "Please select.." (cons "Please select.." items ))))
-                (if file
-                    (progn
-                      (find-file file)
-                      (message (concat controller "#" action))))))
-
-          (if (> 1 (list-length files)) ;; view not found
+          (if (= 0 (list-length files)) ;; view not found
               (if (y-or-n-p (format "View for %s#%s not found, create %s.rhtml? " controller action action))
                   (let ((file (concat root "app/views/"
                                       (replace-regexp-in-string "_controller" ""
@@ -90,7 +84,7 @@
          (files (rails-core:get-view-files controller nil))
          (helper (rails-core:helper-file controller))
          (test (rails-core:functional-test-file controller))
-         file pos)
+         file)
     (while (car files)
       (add-to-list 'menu
                    (cons
@@ -100,18 +94,14 @@
                       (if (string-match "^\_" (file-name-nondirectory (car files))) "Partial" "View") "\: \\2")
                      (car files)) (car files)))
       (setq files (cdr files)))
-    (setq pos (if (functionp 'posn-at-point) ; mouse position at point
-                  (nth 2 (posn-at-point))
-                (cons 200 100)))
     (add-to-list 'menu (cons "--" "--"))
     (add-to-list 'menu (cons "Functional test" (concat root test)))
     (if action
           (add-to-list 'menu (cons "Current action" (car (rails-core:get-view-files controller action)))))
     (add-to-list 'menu (cons "Helper" (concat root helper)))
     (setq file
-          (x-popup-menu
-           (list (list (car pos) (cdr pos)) (selected-window))
-           (list "Please select.." (cons "Please select.." menu ))))
+          (rails-core:menu
+           (list "Please select.." (cons "Please select.." menu))))
     (if file
         (find-file file))))
 
