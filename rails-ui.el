@@ -179,7 +179,7 @@
                   :enable (rails-core:root)))
 
     ([rails api-doc] '("Rails API doc at point" . rails-browse-api-at-point))
-    
+
     ([rails sql] '("SQL Rails buffer" . rails-run-sql))
 
     ([rails tag] '("Update TAGS file" . rails-create-tags))
@@ -275,40 +275,40 @@
 
     ([rails config routes]
      '("routes.rb" . (lambda ()
-		       (interactive)
-		       (rails-core:find-file "config/routes.rb"))))
+           (interactive)
+           (rails-core:find-file "config/routes.rb"))))
     ([rails config environment]
      '("environment.rb" .
        (lambda()
-	 (interactive)
-	 (rails-core:find-file "config/environment.rb"))))
+   (interactive)
+   (rails-core:find-file "config/environment.rb"))))
     ([rails config database]
      '("database.yml" .
        (lambda()
-	 (interactive)
-	 (rails-core:find-file "config/database.yml"))))
+   (interactive)
+   (rails-core:find-file "config/database.yml"))))
     ([rails config boot]
      '("boot.rb" .
        (lambda()
-	 (interactive)
-	 (rails-core:find-file "config/boot.rb"))))
+   (interactive)
+   (rails-core:find-file "config/boot.rb"))))
 
     ([rails config env] (cons "environments" (make-sparse-keymap "environments")))
     ([rails config env test]
      '("test.rb" .
        (lambda()
-	 (interactive)
-	 (rails-core:find-file "config/environments/test.rb"))))
+   (interactive)
+   (rails-core:find-file "config/environments/test.rb"))))
     ([rails config env production]
      '("production.rb" .
        (lambda()
-	 (interactive)
-	 (rails-core:find-file "config/environments/production.rb"))))
+   (interactive)
+   (rails-core:find-file "config/environments/production.rb"))))
     ([rails config env development]
      '("development.rb" .
        (lambda()
-	 (interactive)
-	 (rails-core:find-file "config/environments/development.rb"))))
+   (interactive)
+   (rails-core:find-file "config/environments/development.rb"))))
 
     ([rails scr] (cons "Scripts" (make-sparse-keymap "Scripts")))
 
@@ -341,23 +341,14 @@
 
     ([rails webrick separator] '("--"))
 
-    ([rails webrick brows]
-      '(menu-item "Open browser..."
-		  rails-webrick:open-browser-on-controller
-		  :enable (rails-webrick:status)))
-
-    ([rails webrick auto-brows]
-      '(menu-item "Open browser on current action"
-		  rails-webrick:auto-open-browser
-		  :enable (rails-webrick:status)))
     ([rails webrick url]
       '(menu-item "Open browser"
                   rails-webrick:open-browser
-                  :enable (rails-webrick:status)))    
+                  :enable (rails-webrick:status)))
     ([rails webrick stop]
       '(menu-item "Stop"
                   rails-webrick:stop
-                  :enable (rails-webrick:status)))    
+                  :enable (rails-webrick:status)))
     ([rails webrick test]
       '(menu-item "Start test"
                   (lambda() (interactive) (rails-webrick:start "test"))
@@ -409,7 +400,7 @@
   ((kbd "\C-c s s")   'rails-run-sql)
   ((kbd "\C-c s r")   'rails-rake)
   ((kbd "\C-c s w")   'rails-webrick:start)
-  
+
   ;; Rails finds
   ((kbd "\C-c f m") 'rails-find-models)
   ((kbd "\C-c f c") 'rails-find-controller)
@@ -423,7 +414,7 @@
   ((kbd "\C-c f d") 'rails-find-db)
   ((kbd "\C-c f p") 'rails-find-public)
   ((kbd "\C-c f o") 'rails-find-config)
-  
+
   ;; Navigation
   ((kbd "<C-return>") 'rails-goto-file-on-current-line)
   ((kbd "<M-S-down>") 'rails-goto-file-from-file-with-menu)

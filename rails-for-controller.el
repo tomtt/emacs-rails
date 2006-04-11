@@ -91,14 +91,23 @@
          (helper (rails-core:helper-file controller))
          (test (rails-core:functional-test-file controller))
          file pos)
-    (add-to-list 'menu (cons "Functional test" (concat root test)))
-    (add-to-list 'menu (cons "Helper" (concat root helper)))
     (while (car files)
-      (add-to-list 'menu (cons (replace-regexp-in-string "\\(.*/\\)\\([^/]+\\)$" "View\: \\2" (car files)) (car files)))
+      (add-to-list 'menu
+                   (cons
+                    (replace-regexp-in-string
+                     "\\(.*/\\)\\([^/]+\\)$"
+                     (concat
+                      (if (string-match "^\_" (file-name-nondirectory (car files))) "Partial" "View") "\: \\2")
+                     (car files)) (car files)))
       (setq files (cdr files)))
     (setq pos (if (functionp 'posn-at-point) ; mouse position at point
                   (nth 2 (posn-at-point))
                 (cons 200 100)))
+    (add-to-list 'menu (cons "--" "--"))
+    (add-to-list 'menu (cons "Functional test" (concat root test)))
+    (if action
+          (add-to-list 'menu (cons "Current action" (car (rails-core:get-view-files controller action)))))
+    (add-to-list 'menu (cons "Helper" (concat root helper)))
     (setq file
           (x-popup-menu
            (list (list (car pos) (cdr pos)) (selected-window))
@@ -110,41 +119,5 @@
   (interactive)
   (setq rails-secondary-switch-func 'rails-controller:switch-with-menu)
   (setq rails-primary-switch-func 'rails-controller:switch-to-view))
-
-
-(defun rails-for-controller:views-for-current-action ()
-  (mapcar (lambda (view-file)
-	    (list (replace-regexp-in-string "\\(.*/\\)\\([^/]+\\)$" "View\: \\2" view-file)
-		  (lexical-let ((file view-file))
-		    (lambda () (interactive) (find-file file)))))
-	  (rails-core:get-view-files (rails-core:current-controller)
-				     (rails-core:current-action))))
-
-(defun rails-for-controller:switch-by-current-controller (to-what file-func)
-  (let ((controller (rails-core:current-controller)))
-    (rails-core:find-or-ask-to-create
-     (format "%s for controller %s does not exist, create it? " to-what controller)
-     (funcall file-func controller))))
-
-(defun rails-for-controller:switch-to-functional-test ()
-  (rails-for-controller:switch-by-current-controller
-   "Functional test" 'rails-core:functional-test-file))
-
-(defun rails-for-controller:switch-to-helper ()
-  (rails-for-controller:switch-by-current-controller
-   "Helper file" 'rails-core:helper-file))
-
-(defun rails-for-controller:switch-to-view2 ()
-  (rails-core:open-controller+action
-   :view (rails-core:current-controller) (rails-core:current-action)))
-
-(defun rails-for-controller:switch-to-controller ()
-  (rails-core:open-controller+action
-   :controller (rails-core:current-controller) nil))
-
-(defun rails-for-controller:switch-to-views ()
-  (rails-core:open-controller+action
-   :view (rails-core:current-controller) nil))
-
 
 (provide 'rails-for-controller)

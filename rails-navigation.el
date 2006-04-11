@@ -25,7 +25,7 @@
 ;; along with this program; if not, write to the Free Software
 ;; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-(defun rails-nav:goto-file-with-menu (dir title &optional ext no-inflector)
+(defun rails-nav:goto-file-with-menu (dir title &optional ext no-inflector append-to-menu)
   "Make menu to choose files and find-file it"
   (let* (file
          files
@@ -36,9 +36,6 @@
          (mouse-coord (if (functionp 'posn-at-point) ; mouse position at point
                          (nth 2 (posn-at-point))
                        (cons 200 100))))
-    (message dir)
-    (message ext)
-    (message files)
     (setq files (find-recursive-directory-relative-files dir "" ext))
     (setq files (sort files 'string<))
     (setq files (reverse files))
@@ -48,10 +45,15 @@
                              f
                            (rails-core:class-by-file f)) f))
                  files))
+    (if append-to-menu
+        (add-to-list 'files append-to-menu t))
+
     (setq file (rails-core:menu
                 (list title (cons title files))))
     (if file
-        (find-file (concat dir file)))))
+        (if (symbolp file)
+            (apply file nil)
+          (find-file (concat dir file))))))
 
 (defun rails-nav:goto-controllers ()
   "Goto Controller"
@@ -68,10 +70,36 @@
   (interactive)
   (rails-nav:goto-file-with-menu "app/helpers/" "Go to helper.."))
 
+(defun rails-nav:create-new-layout ()
+  (let ((name (read-string "Layout name? "))
+        (root (rails-core:root)))
+    (find-file (concat root path name ".rhtml"))
+    (if (y-or-n-p "Insert initial template? ")
+        (insert "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
+          \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
+<html xmlns=\"http://www.w3.org/1999/xhtml\"
+      xml:lang=\"ru\" lang=\"ru\">
+  <head>
+    <title></title>
+    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />
+    <%= stylesheet_link_tag \"style\" %>
+    <!--[if IE]>
+    <%= stylesheet_link_tag \"ie\" %>
+    <![endif]-->
+    <%= javascript_include_tag \"defaults\" %>
+  </head>
+
+  <body>
+  </body>
+</html>"))))
+
 (defun rails-nav:goto-layouts ()
   "Goto layout"
   (interactive)
-  (rails-nav:goto-file-with-menu "app/views/layouts/" "Go to layout.." "rhtml" t))
+  (let ((path "app/views/layouts/")
+        item)
+    (setq item (cons "Create new layout" 'rails-nav:create-new-layout))
+    (rails-nav:goto-file-with-menu path "Go to layout.." "rhtml" t item)))
 
 (defun rails-nav:goto-stylesheets ()
   "Goto layout"
@@ -92,19 +120,19 @@
 
 (defmacro* def-goto-line (name (&rest conditions) &rest body)
   (let ((line (gensym))
-	(field (gensym))
-	(prefix (gensym)))
+  (field (gensym))
+  (prefix (gensym)))
    `(progn
       (defun ,name (,line ,prefix)
-	(block ,name
-	  ,@(loop for (sexpr . map) in conditions
-		  collect
-		  `(when (string-match ,sexpr ,line)
-		     (let ,(loop for var-acc in map collect
-				 (if (listp var-acc)
-				     `(,(first var-acc) (match-string ,(second var-acc) ,line))
-				   var-acc))
-		       (return-from ,name (progn ,@body))))))))))
+  (block ,name
+    ,@(loop for (sexpr . map) in conditions
+      collect
+      `(when (string-match ,sexpr ,line)
+         (let ,(loop for var-acc in map collect
+         (if (listp var-acc)
+             `(,(first var-acc) (match-string ,(second var-acc) ,line))
+           var-acc))
+           (return-from ,name (progn ,@body))))))))))
 
 (defun rails-goto-file-on-current-line (prefix)
   "Analyze string (or ERb block) and open some file relative with this string.
@@ -119,13 +147,13 @@ Rule for action/contoller line goto:
   (interactive "P")
   (save-match-data
      (unless
-	 (when-bind
-	  (line (save-excursion
-		  (if (rails-core:rhtml-buffer-p)
-		      (rails-core:erb-block-string)
-		    (current-line-string))))
-	  (loop for func in rails-on-current-line-gotos
-		until (when (funcall func line prefix) (return t))))
+   (when-bind
+    (line (save-excursion
+      (if (rails-core:rhtml-buffer-p)
+          (rails-core:erb-block-string)
+        (current-line-string))))
+    (loop for func in rails-on-current-line-gotos
+    until (when (funcall func line prefix) (return t))))
        (message "Can't switch to some file form this line."))))
 
 (defvar rails-on-current-line-gotos
@@ -135,26 +163,26 @@ Rule for action/contoller line goto:
   "Functions that will calles when to analyze line when rails-goto-file-on-current-line runned.")
 
 (def-goto-line rails-line-->stylesheet (("[ ]*stylesheet_link_tag[ ][\"']\\([^\"']*\\)[\"']"
-				      (name 1)))
+              (name 1)))
   (rails-core:find-or-ask-to-create
    (format "Stylesheet \"%s\" does not exist do you whant to create it? " name)
    (rails-core:stylesheet-name name)))
 
 (def-goto-line rails-line-->partial (("[ ]*render.*:partial[ ]*=>[ ]*[\"']\\([^\"']*\\)[\"']"
-				      (name 1)))
+              (name 1)))
   (rails-core:find-or-ask-to-create
-   (format "Partial \"%s\" does not exist do you whant to create it? " name) 
+   (format "Partial \"%s\" does not exist do you whant to create it? " name)
    (rails-core:partial-name name)))
 
 (def-goto-line rails-line-->layout (("^[ ]*layout[ ]*[\"']\\(.*\\)[\"']" (name  1)))
   (rails-core:find-or-ask-to-create
-   (format "Layout \"%s\" does not exist do you whant to create it? " name) 
+   (format "Layout \"%s\" does not exist do you whant to create it? " name)
    (rails-core:layout-file name)))
 
 (def-goto-line rails-line-->js (("^[ ]*javascript_include_tag[ ]*[\"']\\(.*\\)[\"']"
-				     (name  1)))
+             (name  1)))
   (rails-core:find-or-ask-to-create
-   (format "JavaScript file \"%s\" does not exist do you whant to create it? " name) 
+   (format "JavaScript file \"%s\" does not exist do you whant to create it? " name)
    (rails-core:js-file name)))
 
 
@@ -163,19 +191,19 @@ Rule for action/contoller line goto:
 
 (defun rails-line-->controller+action (line prefix)
   (when (loop for keyword in rails-line-to-controller/action-keywords
-	      when (string-match (format "^[ ]*%s " keyword) line) do (return t))
+        when (string-match (format "^[ ]*%s " keyword) line) do (return t))
     (let (action controller)
       (when (string-match ":action[ ]*=>[ ]*[\"']\\([^\"']*\\)[\"']" line)
-	(setf action (match-string 1 line)))
+  (setf action (match-string 1 line)))
       (when (string-match ":controller[ ]*=>[ ]*[\"']\\([^\"']*\\)[\"']" line)
-	(setf controller (match-string 1 line)))      
+  (setf controller (match-string 1 line)))
       (rails-core:open-controller+action
        (if (rails-core:rhtml-buffer-p)
-	   (if prefix :controller :view)
-	 (if prefix :view :controller))
+     (if prefix :controller :view)
+   (if prefix :view :controller))
        (if controller
-	   (rails-core:full-controller-name controller)
-	 (rails-core:current-controller))
+     (rails-core:full-controller-name controller)
+   (rails-core:current-controller))
        action))))
 
 ;;;;;;;;;; Goto file from file ;;;;;;;;;;
@@ -231,7 +259,7 @@ Rule for action/contoller line goto:
     (:model
      ("Unit test" rails-by-model-switch-to-unit-test)
      ("Fixtures"  rails-by-model-switch-to-fixtures))
-    ;; Plural BUGS!!!    
+    ;; Plural BUGS!!!
     ;;     (rails-core:fixtures-buffer-p
     ;;      (rails-goto-fixtures-->model "Model test")
     ;;      (rails-goto-fixtures-->unit-test "Unit test"))
@@ -246,27 +274,27 @@ Rule for action/contoller line goto:
   (rails-core:with-root
    (root)
    (let ((variants (rest (find (rails-core:buffer-type)
-			       rails-goto-file-from-file-actions
-			       :key #'first))))
+             rails-goto-file-from-file-actions
+             :key #'first))))
      (if variants
-	 (let ((variants
-		(loop for variant in variants
-		      when (symbolp variant)
-		      append (funcall variant)
-		      else collect variant)))
-	   (progn
-	     ;; Menu
-	     (if show-menu
-		 (when-bind
-		  (goto (rails-core:menu
-			 (list "Go To: "
-			       (cons "goto"
-				     (loop for (title func) in variants
-					   when (not (eq title :invisible))
-					   collect `(,title  ,func))))))
-		  (funcall goto))
-	       ;;
-	       (funcall (second (first variants))))))
+   (let ((variants
+    (loop for variant in variants
+          when (symbolp variant)
+          append (funcall variant)
+          else collect variant)))
+     (progn
+       ;; Menu
+       (if show-menu
+     (when-bind
+      (goto (rails-core:menu
+       (list "Go To: "
+             (cons "goto"
+             (loop for (title func) in variants
+             when (not (eq title :invisible))
+             collect `(,title  ,func))))))
+      (funcall goto))
+         ;;
+         (funcall (second (first variants))))))
        (message "Can't go to some file from this file.")))))
 
 (defun rails-goto-file-from-file-with-menu ()

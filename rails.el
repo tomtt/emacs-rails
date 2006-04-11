@@ -66,7 +66,7 @@
 (defvar rails-adapters-alist
   '(("mysql"      . sql-mysql)
     ("postgresql" . sql-postgres))
-  "Sets emacs sql function for rails adapter names.")          
+  "Sets emacs sql function for rails adapter names.")
 
 (defvar rails-tags-dirs '("app" "lib" "test")
   "List of directories from RAILS_ROOT where ctags works.")
@@ -159,10 +159,10 @@
    (let ((tags-file-name (rails-core:file "TAGS")))
      (shell-command
       (format rails-tags-command tags-file-name
-	      (strings-join " " (mapcar #'rails-core:file rails-tags-dirs))))
+        (strings-join " " (mapcar #'rails-core:file rails-tags-dirs))))
      (flet ((yes-or-no-p (p) (if rails-ask-when-reload-tags
-				 (y-or-n-p p)
-			       t)))
+         (y-or-n-p p)
+             t)))
        (visit-tags-table tags-file-name)))))
 
 (defun rails-run-for-alist(root)
@@ -239,15 +239,15 @@
 (defun rails-get-api-entries (name file sexp get-file-func)
   (save-current-buffer
       (save-match-data
-	(find-file (concat rails-api-root file))
-	(let* ((result
-		(loop for line in (split-string (buffer-string) "\n")
-		      when (string-match (format sexp (regexp-quote name)) line)
-		      collect (cons (match-string 2 line)
-				    (match-string 1 line)))))
-	  (kill-buffer (current-buffer))
-	  (when-bind (api-file (funcall get-file-func result))
-	   (browse-url (concat "file://" rails-api-root api-file)))))))
+  (find-file (concat rails-api-root file))
+  (let* ((result
+    (loop for line in (split-string (buffer-string) "\n")
+          when (string-match (format sexp (regexp-quote name)) line)
+          collect (cons (match-string 2 line)
+            (match-string 1 line)))))
+    (kill-buffer (current-buffer))
+    (when-bind (api-file (funcall get-file-func result))
+     (browse-url (concat "file://" rails-api-root api-file)))))))
 
 
 (defun rails-browse-api-class (class)
@@ -256,7 +256,7 @@
    class "fr_class_index.html" "<a href=\"\\(.*\\)\">%s<"
    (lambda (entries)
      (cond ((= 0 (length entries)) (progn (message "No API Rails doc for class %s." class) nil))
-	   ((= 1 (length entries)) (cdar entries))))))
+     ((= 1 (length entries)) (cdar entries))))))
 
 (defun rails-browse-api-method (method)
   "Browse documentation in Rails API for METHOD."
@@ -264,9 +264,9 @@
    method "fr_method_index.html" "<a href=\"\\(.*\\)\">%s[ ]+(\\(.*\\))"
    (lambda (entries)
      (cond ((= 0 (length entries)) (progn (message "No API Rails doc for %s" method) nil))
-	   ((= 1 (length entries)) (cdar entries))
-	   (t (cdr (assoc (completing-read (format "Method %s from what class? " method) entries)
-			  entries)))))))
+     ((= 1 (length entries)) (cdar entries))
+     (t (cdr (assoc (completing-read (format "Method %s from what class? " method) entries)
+        entries)))))))
 
 (defun rails-browse-api-at-point ()
   "Open html documentaion on class or method at point.
@@ -274,12 +274,11 @@ Please set variable rails-api-root to path for your local(!) Rails API directory
   (interactive)
   (if rails-api-root
       (let ((current-symbol (thing-at-point 'sexp)))
-	(if (capital-word-p current-symbol)
-	    (rails-browse-api-class current-symbol)
-	  (rails-browse-api-method current-symbol)))
+  (if (capital-word-p current-symbol)
+      (rails-browse-api-class current-symbol)
+    (rails-browse-api-method current-symbol)))
     (message "Please configure variable rails-api-root.")))
 ;;;;
-
 
 
 (define-minor-mode rails-minor-mode
@@ -327,8 +326,8 @@ Please set variable rails-api-root to path for your local(!) Rails API directory
                                      (indent-for-tab-command)))))))))
 ;;; Run rails-minor-mode in dired
 (add-hook 'dired-mode-hook
-	  (lambda ()
-	    (if (rails-core:root)
-		(rails-minor-mode t))))
+    (lambda ()
+      (if (rails-core:root)
+    (rails-minor-mode t))))
 
 (provide 'rails)
