@@ -32,7 +32,8 @@
   (setq html-mode-abbrev-table (make-abbrev-table)))
 (unless (boundp 'html-helper-mode-abbrev-table)
   (setq html-helper-mode-abbrev-table (make-abbrev-table)))
-
+(unless (boundp 'nxml-mode-abbrev-table)
+  (setq nxml-mode-abbrev-table (make-abbrev-table)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Rails snips ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -143,7 +144,7 @@
 
 ;;;; ERB Snips ;;;;
 
-(def-snips (html-mode-abbrev-table html-helper-mode-abbrev-table)
+(def-snips (html-mode-abbrev-table html-helper-mode-abbrev-table nxml-mode-abbrev-table)
   ("ft"      "<%= form_tag :action => \"$${update}\" %>\n$.\n<%= end_form_tag %>"
              "form_tag")
   ("lia"     "<%= link_to \"$${title}\", :action => \"$${index}\" %>"

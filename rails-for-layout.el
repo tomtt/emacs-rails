@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(defun rails-for-rhtml ()
+(defun rails-for-layout ()
   (interactive))
 
 (provide 'rails-for-layout)
