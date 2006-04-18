@@ -317,8 +317,8 @@
 (defun rails-core:buffer-type ()
   "Return type of current rails file or nil if can't determinate"
   (loop for (type dir) in rails-core:directroy<-->types
-  when (rails-core:buffer-file-match dir)
-  do (return type)))
+	when (rails-core:buffer-file-match dir)
+	do (return type)))
 
 ;;;;;;;;;; Openning of controller + action in controller and view ;;;;;;;;;;
 

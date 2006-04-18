@@ -61,8 +61,8 @@
 
 (defun rails-destroy-model (&optional model-name)
   (interactive (list (completing-read "Destroy model: " (list->alist (rails-core:models)))))
-    (when (string-not-empty model-name)
-      (rails-destroy "model" model-name)))
+  (when (string-not-empty model-name)
+    (rails-destroy "model" model-name)))
 
 (defun rails-destroy-scaffold (&optional scaffold-name)
   ;; buggy
@@ -77,7 +77,7 @@
   "Generate with ``parameters''"
   (rails-run-script "generate" rails-generation-buffer-name parameters
 		    "%s %s generated.")
-  ;(switch-to-buffer-other-window rails-generation-buffer-name)
+                                        ;(switch-to-buffer-other-window rails-generation-buffer-name)
   )
 
 
@@ -87,9 +87,9 @@
 		(completing-read "Controller name (use autocomplete) : "
 				 (list->alist (rails-core:controllers-ancestors)))
 		(read-string "Actions (or return to skip): ")))
-    (when (string-not-empty controller-name)
-	(rails-generate "controller" controller-name actions)
-	(rails-core:find-file (rails-core:controller-file controller-name))))
+  (when (string-not-empty controller-name)
+    (rails-generate "controller" controller-name actions)
+    (rails-core:find-file (rails-core:controller-file controller-name))))
 
 (defun rails-generate-model (&optional model-name)
   "Generate model and open model file"

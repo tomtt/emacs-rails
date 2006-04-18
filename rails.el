@@ -28,6 +28,12 @@
   (require 'speedbar)
   (require 'ruby-mode))
 
+(require 'ansi-color)
+(require 'snippet)
+(require 'etags)
+(require 'find-recursive)
+(require 'autorevert)
+
 (require 'rails-core)
 (require 'rails-lib)
 (require 'rails-webrick)
@@ -35,10 +41,6 @@
 (require 'rails-scripts)
 (require 'rails-ui)
 
-(require 'ansi-color)
-(require 'snippet)
-(require 'etags)
-(require 'find-recursive)
 
 ;;;;;;;;;; Variable definition ;;;;;;;;;;
 
@@ -69,7 +71,7 @@
     ("postgresql" . sql-postgres))
   "Sets emacs sql function for rails adapter names.")
 
-(defvar rails-tags-dirs '("app" "lib" "test")
+(defvar rails-tags-dirs '("app" "lib" "test" "db")
   "List of directories from RAILS_ROOT where ctags works.")
 
 (defvar rails-ask-when-reload-tags nil
@@ -238,7 +240,7 @@
 (defun rails-get-api-entries (name file sexp get-file-func)
   (save-current-buffer
       (save-match-data
-  (find-file (concat rails-api-root file))
+  (find-file (concat rails-api-root "/" file))
   (let* ((result
     (loop for line in (split-string (buffer-string) "\n")
           when (string-match (format sexp (regexp-quote name)) line)
@@ -246,7 +248,7 @@
             (match-string 1 line)))))
     (kill-buffer (current-buffer))
     (when-bind (api-file (funcall get-file-func result))
-     (browse-url (concat "file://" rails-api-root api-file)))))))
+     (browse-url (concat "file://" rails-api-root "/" api-file)))))))
 
 
 (defun rails-browse-api-class (class)
@@ -325,8 +327,8 @@ Please set variable rails-api-root to path for your local(!) Rails API directory
                                      (indent-for-tab-command)))))))))
 ;;; Run rails-minor-mode in dired
 (add-hook 'dired-mode-hook
-    (lambda ()
-      (if (rails-core:root)
-    (rails-minor-mode t))))
+          (lambda ()
+            (if (rails-core:root)
+                (rails-minor-mode t))))
 
 (provide 'rails)

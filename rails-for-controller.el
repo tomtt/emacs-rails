@@ -110,4 +110,41 @@
   (setq rails-secondary-switch-func 'rails-controller:switch-with-menu)
   (setq rails-primary-switch-func 'rails-controller:switch-to-view))
 
+;;;;;;;; Open file from file stuff, please do not delete, while open file from file works fine
+
+(defun rails-for-controller:views-for-current-action ()
+  (mapcar (lambda (view-file)
+	    (list (replace-regexp-in-string "\\(.*/\\)\\([^/]+\\)$" "View\: \\2" view-file)
+		  (lexical-let ((file view-file))
+		    (lambda () (interactive) (find-file file)))))
+	  (rails-core:get-view-files (rails-core:current-controller)
+				     (rails-core:current-action))))
+
+(defun rails-for-controller:switch-by-current-controller (to-what file-func)
+  (let ((controller (rails-core:current-controller)))
+    (rails-core:find-or-ask-to-create
+     (format "%s for controller %s does not exist, create it? " to-what controller)
+     (funcall file-func controller))))
+
+(defun rails-for-controller:switch-to-functional-test ()
+  (rails-for-controller:switch-by-current-controller
+   "Functional test" 'rails-core:functional-test-file))
+
+(defun rails-for-controller:switch-to-helper ()
+  (rails-for-controller:switch-by-current-controller
+   "Helper file" 'rails-core:helper-file))
+
+(defun rails-for-controller:switch-to-view2 ()
+  (rails-core:open-controller+action
+   :view (rails-core:current-controller) (rails-core:current-action)))
+
+(defun rails-for-controller:switch-to-controller ()
+  (rails-core:open-controller+action
+   :controller (rails-core:current-controller) nil))
+
+(defun rails-for-controller:switch-to-views ()
+  (rails-core:open-controller+action
+   :view (rails-core:current-controller) nil))
+
+
 (provide 'rails-for-controller)
