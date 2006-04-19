@@ -2,6 +2,9 @@
 
 ;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
 
+;; Authors: Galinsky Dmitry <dima dot exe at gmail dot com>,
+;;          Rezikov Peter <crazypit13 (at) gmail.com>
+
 ;; Keywords: ruby rails languages oop
 ;; $URL$
 ;; $Id$
@@ -101,7 +104,7 @@
   <body>
   </body>
 </html>"
-"Default html template for new rails layout")
+  "Default html template for new rails layout")
 
 ;;;;;;;; hack ;;;;
 
@@ -295,8 +298,8 @@ Please set variable rails-api-root to path for your local(!) Rails API directory
   (interactive)
   (if rails-api-root
       (let ((current-symbol (prog2
-                              (modify-syntax-entry ?: "w")
-                              (thing-at-point 'sexp)
+                                (modify-syntax-entry ?: "w")
+                                (thing-at-point 'sexp)
                               (modify-syntax-entry ?: "."))))
   (if (capital-word-p current-symbol)
       (rails-browse-api-class current-symbol)

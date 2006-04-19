@@ -2,6 +2,9 @@
 
 ;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
 
+;; Authors: Galinsky Dmitry <dima dot exe at gmail dot com>,
+;;          Rezikov Peter <crazypit13 (at) gmail.com>
+
 ;; Keywords: ruby rails languages oop
 ;; $URL$
 ;; $Id$
