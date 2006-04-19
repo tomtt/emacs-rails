@@ -297,10 +297,14 @@ Please set variable rails-api-root to path for your local(!) Rails API directory
 
 (add-hook 'ruby-mode-hook
           (lambda()
-            (require 'rails-ruby)
+            (require 'rails-ruby)            
             (local-set-key (kbd "C-.") 'complete-tag)
-            (local-set-key (if rails-use-another-define-key (kbd "TAB") (kbd "<tab>")) 'ruby-indent-or-complete)
-            (local-set-key (if rails-use-another-define-key (kbd "RET") (kbd "<return>")) 'ruby-newline-and-indent)))
+            (local-set-key (if rails-use-another-define-key
+                               (kbd "TAB") (kbd "<tab>"))
+                           'ruby-indent-or-complete)
+            (local-set-key (if rails-use-another-define-key
+                               (kbd "RET") (kbd "<return>"))
+                           'ruby-newline-and-indent)))
 
 (add-hook 'speedbar-mode-hook
           (lambda()

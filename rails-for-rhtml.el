@@ -154,4 +154,13 @@
   (local-set-key (kbd "\C-c p") 'rails-rhtml:create-partial-from-selection)
   (local-set-key (kbd "\C-c b") 'rails-rhtml:create-helper-from-block))
 
+;;;;;; Open file from file
+
+(defun rails-for-rhtml:switch-to-controller-action ()
+  (rails-core:open-controller+action
+   :controller (rails-core:current-controller) (rails-core:current-action)))
+
+
+
+
 (provide 'rails-for-rhtml)

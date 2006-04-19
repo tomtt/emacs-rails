@@ -342,6 +342,16 @@
 
     ([rails webrick separator] '("--"))
 
+    ([rails webrick brows]
+      '(menu-item "Open browser..."
+		  rails-webrick:open-browser-on-controller
+		  :enable (rails-webrick:status)))
+
+    ([rails webrick auto-brows]
+      '(menu-item "Open browser on current action"
+		  rails-webrick:auto-open-browser
+		  :enable (rails-webrick:status)))
+    
     ([rails webrick url]
       '(menu-item "Open browser"
                   rails-webrick:open-browser
