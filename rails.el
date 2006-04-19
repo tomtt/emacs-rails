@@ -83,6 +83,26 @@
 (defvar rails-find-file-function 'find-file
   "Function witch called by rails finds")
 
+(defvar rails-layout-template
+  "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
+          \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
+<html xmlns=\"http://www.w3.org/1999/xhtml\"
+      xml:lang=\"ru\" lang=\"ru\">
+  <head>
+    <title></title>
+    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />
+    <%= stylesheet_link_tag \"style\" %>
+    <!--[if IE]>
+    <%= stylesheet_link_tag \"ie\" %>
+    <![endif]-->
+    <%= javascript_include_tag \"defaults\" %>
+  </head>
+
+  <body>
+  </body>
+</html>"
+"Default html template for new rails layout")
+
 ;;;;;;;; hack ;;;;
 
 ;; replace in autorevert.el

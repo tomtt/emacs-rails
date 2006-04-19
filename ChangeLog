@@ -1,4 +1,7 @@
 2006-04-19 CrazyPit <crazypit13@gmail.com>
+  * rails-navigation.el: rails-nav:create-new-layout updated, text moved to variable
+  rails-layout-template, name add. rails goto file from string for layout now used
+  rails-nav:create-new-layout if layout with this name does not exist
   * rails.el: add modify syntax to ruby-mode-hook for "!" symbol,
   add local modifying syntax for rails-browse-api-at-point
         

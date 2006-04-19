@@ -70,28 +70,12 @@
   (interactive)
   (rails-nav:goto-file-with-menu "app/helpers/" "Go to helper.."))
 
-(defun rails-nav:create-new-layout ()
-  (let ((name (read-string "Layout name? "))
+(defun rails-nav:create-new-layout (&optional name)
+  (let ((name (or name (read-string "Layout name? ")))
         (root (rails-core:root)))
-    (find-file (concat root path name ".rhtml"))
+    (rails-core:find-file (rails-core:layout-file name))
     (if (y-or-n-p "Insert initial template? ")
-        (insert "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
-          \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
-<html xmlns=\"http://www.w3.org/1999/xhtml\"
-      xml:lang=\"ru\" lang=\"ru\">
-  <head>
-    <title></title>
-    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />
-    <%= stylesheet_link_tag \"style\" %>
-    <!--[if IE]>
-    <%= stylesheet_link_tag \"ie\" %>
-    <![endif]-->
-    <%= javascript_include_tag \"defaults\" %>
-  </head>
-
-  <body>
-  </body>
-</html>"))))
+        (insert rails-layout-template))))
 
 (defun rails-nav:goto-layouts ()
   "Goto layout"
@@ -112,7 +96,7 @@
   (rails-nav:goto-file-with-menu "public/javascripts/" "Go to stylesheet.." "js" t))
 
 (defun rails-nav:goto-migrate ()
-  "Goto layout"
+  "Goto migration"
   (interactive)
   (rails-nav:goto-file-with-menu "db/migrate/" "Go to migrate.." "rb" t))
 
@@ -145,16 +129,18 @@ Rule for action/contoller line goto:
  if you in view -- view-file with action will be opened.
  Use prefix before command to change this navigation direction."
   (interactive "P")
-  (save-match-data
-    (unless
-        (when-bind
-         (line (save-excursion
-                 (if (rails-core:rhtml-buffer-p)
-                     (rails-core:erb-block-string)
-                   (current-line-string))))
-         (loop for func in rails-on-current-line-gotos
-               until (when (funcall func line prefix) (return t))))
-      (message "Can't switch to some file form this line."))))
+  (rails-core:with-root
+   (root)
+   (save-match-data
+     (unless
+         (when-bind
+          (line (save-excursion
+                  (if (rails-core:rhtml-buffer-p)
+                      (rails-core:erb-block-string)
+                    (current-line-string))))
+          (loop for func in rails-on-current-line-gotos
+                until (when (funcall func line prefix) (return t))))
+       (message "Can't switch to some file form this line.")))))
 
 (defvar rails-on-current-line-gotos
   '(rails-line-->partial rails-line-->controller+action
@@ -174,10 +160,11 @@ Rule for action/contoller line goto:
    (format "Partial \"%s\" does not exist do you whant to create it? " name)
    (rails-core:partial-name name)))
 
-(def-goto-line rails-line-->layout (("^[ ]*layout[ ]*[\"']\\(.*\\)[\"']" (name  1)))
-  (rails-core:find-or-ask-to-create
-   (format "Layout \"%s\" does not exist do you whant to create it? " name)
-   (rails-core:layout-file name)))
+(def-goto-line rails-line-->layout (("^[ ]*layout[ ]*[\"']\\(.*\\)[\"']" (name 1)))
+  (let ((file-name (rails-core:layout-file name)))
+    (if (file-exists-p (rails-core:file file-name))
+        (rails-core:find-file file-name)
+      (rails-nav:create-new-layout name))))
 
 (def-goto-line rails-line-->js (("^[ ]*javascript_include_tag[ ]*[\"']\\(.*\\)[\"']"
                                  (name  1)))
