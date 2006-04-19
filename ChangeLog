@@ -1,3 +1,8 @@
+2006-04-19 CrazyPit <crazypit13@gmail.com>
+  * rails.el: add modify syntax to ruby-mode-hook for "!" symbol,
+  add local modifying syntax for rails-browse-api-at-point
+        
+	
 2006-04-17  dima  <dima.exe@gmail.com>
   * rails-ui.el: apply snippets to nxml-mode-abbrev-table
 

@@ -229,26 +229,26 @@
       (switch-to-buffer-other-window (sql-find-sqli-buffer))
     (let ((conf (rails-db-parameters env)))
       (let ((sql-server "localhost")
-      (sql-user (rails-db-conf-username conf))
-      (sql-database (rails-db-conf-database conf))
-      (sql-password (rails-db-conf-password conf))
-      (default-process-coding-system '(utf-8 . utf-8)))
-  ; Reload localy sql-get-login to avoid asking of confirmation of DB login parameters
-  (flet ((sql-get-login (&rest pars) () t))
-    (funcall (rails-database-emacs-func (rails-db-conf-adapter conf))))))))
+            (sql-user (rails-db-conf-username conf))
+            (sql-database (rails-db-conf-database conf))
+            (sql-password (rails-db-conf-password conf))
+            (default-process-coding-system '(utf-8 . utf-8)))
+        ;; Reload localy sql-get-login to avoid asking of confirmation of DB login parameters
+        (flet ((sql-get-login (&rest pars) () t))
+          (funcall (rails-database-emacs-func (rails-db-conf-adapter conf))))))))
 
 (defun rails-get-api-entries (name file sexp get-file-func)
   (save-current-buffer
-      (save-match-data
-  (find-file (concat rails-api-root "/" file))
-  (let* ((result
-    (loop for line in (split-string (buffer-string) "\n")
-          when (string-match (format sexp (regexp-quote name)) line)
-          collect (cons (match-string 2 line)
-            (match-string 1 line)))))
-    (kill-buffer (current-buffer))
-    (when-bind (api-file (funcall get-file-func result))
-     (browse-url (concat "file://" rails-api-root "/" api-file)))))))
+    (save-match-data
+      (find-file (concat rails-api-root "/" file))
+      (let* ((result
+              (loop for line in (split-string (buffer-string) "\n")
+                    when (string-match (format sexp (regexp-quote name)) line)
+                    collect (cons (match-string 2 line)
+                                  (match-string 1 line)))))
+        (kill-buffer (current-buffer))
+        (when-bind (api-file (funcall get-file-func result))
+                   (browse-url (concat "file://" rails-api-root "/" api-file)))))))
 
 
 (defun rails-browse-api-class (class)
@@ -257,7 +257,7 @@
    class "fr_class_index.html" "<a href=\"\\(.*\\)\">%s<"
    (lambda (entries)
      (cond ((= 0 (length entries)) (progn (message "No API Rails doc for class %s." class) nil))
-     ((= 1 (length entries)) (cdar entries))))))
+           ((= 1 (length entries)) (cdar entries))))))
 
 (defun rails-browse-api-method (method)
   "Browse documentation in Rails API for METHOD."
@@ -265,16 +265,19 @@
    method "fr_method_index.html" "<a href=\"\\(.*\\)\">%s[ ]+(\\(.*\\))"
    (lambda (entries)
      (cond ((= 0 (length entries)) (progn (message "No API Rails doc for %s" method) nil))
-     ((= 1 (length entries)) (cdar entries))
-     (t (cdr (assoc (completing-read (format "Method %s from what class? " method) entries)
-        entries)))))))
+           ((= 1 (length entries)) (cdar entries))
+           (t (cdr (assoc (completing-read (format "Method %s from what class? " method) entries)
+                          entries)))))))
 
 (defun rails-browse-api-at-point ()
   "Open html documentaion on class or method at point.
 Please set variable rails-api-root to path for your local(!) Rails API directory"
   (interactive)
   (if rails-api-root
-      (let ((current-symbol (thing-at-point 'sexp)))
+      (let ((current-symbol (prog2
+                              (modify-syntax-entry ?: "w")
+                              (thing-at-point 'sexp)
+                              (modify-syntax-entry ?: "."))))
   (if (capital-word-p current-symbol)
       (rails-browse-api-class current-symbol)
     (rails-browse-api-method current-symbol)))
@@ -297,7 +300,8 @@ Please set variable rails-api-root to path for your local(!) Rails API directory
 
 (add-hook 'ruby-mode-hook
           (lambda()
-            (require 'rails-ruby)            
+            (require 'rails-ruby)
+            (modify-syntax-entry ?! "w")
             (local-set-key (kbd "C-.") 'complete-tag)
             (local-set-key (if rails-use-another-define-key
                                (kbd "TAB") (kbd "<tab>"))
