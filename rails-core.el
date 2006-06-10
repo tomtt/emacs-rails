@@ -47,7 +47,7 @@
   this macro. Also block of code will be executed only if rails-root exist.
  (rails-core:with-root (root)
     (foo root)
-    (bar (rails-file \"some/path\")))
+    (bar (rails-core:file \"some/path\")))
  "
  `(let ((,root (rails-core:root)))
     (when ,root
@@ -143,6 +143,10 @@
   "Return full path for ``file-name'' in rails-root"
   (when-bind (root (rails-core:root))
        (concat root file-name)))
+
+(defun rails-core:quoted-file (file-name)
+  "Return quoted full path for ``file-name''"
+  (concat "\"" (rails-core:file file-name) "\""))
 
 (defun rails-core:find-file (file-name)
   "Open file ``file-name'' in rails-root"

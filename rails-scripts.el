@@ -175,16 +175,25 @@
 
 ;;;; Rake ;;;;
 
+(defun rails-rake-create-cache (file-name)
+  "Create cache file from rake --help output"
+  (write-string-to-file file-name
+   (prin1-to-string
+    (loop for str in (split-string (shell-command-to-string "rake --tasks") "\n")
+          for task = (when (string-not-empty str)
+                       (string-match "^rake \\([^ ]*\\).*# \\(.*\\)" str)
+                       (match-string 1 str))
+          when task collect task))))
+
 (defun rails-rake-tasks ()
   "Return all task to main Rails Rakefile"
   (rails-core:in-root
-   (loop for str in (split-string (shell-command-to-string "rake --tasks") "\n")
-	 for task = (when (string-not-empty str)
-		      (string-match "^rake \\([^ ]*\\).*# \\(.*\\)" str)
-		      (match-string 1 str))
-	 when task collect task)))
+   (let ((cache-file (rails-core:file ".rake-tasks-cache")))
+     (unless (file-exists-p cache-file)
+       (rails-rake-create-cache cache-file))
+     (read-from-file cache-file))))
 
-(defun rails-rake (&optional task)
+(defun rails-rake (&optional task)      
   "Run Rake task in Rails root"
   (interactive (list (completing-read "Rake task: " (list->alist (rails-rake-tasks)))))
   (rails-core:in-root

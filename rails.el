@@ -260,6 +260,11 @@
         (flet ((sql-get-login (&rest pars) () t))
           (funcall (rails-database-emacs-func (rails-db-conf-adapter conf))))))))
 
+(defun rails-browse-api ()
+  "Browse Rails API on RAILS-API-ROOT"
+  (interactive)
+  (browse-url (concat rails-api-root "index.html")))
+
 (defun rails-get-api-entries (name file sexp get-file-func)
   (save-current-buffer
     (save-match-data

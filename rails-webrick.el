@@ -74,7 +74,7 @@
                         rails-ruby-command
                         rails-webrick:buffer-name
                         rails-ruby-command
-                        (list (concat root "script/server")
+                        (list (rails-core:quoted-file "script/server")
                               (concat " -e " env)
                               (concat " -p " rails-webrick:port)))))
          (set-process-sentinel proc 'rails-webrick:sentinel-proc)

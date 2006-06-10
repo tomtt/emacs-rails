@@ -1,3 +1,11 @@
+2006-06-10 CrazyPit <crazypit13@gmail.com>
+  * rails-core.el: rails-quoted-file (needed to fix bug with space in path)
+  * rails-navigation.el: new rules to rails-goto-file-on-current-line, rails-find for fixtures
+  * rails.el: rails-brows-api
+  * rails-lib.el: new helper functions write-string-to-file, read-from-file
+  * rails-webrick.el: fix bug with space in path
+  * rails-scipts.el: add caching for rake tasks
+  
 2006-04-19 CrazyPit <crazypit13@gmail.com>
   * rails-navigation.el: rails-nav:create-new-layout updated, text moved to variable
   rails-layout-template, name add. rails goto file from string for layout now used

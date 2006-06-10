@@ -424,6 +424,7 @@
   ((kbd "\C-c f v") 'rails-find-view)
   ((kbd "\C-c f d") 'rails-find-db)
   ((kbd "\C-c f p") 'rails-find-public)
+  ((kbd "\C-c f f") 'rails-find-fixtures)
   ((kbd "\C-c f o") 'rails-find-config)
 
   ;; Navigation
@@ -441,6 +442,8 @@
   ;;; Doc
   ([f1]  'rails-search-doc)
   ((kbd "<C-f1>")  'rails-browse-api-at-point)
+  ((kbd "C-c <f1>")  'rails-browse-api)
+  
   ([f9]  'rails-svn-status-into-root))
 
 

@@ -163,6 +163,16 @@
   "Append string to end of file"
   (write-region string nil file t))
 
+(defun write-string-to-file (file string)
+  "Write string to file (with erasing previos content)"
+  (write-region string nil file))
+
+(defun read-from-file (file-name)
+  "Read sexpr from file FILE-NAME"
+  (with-temp-buffer
+    (insert-file-contents file-name)
+    (read (current-buffer))))
+
 ;; File hierarchy functions
 
 (defun find-recursive-files (file-regexp directory)

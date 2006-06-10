@@ -174,7 +174,8 @@ Rule for action/contoller line goto:
 
 
 (defvar rails-line-to-controller/action-keywords
-  '("render" "redirect_to" "link_to" "form_tag" "start_form_tag" "render_component"))
+  '("render" "redirect_to" "link_to" "form_tag" "start_form_tag" "render_component"
+    "form_remote_tag" "link_to_remote"))
 
 (defun rails-line-->controller+action (line prefix)
   (when (loop for keyword in rails-line-to-controller/action-keywords
@@ -324,5 +325,7 @@ Rule for action/contoller line goto:
 (def-rails-find rails-find-javascripts "public/javascripts/")
 
 (def-rails-find rails-find-migrate "db/migrate/")
+
+(def-rails-find rails-find-fixtures "test/fixtures/")
 
 (provide 'rails-navigation)
