@@ -347,11 +347,12 @@ Please set variable rails-api-root to path for your local(!) Rails API directory
             (rails-core:with-root
              (root)
              (progn
-               (add-hook 'local-write-file-hooks
-                         '(lambda()
-                            (save-excursion
-                              (untabify (point-min) (point-max))
-                              (delete-trailing-whitespace))))
+               (unless (string-match "[Mm]akefile" mode-name)
+                 (add-hook 'local-write-file-hooks
+                           '(lambda()
+                              (save-excursion
+                                (untabify (point-min) (point-max))
+                                (delete-trailing-whitespace)))))
                (rails-minor-mode t)
                (rails-run-for-alist root)
                (local-set-key (if rails-use-another-define-key "TAB" (kbd "<tab>"))

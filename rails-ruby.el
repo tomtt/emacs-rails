@@ -27,11 +27,11 @@
 (defun ruby-indent-or-complete ()
   "Complete if point is at end of a word, otherwise indent line."
   (interactive)
-  (if snippet
-      (snippet-next-field)
-    (if (looking-at "\\>")
-        (hippie-expand nil)
-      (ruby-indent-command))))
+  (when snippet
+    (snippet-next-field))
+  (if (looking-at "\\>")
+      (hippie-expand nil)
+    (ruby-indent-command)))
 
 (defun ruby-newline-and-indent ()
   (interactive)
