@@ -1,4 +1,4 @@
-+ ;;; rails-core.el --- core helper functions and macros for emacs-rails
+;;; rails-core.el --- core helper functions and macros for emacs-rails
 
 ;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
 
