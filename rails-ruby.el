@@ -24,14 +24,16 @@
 
 ;;; Code:
 
-(defun ruby-indent-or-complete ()
-  "Complete if point is at end of a word, otherwise indent line."
+(defadvice ruby-indent-command (before ruby-indent-or-complete)
+  "Complete if point is at the end of a word; otherwise, indent
+line."
   (interactive)
   (when snippet
     (snippet-next-field))
   (if (looking-at "\\>")
-      (hippie-expand nil)
-    (ruby-indent-command)))
+      (hippie-expand nil)))
+
+(ad-activate 'ruby-indent-command)
 
 (defun ruby-newline-and-indent ()
   (interactive)

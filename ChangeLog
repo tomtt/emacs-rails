@@ -1,3 +1,36 @@
+2006-12-01  dima  <dima.exe@gmail.com>
+  * rails-navigation.el: 
+	add "go to action"
+	"go to partial" now support insert_html|replace_html
+  * rails-core.el: add rails-core:view-name
+
+2006-11-30 ronaldo <ronaldo@reflectivesurface.com>
+  * *.el: fixed documentation string to better reflected Emacs conventions
+  * rails-ui.el: 
+	added a bunch of new snippets
+	refactored key sequences to follow proper mode conventions
+	added new menus (rake tests, customize, start default webrick)
+	changed switch menu to use a richer set of options
+  * rails-scripts.el:
+	to-added rake tasks for tests (all, integration, functional, unit and recent tests)
+  * rails-core.el:
+	added a check for the API docs, allowing the user to generate them if wanted
+	added a check for the existence of API files to avoid unnecessary messages
+  * rails.el:
+	changed the default layout template and moved it to a customization variable
+	
+2006-11-29 ronaldo <ronaldo@reflectivesurface.com>
+  * rails-for-controller.el: fixed to use rails-core:menu
+  * rails-core.el: added a way to automatically recognize if it's running under a 
+	text-only terminal to avoid crashing Emacs when using x-popup-menu
+  * rails-for-rhtml: changed to use rails-core:menu instead of x-popup-menu directory
+
+2006-11-28 ronaldo <ronaldo@reflectivesurface.com>
+  * rails-core.el: created a set of customization options
+	(customize-group 'rails)
+  * rails-for-rhtml: fixed the partial creation functions to allow both
+	transient and non-transient markers
+	
 2006-10-03 dima <dima.exe@gmail.com>
   * rails.el: do not apply untabify in makefile-mode
   * rails-ruby.el: small fix in ruby-indent-or-complete
@@ -5,7 +38,7 @@
 2006-06-10 CrazyPit <crazypit13@gmail.com>
   * rails-core.el: rails-quoted-file (needed to fix bug with space in path)
   * rails-navigation.el: new rules to rails-goto-file-on-current-line, rails-find for fixtures
-  * rails.el: rails-brows-api
+  * rails.el: rails-browse-api
   * rails-lib.el: new helper functions write-string-to-file, read-from-file
   * rails-webrick.el: fix bug with space in path
   * rails-scipts.el: add caching for rake tasks
