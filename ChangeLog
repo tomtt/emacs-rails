@@ -1,3 +1,7 @@
+2006-12-03  dima  <dima.exe@gmail.com>
+  * rails-webrick.el: 
+	Apply patch from Ray Baxter: remove rails-webrick:open-url and add rails-webrick:server-name
+
 2006-12-01  dima  <dima.exe@gmail.com>
   * rails-navigation.el: 
 	add "go to action"
@@ -91,7 +95,7 @@
   * rails-ui.el: new snippet %for
   * rails-webrick.el: rails-webrick:start now interactive, auto-open-browser
   work only in controllers and views.
-        * rails.el: bugfix in rails-create-tags
+  * rails.el: bugfix in rails-create-tags
 
 2006-03-31 CrazyPit <crazypit13@gmail.com>
   * rails-navigation.el: rails-goto-file-from-file change, now use funcall instead

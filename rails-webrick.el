@@ -45,8 +45,13 @@
   :type 'boolean
   :tag "Rails WEBRick Use Mongrel")
 
+(defcustom rails-webrick:server-name "http://localhost"
+  "Protocol and the hostname for WEBrick or other rails server"
+  :group 'rails
+  :type 'string
+  :tag "Rails WEBRick Default Server")
+
 (defvar rails-webrick:buffer-name "*WEBrick*")
-(defvar rails-webrick:open-url (concat "http://localhost:" rails-webrick:port "/"))
 
 (defun rails-webrick:status()
   "Return t if a WEBrick process is running."
@@ -119,7 +124,11 @@ using `rails-webrick:default-env'."
   "Open a browser on the main page of the current Rails project
 server."
   (interactive)
-  (let ((url (concat rails-webrick:open-url  address )))
+  (let ((url (concat (concat rails-webrick:server-name
+                             ":"
+                             rails-webrick:port
+                             "/"
+                             address ))))
     (message "Opening browser: %s" url)
     (browse-url url)))
 
