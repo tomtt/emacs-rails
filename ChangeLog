@@ -1,4 +1,7 @@
 2006-12-03  dima  <dima.exe@gmail.com>
+  * rails-ruby.el (ruby-indent-command): using around filter
+  * rails.el (ruby-mode-hook): symbols _ and : interpreted as word
+  * rails-core.el (rails-core:class-by-file): apply patch #6377
   * rails-webrick.el: 
 	Apply patch from Ray Baxter: remove rails-webrick:open-url and add rails-webrick:server-name
 

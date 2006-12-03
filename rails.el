@@ -384,11 +384,15 @@ Please set variable rails-api-root to path for your local(!) Rails API directory
 (add-hook 'ruby-mode-hook
           (lambda()
             (require 'rails-ruby)
-            (modify-syntax-entry ?! "w")
+            (syntax-table)
+            (capitalize "AA/addd_aaa")
+            (modify-syntax-entry ?! "w" (syntax-table))
+            (modify-syntax-entry ?: "w" (syntax-table))
+            (modify-syntax-entry ?_ "w" (syntax-table))
             (local-set-key (kbd "C-.") 'complete-tag)
             (local-set-key (if rails-use-another-define-key
                                (kbd "TAB") (kbd "<tab>"))
-                           'ruby-indent-or-complete)
+                           'ruby-indent-command)
             (local-set-key (if rails-use-another-define-key
                                (kbd "RET") (kbd "<return>"))
                            'ruby-newline-and-indent)))
@@ -416,7 +420,7 @@ Please set variable rails-api-root to path for your local(!) Rails API directory
                                      (snippet-next-field)
                                    (if (looking-at "\\>")
                                        (hippie-expand nil)
-                                     (indent-for-tab-command)))))))))
+                                     (indent-according-to-mode)))))))))
 ;;; Run rails-minor-mode in dired
 (add-hook 'dired-mode-hook
           (lambda ()

@@ -73,12 +73,15 @@ BODY is executed."
    <rails-root>/(app/models|app/controllers|app/helpers|test/unit|test/functional)/foo/bar_baz
                 --> Foo::BarBaz"
   (let* ((case-fold-search nil)
-         (path (capitalize (replace-regexp-in-string
-          (format
-           "\\(.*\\(%s\\)/\\)?\\([^\.]+\\)\\(.*\\)?"
-           (strings-join "\\|" rails-core:class-dirs)) "\\3" filename)))
-         (path (replace-regexp-in-string "/" "::" path)))
-    (replace-regexp-in-string "_" "" path)))
+         (path (replace-regexp-in-string
+                (format
+                 "\\(.*\\(%s\\)/\\)?\\([^\.]+\\)\\(.*\\)?"
+                 (strings-join "\\|" rails-core:class-dirs)) "\\3" filename))
+         (path (replace-regexp-in-string "/" "::" path))
+         (path (replace-regexp-in-string "_" " " path)))
+    (replace-regexp-in-string
+     " " ""
+     (capitalize path))))
 
 (defun rails-core:file-by-class (classname &optional do-not-append-ext)
   "Return the filename associated with CLASSNAME.
