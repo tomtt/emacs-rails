@@ -57,7 +57,7 @@
               end-pos
               (> current-pos begin-pos)
               (< current-pos end-pos)
-              (string-match "app/views/\\(.*\\)/\\([a-z_]+\\)\.[a-z]+$" file))
+              (string-match "app/views/\\(.*\\)/\\([a-z0-9_]+\\)\.[a-z]+$" file))
          (let* ((helper-file (concat root "app/helpers/" (match-string 1 file) "_helper.rb"))
                 (content (buffer-substring-no-properties begin-pos end-pos))
                 (helper-alist (if helper-name helper-name (read-string "Enter helper function name with args: ")))
@@ -97,7 +97,7 @@
   "Return a list containing the current controller and action."
   (let ((file buffer-file-name)
         controller action)
-    (if (string-match "app/views/\\(.*\\)/\\([a-z_]+\\)\.[a-z]+$" file)
+    (if (string-match "app/views/\\(.*\\)/\\([a-z0-9_]+\\)\.[a-z]+$" file)
         (progn
           (setq controller (match-string-no-properties 1 file))
           (setq action (match-string-no-properties 2 file))))

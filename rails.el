@@ -240,6 +240,14 @@
    (root)
    (save-excursion
      (rails-core:find-file "config/database.yml")
+     ;; The influence of automatic preservation is not received separating from the file.
+     (set-visited-file-name nil)
+     ;; It is the same as the following execution result.
+     ;; cat database.yml | ruby -r yaml -r erb -e 'YAML.load(ERB.new(ARGF.read).result).to_yaml.display'
+     (shell-command-on-region
+      (point-min) (point-max)
+      "ruby -r yaml -r erb -e 'YAML.load(ERB.new(ARGF.read).result).to_yaml.display'"
+      (current-buffer) t)
      (goto-line 1)
      (search-forward-regexp (format "^%s:" env))
      (let ((ans
@@ -409,9 +417,10 @@ Please set variable rails-api-root to path for your local(!) Rails API directory
                (unless (string-match "[Mm]akefile" mode-name)
                  (add-hook 'local-write-file-hooks
                            '(lambda()
-                              (save-excursion
-                                (untabify (point-min) (point-max))
-                                (delete-trailing-whitespace)))))
+                              (when (eq this-command 'save-buffer)
+                                (save-excursion
+                                  (untabify (point-min) (point-max))
+                                  (delete-trailing-whitespace))))))
                (rails-minor-mode t)
                (rails-run-for-alist root)
                (local-set-key (if rails-use-another-define-key "TAB" (kbd "<tab>"))

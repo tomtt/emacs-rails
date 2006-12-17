@@ -36,7 +36,7 @@
 (defun rails-lib:run-secondary-switch ()
   "Run the secondary switch function."
   (interactive)
-  (if rails-primary-switch-func
+  (if rails-secondary-switch-func
       (apply rails-secondary-switch-func nil)))
 
 ;;;;; Non Rails realted helper functions ;;;;;

@@ -1,3 +1,10 @@
+2006-12-18  dima  <dima.exe@gmail.com>
+  * rails-core.el (rails-core:class-by-file): fix lowercase letter after "::"
+  * rails-for-rhtml.el: apply patch #7300
+  * rails-for-controller.el: apply patch #7300
+  * rails.el: apply patch #7301, #7295
+  * rails-lib.el (rails-lib:run-secondary-switch): apply patch #7314
+
 2006-12-03  dima  <dima.exe@gmail.com>
   * rails-ruby.el (ruby-indent-command): using around filter
   * rails.el (ruby-mode-hook): symbols _ and : interpreted as word

@@ -32,7 +32,7 @@
   (save-excursion
     (let (action controller)
       (goto-char (line-end-position))
-      (if (search-backward-regexp "^[ ]*def \\([a-z_]+\\)" nil t)
+      (if (search-backward-regexp "^[ ]*def \\([a-z0-9_]+\\)" nil t)
     (setq action (match-string-no-properties 1)))
       (if (search-backward-regexp "^[ ]*class \\([a-zA-Z0-9_:]+\\)[ ]+<" nil t)
     (setq controller (match-string-no-properties 1)))
