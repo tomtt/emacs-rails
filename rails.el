@@ -108,7 +108,8 @@
 
 (defvar rails-adapters-alist
   '(("mysql"      . sql-mysql)
-    ("postgresql" . sql-postgres))
+    ("postgresql" . sql-postgres)
+    ("sqlite3" . sql-sqlite))
   "Sets emacs sql function for rails adapter names.")
 
 (defvar rails-tags-dirs '("app" "lib" "test" "db")
@@ -251,11 +252,11 @@
      (goto-line 1)
      (search-forward-regexp (format "^%s:" env))
      (let ((ans
-      (make-rails-db-conf
-       :adapter  (yml-next-value "adapter")
-       :database (yml-next-value "database")
-       :username (yml-next-value "username")
-       :password (yml-next-value "password"))))
+            (make-rails-db-conf
+             :adapter  (yml-next-value "adapter")
+             :database (yml-next-value "database")
+             :username (yml-next-value "username")
+             :password (yml-next-value "password"))))
        (kill-buffer (current-buffer))
        ans))))
 

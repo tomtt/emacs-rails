@@ -76,8 +76,8 @@ If EXPR is not nil exeutes BODY.
 
 (defun yml-next-value (name)
   "Return the value of the next parameter named NAME."
-  (search-forward-regexp (format "%s:[ ]*\\(.*\\)[ ]*$" name))
-  (match-string 1))
+  (if (search-forward-regexp (format "%s:[ ]*\\(.*\\)[ ]*$" name) nil t)
+      (match-string 1)))
 
 (defun current-line-string ()
   "Return the string value of the current line."
