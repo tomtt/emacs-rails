@@ -59,9 +59,10 @@ rails-root exist.
   "Set the default directory to the Rails root directory while
 BODY is executed."
   (let ((root (gensym)))
-   `(rails-core:with-root (,root)
-    (let ((default-dir ,root))
-     ,@body))))
+    `(rails-core:with-root
+      (,root)
+      (let ((default-dir ,root))
+        ,@body))))
 
 (defvar rails-core:class-dirs
   '("app/controllers" "app/views" "app/models" "app/helpers"
@@ -294,9 +295,9 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
   "Return the current action in the current Rails controller."
   (case (rails-core:buffer-type)
     (:controller (save-excursion
-       (when (search-backward-regexp "^[ ]*def \\([a-z_]+\\)" nil t)
+       (when (search-backward-regexp "^[ ]*def \\([a-z0-9_]+\\)" nil t)
          (match-string 1))))
-    (:view (string-match "/\\([a-z_]+\\)\.[a-z]+$" (buffer-file-name))
+    (:view (string-match "/\\([a-z0-9_]+\\)\.[a-z]+$" (buffer-file-name))
      (match-string 1 (buffer-file-name)))))
 
 ;;;;;;;;;; Determination of buffer type ;;;;;;;;;;
@@ -321,8 +322,8 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
   "Return the type of the current Rails file or nil if the type
 cannot be determinated."
   (loop for (type dir) in rails-core:directroy<-->types
-  when (rails-core:buffer-file-match dir)
-  do (return type)))
+        when (rails-core:buffer-file-match dir)
+        do (return type)))
 
 ;;;;;;;;;; Openning of controller + action in controller and view ;;;;;;;;;;
 
