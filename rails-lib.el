@@ -78,9 +78,11 @@ If EXPR is not nil exeutes BODY.
 (defun yml-value (name)
   "Return the value of the parameter named NAME in the current
 buffer or an empty string."
-  (if (search-forward-regexp (format "%s:[ ]*\\(.*\\)[ ]*$" name) nil t)
-      (match-string 1)
-    ""))
+  (save-excursion
+    (goto-char (point-min))
+    (if (search-forward-regexp (format "%s:[ ]*\\(.*\\)[ ]*$" name) nil t)
+        (match-string 1)
+      "")))
 
 (defun current-line-string ()
   "Return the string value of the current line."

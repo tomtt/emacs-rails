@@ -31,7 +31,7 @@
   (require 'speedbar)
   (require 'inf-ruby)
   (require 'ruby-mode)
-  (require ruby-electric))
+  (require 'ruby-electric))
 
 (require 'ansi-color)
 (require 'snippet)
