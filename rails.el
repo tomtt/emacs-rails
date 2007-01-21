@@ -121,7 +121,7 @@ Emacs w3m browser."
   :group 'rails
   :type 'string)
 
-(defvar rails-version "0.4")
+(defvar rails-version "0.5")
 (defvar rails-templates-list '("rhtml" "rxml" "rjs"))
 (defvar rails-use-another-define-key nil)
 (defvar rails-primary-switch-func nil)
