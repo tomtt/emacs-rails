@@ -72,7 +72,8 @@ If EXPR is not nil exeutes BODY.
 
 (defun string-not-empty (str) ;(+)
   "Return t if string STR is not empty."
-  (and (stringp str) (not (string-equal str ""))))
+  (and (stringp str) (not (or (string-equal "" str)
+                              (string-match "^ +$" str)))))
 
 (defun yml-value (name)
   "Return the value of the parameter named NAME in the current
