@@ -1,3 +1,14 @@
+2007-01-23  dima  <dima.exe@gmail.com>
+  * rails-core.el: add rails-core to eval-when-compile
+  * rails-ui.el (rails-minor-mode-map): 
+	rebind some hotkeys
+	fix snippents (bad indent after end ruby keyword)
+  * rails-scripts.el: complete rewrite all script functions to using autocomplete
+  * rails.el (rails-db-parameters): apply patch #8065 (thanks Akira Ikeda)
+
+2007-01-22  dima  <dima.exe@gmail.com>
+  * rails-ui.el (ruby-mode-abbrev-table): fix indentation for `end' ruby keyword
+
 2007-01-21  dima  <dima.exe@gmail.com>	
   rename rails-for-rhtml to rails-for-view
   add rails-for-helper functionaly

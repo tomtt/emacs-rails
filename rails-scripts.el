@@ -26,6 +26,18 @@
 ;; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 (defvar rails-generation-buffer-name "*RailsGeneration*")
+(defvar rails-rake-tests-alist
+  '(("all" . "test")
+    ("recent" . "test:recent")
+    ("unit" . "test:unit")
+    ("functionals" . "test:functionals")
+    ("integraion" . "test:integration")))
+
+(defvar rails-generators-list
+  '("controller" "model" "scaffold" "migration" "plugin"))
+
+(defvar rails-destroy-list
+  '("scaffold" "model" "controller"))
 
 (defun rails-run-script (script buffer parameters &optional message-format)
   "Run a Rails script with PARAMETERS in BUFFER using
@@ -45,37 +57,53 @@ MESSAGE-FORMAT to format the output."
 
 ;;;;;;;;;; Destroy stuff ;;;;;;;;;;
 
-(defun rails-destroy (&rest parameters)
+(defun rails-destroy-run (&rest parameters)
   "Run the destroy script."
   (rails-run-script "destroy" rails-generation-buffer-name parameters
                     "%s %s destroyed."))
+
+(defun rails-destroy (&optional what)
+  "Run destroy WHAT"
+  (interactive (list (completing-read "What destroy? (use autocomplete): " rails-destroy-list)))
+  (let ((name (intern (concat "rails-destroy-" what))))
+    (when (fboundp name)
+      (call-interactively name))))
 
 (defun rails-destroy-controller (&optional controller-name)
   "Run the destroy script for controllers."
   (interactive
    (list (completing-read "Destroy controller: " (list->alist (rails-core:controllers t)))))
   (when (string-not-empty controller-name)
-    (rails-destroy "controller" controller-name)))
+    (rails-destroy-run "controller" controller-name)))
 
 (defun rails-destroy-model (&optional model-name)
   "Run the destroy script for models."
   (interactive (list (completing-read "Destroy model: " (list->alist (rails-core:models)))))
   (when (string-not-empty model-name)
-    (rails-destroy "model" model-name)))
+    (rails-destroy-run "model" model-name)))
 
 (defun rails-destroy-scaffold (&optional scaffold-name)
   "Run the destroy script for scaffolds."
   ;; buggy
   (interactive "MDestroy scaffold: ")
   (when (string-not-empty scaffold-name)
-    (rails-destroy "scaffold" scaffold-name)))
+    (rails-destroy-run "scaffold" scaffold-name)))
 
 ;;;;;;;;;; Generators stuff ;;;;;;;;;;
 
-(defun rails-generate (&rest parameters)
+(defun rails-generate-run (&rest parameters)
   "Run the generate script using PARAMETERS."
-  (rails-run-script "generate" rails-generation-buffer-name parameters
+  (rails-run-script "generate"
+                    rails-generation-buffer-name
+                    parameters
                     "%s %s generated."))
+
+(defun rails-generate (&optional what)
+  "Run generate WHAT"
+  (interactive (list (completing-read "What generate? (use autocomplete): " rails-generators-list)))
+  (let ((name (intern (concat "rails-generate-" what))))
+    (when (fboundp name)
+      (call-interactively name))))
 
 (defun rails-generate-controller (&optional controller-name actions)
   "Generate a controller and open the controller file."
@@ -84,7 +112,7 @@ MESSAGE-FORMAT to format the output."
                                  (list->alist (rails-core:controllers-ancestors)))
                 (read-string "Actions (or return to skip): ")))
   (when (string-not-empty controller-name)
-    (rails-generate "controller" controller-name actions)
+    (rails-generate-run "controller" controller-name actions)
     (rails-core:find-file (rails-core:controller-file controller-name))))
 
 (defun rails-generate-model (&optional model-name)
@@ -92,7 +120,7 @@ MESSAGE-FORMAT to format the output."
   (interactive
    (list (completing-read "Model name: " (list->alist (rails-core:models-ancestors)))))
   (when (string-not-empty model-name)
-    (rails-generate "model" model-name)
+    (rails-generate-run "model" model-name)
     (rails-core:find-file (rails-core:model-file model-name))))
 
 (defun rails-generate-scaffold (&optional model-name controller-name actions)
@@ -102,23 +130,30 @@ MESSAGE-FORMAT to format the output."
   (when (string-not-empty model-name)
     (if (string-not-empty controller-name)
         (progn
-          (rails-generate "scaffold" model-name controller-name actions)
+          (rails-generate-run "scaffold" model-name controller-name actions)
           (rails-core:find-file (rails-core:controller-file controller-name)))
       (progn
-        (rails-generate "scaffold" model-name)
+        (rails-generate-run "scaffold" model-name)
         (rails-core:find-file (rails-core:controller-file model-name))))))
 
 (defun rails-generate-migration (migration-name)
   "Generate a migration and open the migration file."
   (interactive "MMigration name: ")
   (when (string-not-empty migration-name)
-    (rails-generate "migration" migration-name)
+    (rails-generate-run "migration" migration-name)
     (rails-core:find-file
      (save-excursion
        (set-buffer rails-generation-buffer-name)
        (goto-line 2)
        (search-forward-regexp "\\(db/migrate/[0-9a-z_]+.rb\\)")
        (match-string 1)))))
+
+(defun rails-generate-plugin (plugin-name)
+  "Generate a plugin and open the init.rb file."
+  (interactive "MPlugin name: ")
+  (when (string-not-empty plugin-name)
+    (rails-generate-run "plugin" plugin-name)
+    (rails-core:find-file (concat "vendor/plugins/" plugin-name "/init.rb"))))
 
 ;;;;;;;;;; Rails create project ;;;;;;;;;;
 
@@ -193,34 +228,19 @@ MESSAGE-FORMAT to format the output."
 
 (defun rails-rake (&optional task message)
   "Run a Rake task in RAILS_ROOT."
-  (interactive (list (completing-read "Rake task: " (list->alist (rails-rake-tasks)))))
+  (interactive (list (completing-read "Rake task (use autocomplete): " (list->alist (rails-rake-tasks)))))
   (rails-core:in-root
    (message (or message (format "Running rake task \"%s\"" task)))
    (shell-command (concat "rake " task) "*Rails Rake Output*" "*Rails Rake Errors*")))
 
-(defun rails-rake-tests ()
+(defun rails-rake-tests (&optional what)
   "Run Rake tests in RAILS_ROOT."
-  (interactive)
-  (rails-rake "test" "Running all tests"))
-
-(defun rails-rake-integration-tests ()
-  "Run Rake integration tests in RAILS_ROOT."
-  (interactive)
-  (rails-rake "test:integration" "Running integration tests"))
-
-(defun rails-rake-unit-tests ()
-  "Run Rake unit tests in RAILS_ROOT."
-  (interactive)
-  (rails-rake "test:units" "Running unit tests"))
-
-(defun rails-rake-functional-tests ()
-  "Run Rake functional tests in RAILS_ROOT."
-  (interactive)
-  (rails-rake "test:functionals" "Running functional tests"))
-
-(defun rails-rake-recent-tests ()
-  "Run Rake recent tests in RAILS_ROOT."
-  (interactive)
-  (rails-rake "test:recent" "Running recent tests"))
+  (interactive (list (completing-read "What test run? (use autocomplete): "
+                                      rails-rake-tests-alist
+                                      nil nil nil nil
+                                      (caar rails-rake-tests-alist))))
+  (when what
+    (let ((task (cdr (assoc what rails-rake-tests-alist))))
+      (rails-rake task (concat "Running " what " tests")))))
 
 (provide 'rails-scripts)

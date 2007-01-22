@@ -25,6 +25,9 @@
 ;; along with this program; if not, write to the Free Software
 ;; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+(eval-when-compile
+  (require 'rails-lib))
+
 (defun rails-core:root ()
   "Return RAILS_ROOT if this file is a part of a Rails application,
 else return nil"

@@ -256,9 +256,9 @@ Emacs w3m browser."
   "Return database parameters for enviroment ENV"
   (with-temp-buffer
     (shell-command
-     (format "ruby -r yaml -e 'YAML.load_file(%s)[\"%s\"].to_yaml.display'"
-             (rails-core:quoted-file "config/database.yml")
-             env)
+     (format "ruby -r yaml -r erb -e 'YAML.load(ERB.new(ARGF.read).result)[\%s\].to_yaml.display' %s"
+             env
+             (rails-core:file "config/database.yml"))
      (current-buffer))
     (let ((answer
            (make-rails-db-conf
