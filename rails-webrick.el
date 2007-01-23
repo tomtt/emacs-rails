@@ -82,7 +82,7 @@ using `rails-webrick:default-env'."
        (progn
          (setq default-directory root)
          (unless env
-           (setq env (rails-webrick:default-env)))
+           (setq env rails-webrick:default-env))
          (if rails-webrick:use-mongrel
              (setq proc
                    (apply 'start-process-shell-command

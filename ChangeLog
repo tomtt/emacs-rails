@@ -1,4 +1,6 @@
 2007-01-23  dima  <dima.exe@gmail.com>
+  * rails-scripts.el (rails-rake-tests): store selected value, set it to default
+  * rails-webrick.el (rails-webrick:start): fix #8088 (Akira Ikeda)
   * rails-core.el: add rails-core to eval-when-compile
   * rails-ui.el (rails-minor-mode-map): 
 	rebind some hotkeys

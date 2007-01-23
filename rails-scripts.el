@@ -33,6 +33,9 @@
     ("functionals" . "test:functionals")
     ("integraion" . "test:integration")))
 
+(defvar rails-rake-recent-test-alist
+  (list))
+
 (defvar rails-generators-list
   '("controller" "model" "scaffold" "migration" "plugin"))
 
@@ -235,12 +238,18 @@ MESSAGE-FORMAT to format the output."
 
 (defun rails-rake-tests (&optional what)
   "Run Rake tests in RAILS_ROOT."
-  (interactive (list (completing-read "What test run? (use autocomplete): "
+  (interactive (list (completing-read (concat "What test run?"
+                                              (when rails-rake-recent-test-alist
+                                                (concat " (" rails-rake-recent-test-alist  ")") )
+                                              ": ")
                                       rails-rake-tests-alist
                                       nil nil nil nil
                                       (caar rails-rake-tests-alist))))
+  (unless what
+    (setq what rails-rake-recent-test-alist))
   (when what
     (let ((task (cdr (assoc what rails-rake-tests-alist))))
+      (setq rails-rake-recent-test-alist what)
       (rails-rake task (concat "Running " what " tests")))))
 
 (provide 'rails-scripts)

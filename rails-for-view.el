@@ -130,7 +130,7 @@
   (interactive)
   (setq rails-primary-switch-func 'rails-view:switch-to-action)
   (setq rails-secondary-switch-func 'rails-view:switch-with-menu)
-  (if (fboundp mmm-primary-mode)
+  (if (fboundp 'mmm-primary-mode)
       (progn
         (define-key mmm-mode-map (kbd "\C-c p") 'rails-view:create-partial-from-selection)
         (define-key mmm-mode-map (kbd "\C-c b") 'rails-view:create-helper-from-block))
