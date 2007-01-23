@@ -34,13 +34,23 @@
     ("integraion" . "test:integration")))
 
 (defvar rails-rake-recent-test-alist
-  (list))
+  nil)
 
 (defvar rails-generators-list
-  '("controller" "model" "scaffold" "migration" "plugin"))
+  '("controller" "model" "scaffold" "migration" "plugin" "mailer" "observer" "resource"))
 
 (defvar rails-destroy-list
-  '("scaffold" "model" "controller"))
+  '("controller" "model" "scaffold" "migration" "plugin" "mailer" "observer" "resource"))
+
+(defvar rails-generate-params-list
+  '("-f")
+  "Add parameters to script/generate.
+For example -s to keep existing files and -c to add new files into svn.")
+
+(defvar rails-destroy-params-list
+  '("-f")
+  "Add parameters to script/destroy.
+For example -c to remove files from svn.")
 
 (defun rails-run-script (script buffer parameters &optional message-format)
   "Run a Rails script with PARAMETERS in BUFFER using
@@ -62,7 +72,8 @@ MESSAGE-FORMAT to format the output."
 
 (defun rails-destroy-run (&rest parameters)
   "Run the destroy script."
-  (rails-run-script "destroy" rails-generation-buffer-name parameters
+  (rails-run-script "destroy" rails-generation-buffer-name
+                    (append parameters rails-destroy-params-list)
                     "%s %s destroyed."))
 
 (defun rails-destroy (&optional what)
@@ -92,13 +103,43 @@ MESSAGE-FORMAT to format the output."
   (when (string-not-empty scaffold-name)
     (rails-destroy-run "scaffold" scaffold-name)))
 
+(defun rails-destroy-migration (&optional migration-name)
+  "Run the destroy script for migration"
+  (interactive (list (completing-read "Destroy migration: " (list->alist (rails-core:migrations)))))
+  (when (string-not-empty migration-name)
+    (rails-destroy-run "migration" migration-name)))
+
+(defun rails-destroy-mailer (&optional mailer-name)
+  "Run the destroy script for mailer"
+  (interactive "MDestroy mailer: ")
+  (when (string-not-empty mailer-name)
+    (rails-destroy-run "mailer" mailer-name)))
+
+(defun rails-destroy-plugin (&optional plugin-name)
+  "Run the destroy script for plugin"
+  (interactive (list (completing-read "Destroy plugin: " (list->alist (rails-core:plugins)))))
+  (when (string-not-empty plugin-name)
+    (rails-destroy-run "plugin" plugin-name)))
+
+(defun rails-destroy-observer (&optional observer-name)
+  "Run the destroy script for observer"
+  (interactive "MDestroy observer: ")
+  (when (string-not-empty observer-name)
+    (rails-destroy-run "observer" observer-name)))
+
+(defun rails-destroy-resource (&optional resource-name)
+  "Run the destroy script for resource"
+  (interactive "MDestroy resource: ")
+  (when (string-not-empty resource-name)
+    (rails-destroy-run "resource" resource-name)))
+
 ;;;;;;;;;; Generators stuff ;;;;;;;;;;
 
 (defun rails-generate-run (&rest parameters)
   "Run the generate script using PARAMETERS."
   (rails-run-script "generate"
                     rails-generation-buffer-name
-                    parameters
+                    (append parameters rails-generate-params-list)
                     "%s %s generated."))
 
 (defun rails-generate (&optional what)
@@ -116,7 +157,7 @@ MESSAGE-FORMAT to format the output."
                 (read-string "Actions (or return to skip): ")))
   (when (string-not-empty controller-name)
     (rails-generate-run "controller" controller-name actions)
-    (rails-core:find-file (rails-core:controller-file controller-name))))
+    (rails-core:find-file-if-exist (rails-core:controller-file controller-name))))
 
 (defun rails-generate-model (&optional model-name)
   "Generate a model and open the model file."
@@ -124,7 +165,7 @@ MESSAGE-FORMAT to format the output."
    (list (completing-read "Model name: " (list->alist (rails-core:models-ancestors)))))
   (when (string-not-empty model-name)
     (rails-generate-run "model" model-name)
-    (rails-core:find-file (rails-core:model-file model-name))))
+    (rails-core:find-file-if-exist (rails-core:model-file model-name))))
 
 (defun rails-generate-scaffold (&optional model-name controller-name actions)
   "Generate a scaffold and open the controller file."
@@ -134,17 +175,17 @@ MESSAGE-FORMAT to format the output."
     (if (string-not-empty controller-name)
         (progn
           (rails-generate-run "scaffold" model-name controller-name actions)
-          (rails-core:find-file (rails-core:controller-file controller-name)))
+          (rails-core:find-file-if-exist (rails-core:controller-file controller-name)))
       (progn
         (rails-generate-run "scaffold" model-name)
-        (rails-core:find-file (rails-core:controller-file model-name))))))
+        (rails-core:find-file-if-exist (rails-core:controller-file model-name))))))
 
 (defun rails-generate-migration (migration-name)
   "Generate a migration and open the migration file."
   (interactive "MMigration name: ")
   (when (string-not-empty migration-name)
     (rails-generate-run "migration" migration-name)
-    (rails-core:find-file
+    (rails-core:find-file-if-exist
      (save-excursion
        (set-buffer rails-generation-buffer-name)
        (goto-line 2)
@@ -156,7 +197,31 @@ MESSAGE-FORMAT to format the output."
   (interactive "MPlugin name: ")
   (when (string-not-empty plugin-name)
     (rails-generate-run "plugin" plugin-name)
-    (rails-core:find-file (concat "vendor/plugins/" plugin-name "/init.rb"))))
+    (rails-core:find-file-if-exist (concat "vendor/plugins/" plugin-name "/init.rb"))))
+
+(defun rails-generate-mailer (mailer-name)
+  "Generate a mailer and open the mailer file"
+  (interactive "MMailer name: ")
+  (when (string-not-empty mailer-name)
+    (rails-generate-run "mailer" mailer-name)
+    (rails-core:find-file-if-exist (concat (rails-core:model-file mailer-name)))))
+
+(defun rails-generate-observer (observer-name)
+  "Generate a observer and open the observer file"
+  (interactive "MObserver name: ")
+  (when (string-not-empty observer-name)
+    (rails-generate-run "observer" observer-name)
+    (unless (string-match "[Oo]bserver$" observer-name)
+      (setq observer-name (concat observer-name "_observer")))
+    (rails-core:find-file-if-exist (concat (rails-core:model-file observer-name)))))
+
+(defun rails-generate-resource (resource-name)
+  "Generate a resource and open the resource file"
+  (interactive "MResource name: ")
+  (when (string-not-empty resource-name)
+    (rails-generate-run "resource" resource-name)
+    ;; pluralize bug
+    (rails-core:find-file-if-exist (concat (rails-core:controller-file resource-name)))))
 
 ;;;;;;;;;; Rails create project ;;;;;;;;;;
 

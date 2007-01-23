@@ -617,6 +617,9 @@
 
   ([rails scr gen] (cons "Generate" (make-sparse-keymap "Generate")))
 
+  ([rails scr gen resource] '("Resource" . rails-generate-resource))
+  ([rails scr gen observer] '("Observer" . rails-generate-observer))
+  ([rails scr gen mailer] '("Mailer" . rails-generate-mailer))
   ([rails scr gen plugin] '("Plugin" . rails-generate-plugin))
   ([rails scr gen migration] '("Migration" . rails-generate-migration))
   ([rails scr gen scaffold] '("Scaffold" . rails-generate-scaffold))
@@ -626,9 +629,14 @@
   ([rails scr gen run] '("Run generate ..." . rails-generate))
 
   ([rails scr destr] (cons "Destroy" (make-sparse-keymap "Generators")))
-  ([rails scr destr controller] '("Controller" . rails-destroy-controller))
-  ([rails scr destr model] '("Model" . rails-destroy-model))
+
+  ([rails scr destr resource] '("Resource" . rails-destroy-resource))
+  ([rails scr destr observer] '("Observer" . rails-destroy-observer))
+  ([rails scr destr mailer] '("Mailer" . rails-destroy-mailer))
+  ([rails scr destr migration] '("Migration" . rails-destroy-migration))
   ([rails scr destr scaffold] '("Scaffold" . rails-destroy-scaffold))
+  ([rails scr destr model] '("Model" . rails-destroy-model))
+  ([rails scr destr controller] '("Controller" . rails-destroy-controller))
   ([rails scr destr separator] '("--"))
   ([rails scr destr run] '("Run destroy ..." . rails-destroy))
 
@@ -675,13 +683,14 @@
 
   ([rails separator2] '("--"))
 
-  ([rails goto-models] '("Go to models" . rails-nav:goto-models))
-  ([rails goto-controllers] '("Go to controllers" . rails-nav:goto-controllers))
-  ([rails goto-helpers] '("Go to helpers" . rails-nav:goto-helpers))
+  ([rails goto-migrate] '("Go to migrate" . rails-nav:goto-migrate))
   ([rails goto-layouts] '("Go to layouts" . rails-nav:goto-layouts))
   ([rails goto-stylesheets] '("Go to stylesheets" . rails-nav:goto-stylesheets))
   ([rails goto-javascripts] '("Go to javascripts" . rails-nav:goto-javascripts))
-  ([rails goto-migrate] '("Go to migrate" . rails-nav:goto-migrate)))
+  ([rails goto-helpers] '("Go to helpers" . rails-nav:goto-helpers))
+  ([rails goto-observers] '("Go to observers" . rails-nav:goto-observers))
+  ([rails goto-models] '("Go to models" . rails-nav:goto-models))
+  ([rails goto-controllers] '("Go to controllers" . rails-nav:goto-controllers)))
 
 (define-keys rails-minor-mode-map
 
@@ -690,6 +699,7 @@
   ;; Goto
   ((kbd "\C-c \C-c g m") 'rails-nav:goto-models)
   ((kbd "\C-c \C-c g c") 'rails-nav:goto-controllers)
+  ((kbd "\C-c \C-c g o") 'rails-nav:goto-observers)
   ((kbd "\C-c \C-c g h") 'rails-nav:goto-helpers)
   ((kbd "\C-c \C-c g l") 'rails-nav:goto-layouts)
   ((kbd "\C-c \C-c g s") 'rails-nav:goto-stylesheets)

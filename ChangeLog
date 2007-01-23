@@ -1,3 +1,16 @@
+2007-01-24  dima  <dima.exe@gmail.com>
+  * rails-ui.el: create key bindings and menu items to latest changes
+  * rails-scripts.el: 
+	add more targets to generate and destroy
+	cleanup targets
+	create variables: rails-generate-params-list, rails-destroy-params-list
+  * rails-navigation.el: 
+	create another implementation menu: rails-nav:goto-file-with-menu-from-list,
+	rewrite rails:nav:goto-* to use this
+  * rails-core.el: 
+	rewrite rails-core:(controllers,models,etc),
+	add more functions for plugins, migrations, etc
+
 2007-01-23  dima  <dima.exe@gmail.com>
   * rails-scripts.el (rails-rake-tests): store selected value, set it to default
   * rails-webrick.el (rails-webrick:start): fix #8088 (Akira Ikeda)

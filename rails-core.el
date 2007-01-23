@@ -116,8 +116,11 @@ will not append \".rb\" to result."
 
 (defun rails-core:file (file-name)
   "Return the full path for FILE-NAME in a Rails directory."
-  (when-bind (root (rails-core:root))
-       (concat root file-name)))
+  (if (file-name-absolute-p file-name)
+      file-name
+    (when-bind
+     (root (rails-core:root))
+     (concat root file-name))))
 
 (defun rails-core:quoted-file (file-name)
   "Return the quoted full path for FILE-NAME in a Rails directory."
@@ -142,7 +145,7 @@ it does not exist, ask to create it using QUESTION as a prompt."
 ;; Funtions, that retrun Rails objects full pathes
 
 (defun rails-core:model-file (model-name)
-  "Return teh model file from the model name."
+  "Return the model file from the model name."
   (concat "app/models/" (rails-core:file-by-class model-name)))
 
 (defun rails-core:controller-file (controller-name)
@@ -152,6 +155,20 @@ it does not exist, ask to create it using QUESTION as a prompt."
      (rails-core:short-controller-name controller-name) t)
     (unless (string-equal controller-name "Application") "_controller")
     ".rb"))
+
+(defun rails-core:observer-file (observer-name)
+  "Return the path to the observer OBSERVER-NAME."
+  (rails-core:model-file (concat observer-name "Observer")))
+
+(defun rails-core:migrate-file (migrate-name)
+  "Return the model file from the MIGRATE-NAME."
+  (concat "db/migrate/" (replace-regexp-in-string
+                         " " "_"
+                         (rails-core:file-by-class migrate-name))))
+
+(defun rails-core:helper-file (helper-name)
+  "Return the path to the observer HELPER-NAME."
+  (concat "app/helpers/" (rails-core:file-by-class (concat helper-name "Helper"))))
 
 (defun rails-core:layout-file (layout)
   "Return the path to the layout file named LAYOUT."
@@ -225,15 +242,48 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
    (lambda (controller)
      (rails-core:class-by-file
       (if cut-contoller-suffix
-    (replace-regexp-in-string "_controller\." "\." controller)
-  controller)))
+          (replace-regexp-in-string "_controller\\." "." controller)
+        controller)))
    (find-recursive-files "_controller\\.rb$" (rails-core:file "app/controllers/"))))
 
 (defun rails-core:models ()
   "Return a list of Rails models."
   (mapcar
    #'rails-core:class-by-file
-   (find-recursive-files "\\.rb$" (rails-core:file "app/models/"))))
+   (find-recursive-files "[^\\(_observer\\)]\\.rb$" (rails-core:file "app/models/"))))
+
+(defun rails-core:observers ()
+  "Return a list of Rails observers."
+  (mapcar
+   #'(lambda (observer) (replace-regexp-in-string "Observer$" "" observer))
+   (mapcar
+    #'rails-core:class-by-file
+    (find-recursive-files "\\(_observer\\)\\.rb$" (rails-core:file "app/models/")))))
+
+(defun rails-core:helpers ()
+  "Return a list of Rails helpers."
+  (mapcar
+   #'(lambda (helper) (replace-regexp-in-string "Helper$" "" helper))
+   (mapcar
+    #'rails-core:class-by-file
+    (find-recursive-files "_helper\\.rb$" (rails-core:file "app/helpers/")))))
+
+(defun rails-core:migrations ()
+  "Return a list of Rails migrations."
+  (mapcar
+   #'(lambda (migration)
+       (replace-regexp-in-string "^\\([0-9]+\\)" "\\1 " migration))
+   (mapcar
+    #'rails-core:class-by-file
+    (find-recursive-files "^[0-9]+_.*\\.rb$" (rails-core:file "db/migrate/")))))
+
+(defun rails-core:plugins ()
+  "Return a list of Rails plugins."
+  (mapcar
+   #'file-name-nondirectory
+   (delete-if-not
+    #'file-directory-p
+    (directory-files "/var/www/ruby/template/vendor/plugins" t "^[^\\.]"))))
 
 (defun rails-core:regex-for-match-view ()
   "Return a regex to match Rails view templates.
