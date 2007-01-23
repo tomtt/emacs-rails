@@ -9,7 +9,7 @@
 	rewrite rails:nav:goto-* to use this
   * rails-core.el: 
 	rewrite rails-core:(controllers,models,etc),
-	add more functions for plugins, migrations, etc
+	add more functions to lookup plugins, migrations, etc
 
 2007-01-23  dima  <dima.exe@gmail.com>
   * rails-scripts.el (rails-rake-tests): store selected value, set it to default
