@@ -234,23 +234,32 @@ CONTROLLER."
    controller)))))
 
 ;;;;;;;;;; Functions that return collection of Rails objects  ;;;;;;;;;;
+(defun rails-core:observer-p (name)
+  (if (string-match "\\(Observer\\|_observer\\(\\.rb\\)?\\)$" name)
+      t nil))
 
 (defun rails-core:controllers (&optional cut-contoller-suffix)
   "Return a list of Rails controllers. Remove the '_controller'
 suffix if CUT-CONTOLLER-SUFFIX is non nil."
   (mapcar
-   (lambda (controller)
-     (rails-core:class-by-file
-      (if cut-contoller-suffix
-          (replace-regexp-in-string "_controller\\." "." controller)
-        controller)))
-   (find-recursive-files "_controller\\.rb$" (rails-core:file "app/controllers/"))))
+   #'(lambda (controller)
+       (rails-core:class-by-file
+        (if cut-contoller-suffix
+            (replace-regexp-in-string "_controller\\." "." controller)
+          controller)))
+   (delete-if-not
+    #'(lambda (controller)
+        (string-match "\\(application\\|[a-z0-9_]+_controller\\)\\.rb$"
+                      controller))
+    (find-recursive-files "\\.rb$" (rails-core:file "app/controllers/")))))
 
 (defun rails-core:models ()
   "Return a list of Rails models."
-  (mapcar
-   #'rails-core:class-by-file
-   (find-recursive-files "[^\\(_observer\\)]\\.rb$" (rails-core:file "app/models/"))))
+  (delete-if
+   #'rails-core:observer-p
+   (mapcar
+    #'rails-core:class-by-file
+    (find-recursive-files "\\.rb$" (rails-core:file "app/models/")))))
 
 (defun rails-core:observers ()
   "Return a list of Rails observers."
@@ -270,12 +279,13 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
 
 (defun rails-core:migrations ()
   "Return a list of Rails migrations."
-  (mapcar
-   #'(lambda (migration)
-       (replace-regexp-in-string "^\\([0-9]+\\)" "\\1 " migration))
+  (reverse
    (mapcar
-    #'rails-core:class-by-file
-    (find-recursive-files "^[0-9]+_.*\\.rb$" (rails-core:file "db/migrate/")))))
+    #'(lambda (migration)
+        (replace-regexp-in-string "^\\([0-9]+\\)" "\\1 " migration))
+    (mapcar
+     #'rails-core:class-by-file
+     (find-recursive-files "^[0-9]+_.*\\.rb$" (rails-core:file "db/migrate/"))))))
 
 (defun rails-core:plugins ()
   "Return a list of Rails plugins."

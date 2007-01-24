@@ -1,3 +1,9 @@
+2007-01-25  dima  <dima.exe@gmail.com>
+  * rails-core.el: 
+	fix list ordered in rails-core:*
+	add rails-core:observer-p
+  * rails.el (rails-open-log): fix path to log file
+
 2007-01-24  dima  <dima.exe@gmail.com>
   * rails-ui.el: create key bindings and menu items to latest changes
   * rails-scripts.el: 

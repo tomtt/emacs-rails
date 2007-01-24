@@ -190,9 +190,9 @@ Emacs w3m browser."
   (interactive (list (rails-read-enviroment-name)))
   (rails-core:with-root
    (root)
-   (let ((log-file (rails-core:file (concat "/log/" env ".log"))))
+   (let ((log-file (rails-core:file (concat "log/" env ".log"))))
      (when (file-exists-p log-file)
-         (find-file log-file)
+       (find-file log-file)
          (set-buffer-file-coding-system 'utf-8)
          (ansi-color-apply-on-region (point-min) (point-max))
          (set-buffer-modified-p nil)
