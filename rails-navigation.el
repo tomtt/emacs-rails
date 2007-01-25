@@ -101,6 +101,15 @@
    "Go to helper.."
    'rails-core:helper-file))
 
+(defun rails-nav:goto-plugins ()
+  "Go to plugins."
+  (interactive)
+  (rails-nav:goto-file-with-menu-from-list
+   (rails-core:plugins)
+   "Go to plugin.."
+   #'(lambda(plugin)
+       (concat "vendor/plugins/" plugin "/init.rb"))))
+
 (defun rails-nav:create-new-layout (&optional name)
   "Create a new layout."
   (let ((name (or name (read-string "Layout name? ")))

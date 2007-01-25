@@ -1,4 +1,5 @@
 2007-01-25  dima  <dima.exe@gmail.com>
+  * rails-navigation.el, rails-ui.el: add rails-nav:goto-plugins
   * rails-ruby.el: remove advice for ruby-indent-command
   * rails-lib.el (def-snips): fix indentation
   * rails-core.el: 

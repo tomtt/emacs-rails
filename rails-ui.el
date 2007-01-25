@@ -683,7 +683,8 @@
 
   ([rails separator2] '("--"))
 
-  ([rails goto-migrate] '("Go to migrate" . rails-nav:goto-migrate))
+  ([rails goto-plugins] '("Go to plugin" . rails-nav:goto-plugins))
+  ([rails goto-migrate] '("Go to migrations" . rails-nav:goto-migrate))
   ([rails goto-layouts] '("Go to layouts" . rails-nav:goto-layouts))
   ([rails goto-stylesheets] '("Go to stylesheets" . rails-nav:goto-stylesheets))
   ([rails goto-javascripts] '("Go to javascripts" . rails-nav:goto-javascripts))
@@ -705,6 +706,7 @@
   ((kbd "\C-c \C-c g s") 'rails-nav:goto-stylesheets)
   ((kbd "\C-c \C-c g j") 'rails-nav:goto-javascripts)
   ((kbd "\C-c \C-c g g") 'rails-nav:goto-migrate)
+  ((kbd "\C-c \C-c g p") 'rails-nav:goto-plugins)
 
   ;; Switch
   ((kbd "C-c <up>") 'rails-lib:run-primary-switch)
