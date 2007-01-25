@@ -136,14 +136,14 @@ ABBREV-TABLE for the abbreviation ABBREV-NAME."
 "
   `(progn
      ,@(loop for table in abbrev-tables
-       collect
-       `(snippet-with-abbrev-table ',table
-    ,@(loop for (name template desc) in snips collect
-      `(,name . ,template)))
-       append
-       (loop for (name template desc) in snips collect
-       `(setf ,(snippet-menu-description-variable table name)
-        ,desc)))))
+             collect
+             `(snippet-with-abbrev-table ',table
+                                         ,@(loop for (name template desc) in snips collect
+                                                 `(,name . ,template)))
+             append
+             (loop for (name template desc) in snips collect
+                   `(setf ,(snippet-menu-description-variable table name)
+                          ,desc)))))
 
 (defun snippet-menu-description (abbrev-table name)
   "Return the menu descripton for the snippet named NAME in

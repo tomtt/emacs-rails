@@ -401,17 +401,17 @@ necessary."
           (lambda()
             (require 'rails-ruby)
             (set (make-local-variable 'indent-tabs-mode) 'nil)
+            (set (make-local-variable 'tab-width) 2)
             (require 'ruby-electric)
             (ruby-electric-mode t)
-            (syntax-table)
-            (capitalize "AA/addd_aaa")
+            (imenu-add-to-menubar "IMENU")
             (modify-syntax-entry ?! "w" (syntax-table))
             (modify-syntax-entry ?: "w" (syntax-table))
             (modify-syntax-entry ?_ "w" (syntax-table))
             (local-set-key (kbd "C-.") 'complete-tag)
             (local-set-key (if rails-use-another-define-key
                                (kbd "TAB") (kbd "<tab>"))
-                           'ruby-indent-command)
+                           'indent-or-complete)
             (local-set-key (if rails-use-another-define-key
                                (kbd "RET") (kbd "<return>"))
                            'ruby-newline-and-indent)))
@@ -432,15 +432,11 @@ necessary."
                                 (save-excursion
                                   (untabify (point-min) (point-max))
                                   (delete-trailing-whitespace))))))
+               (local-set-key (if rails-use-another-define-key
+                                  (kbd "TAB") (kbd "<tab>"))
+                              'indent-or-complete)
                (rails-minor-mode t)
-               (rails-apply-for-buffer-type)
-               (local-set-key (if rails-use-another-define-key "TAB" (kbd "<tab>"))
-                              '(lambda() (interactive)
-                                 (if snippet
-                                     (snippet-next-field)
-                                   (if (looking-at "\\>")
-                                       (hippie-expand nil)
-                                     (indent-according-to-mode)))))))))
+               (rails-apply-for-buffer-type)))))
 
 ;;; Run rails-minor-mode in dired
 (add-hook 'dired-mode-hook
