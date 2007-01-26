@@ -716,7 +716,6 @@
   ((kbd "\C-c \C-c w d") 'rails-ws:start-development)
   ((kbd "\C-c \C-c w p") 'rails-ws:start-production)
   ((kbd "\C-c \C-c w t") 'rails-ws:start-test)
-  ((kbd "\C-c \C-c w x") 'rails-ws:toggle-start-stop)
   ((kbd "\C-c \C-c w i") 'rails-ws:print-status)
 
   ;; Rails finds
