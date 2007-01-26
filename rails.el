@@ -41,9 +41,9 @@
 
 (require 'rails-core)
 (require 'rails-lib)
-(require 'rails-webrick)
 (require 'rails-navigation)
 (require 'rails-scripts)
+(require 'rails-ws)
 (require 'rails-ui)
 
 ;;;;;;;;;; Variable definition ;;;;;;;;;;
@@ -139,6 +139,7 @@ Emacs w3m browser."
   "Rails file types -- rails directories map")
 
 (defvar rails-enviroments '("development" "production" "test"))
+(defvar rails-default-environment (first rails-enviroments))
 
 (defvar rails-adapters-alist
   '(("mysql"      . sql-mysql)

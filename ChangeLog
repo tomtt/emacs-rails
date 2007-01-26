@@ -1,5 +1,12 @@
 2007-01-26  dima  <dima.exe@gmail.com>
 
+	* rails-ui.el (rails-minor-mode-menu-bar-map): rename menu item WEBrick to Web Server.
+	Update menu group Web Server
+
+	* rails.el (rails-ws): add variable rails-default-environment
+
+	* rails-ws.el: rename from rails-webrick, complete rewrite and cleanup
+
 	* rails-navigation.el (rails-nav:create-goto-menu): now support
 	nested lists in append-to-menu (ex. (list (cons) (cons)))
 	(rails-nav:create-new-layout): cleanup

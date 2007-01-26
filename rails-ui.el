@@ -640,46 +640,39 @@
   ([rails scr destr separator] '("--"))
   ([rails scr destr run] '("Run destroy ..." . rails-destroy))
 
-  ([rails webrick] (cons "WEBrick" (make-sparse-keymap "WEBrick")))
+  ([rails ws] (cons "Web Server" (make-sparse-keymap "WebServer")))
 
-  ([rails webrick mongrel] '(menu-item "Use Mongrel" rails-webrick:toggle-use-mongrel
-               :enable (not (rails-webrick:status))
-               :button (:toggle
-            . (and (boundp 'rails-webrick:use-mongrel)
-                   rails-webrick:use-mongrel))))
+  ([rails ws use-webrick] '(menu-item "Use WEBrick"
+                                      (lambda()(interactive)(rails-ws:switch-default-server-type "webrick"))
+                                      :button (:toggle . (rails-ws:default-server-type-p "webrick"))))
+  ([rails ws use-lighttpd] '(menu-item "Use Lighty"
+                                       (lambda()(interactive)(rails-ws:switch-default-server-type "lighttpd"))
+                                       :button (:toggle . (rails-ws:default-server-type-p "lighttpd"))))
+  ([rails ws use-mongrel] '(menu-item "Use Mongrel"
+                                      (lambda()(interactive)(rails-ws:switch-default-server-type "mongrel"))
+                                      :button (:toggle . (rails-ws:default-server-type-p "mongrel"))))
+  ([rails ws separator] '("--"))
 
-  ([rails webrick separator] '("--"))
-
-  ([rails webrick brows] '(menu-item "Open browser..."
+  ([rails ws brows] '(menu-item "Open browser..."
              rails-webrick:open-browser-on-controller
-             :enable (rails-webrick:status)))
-
-  ([rails webrick auto-brows] '(menu-item "Open browser on current action"
+            :enable (rails-ws:running-p)))
+  ([rails ws auto-brows] '(menu-item "Open browser on current action"
             rails-webrick:auto-open-browser
-            :enable (rails-webrick:status)))
-
-  ([rails webrick url] '(menu-item "Open browser"
+            :enable (rails-ws:running-p)))
+  ([rails ws url] '(menu-item "Open browser"
            rails-webrick:open-browser
-           :enable (rails-webrick:status)))
-  ([rails webrick stop] '(menu-item "Stop"
-            rails-webrick:stop
-            :enable (rails-webrick:status)))
+            :enable (rails-ws:running-p)))
+  ([rails ws separator2] '("--"))
 
-  ([rails webrick test] '(menu-item "Start test"
-            (lambda() (interactive) (rails-webrick:start "test"))
-            :enable (not (rails-webrick:status))))
-
-  ([rails webrick production] '(menu-item "Start production"
-            (lambda() (interactive) (rails-webrick:start "production"))
-            :enable (not (rails-webrick:status))))
-
-  ([rails webrick development] '(menu-item "Start development"
-             (lambda() (interactive) (rails-webrick:start "development"))
-             :enable (not (rails-webrick:status))))
-
-  ([rails webrick default] '(menu-item "Start default"
-               rails-webrick:start-default-env
-               :enable (not (rails-webrick:status))))
+  ([rails ws test] '(menu-item "Start test" rails-ws:start-test
+                               :enable (not (rails-ws:running-p))))
+  ([rails ws production] '(menu-item "Start production" rails-ws:start-production
+                                     :enable (not (rails-ws:running-p))))
+  ([rails ws development] '(menu-item "Start development" rails-ws:start-development
+                                      :enable (not (rails-ws:running-p))))
+  ([rails ws separator3] '("--"))
+  ([rails ws status] '(menu-item "Print status" rails-ws:print-status))
+  ([rails ws default] '(menu-item "Toggle start(with default environment)/stop" rails-ws:toggle-start-stop))
 
   ([rails separator2] '("--"))
 
@@ -719,9 +712,12 @@
   ((kbd "\C-c \C-c s b") 'rails-run-breakpointer)
   ((kbd "\C-c \C-c s s") 'rails-run-sql)
   ((kbd "\C-c \C-c r")   'rails-rake)
-  ((kbd "\C-c \C-c w s") 'rails-webrick:start)
-  ((kbd "\C-c \C-c w d") 'rails-webrick:start-default-env)
-  ((kbd "\C-c \C-c w p") 'rails-webrick:stop)
+  ((kbd "\C-c \C-c w s") 'rails-ws:toggle-start-stop)
+  ((kbd "\C-c \C-c w d") 'rails-ws:start-development)
+  ((kbd "\C-c \C-c w p") 'rails-ws:start-production)
+  ((kbd "\C-c \C-c w t") 'rails-ws:start-test)
+  ((kbd "\C-c \C-c w x") 'rails-ws:toggle-start-stop)
+  ((kbd "\C-c \C-c w i") 'rails-ws:print-status)
 
   ;; Rails finds
   ((kbd "\C-c \C-c f m") 'rails-find-models)
