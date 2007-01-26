@@ -297,7 +297,14 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
    #'file-name-nondirectory
    (delete-if-not
     #'file-directory-p
-    (directory-files "/var/www/ruby/template/vendor/plugins" t "^[^\\.]"))))
+    (directory-files (rails-core:file "vendor/plugins") t "^[^\\.]"))))
+
+(defun rails-core:layouts ()
+  "Return a list of Rails layouts."
+  (mapcar
+   #'(lambda (l)
+       (replace-regexp-in-string "\\.[^.]+$" "" l))
+   (find-recursive-files "\\.rhtml" (rails-core:file "app/views/layouts"))))
 
 (defun rails-core:regex-for-match-view ()
   "Return a regex to match Rails view templates.

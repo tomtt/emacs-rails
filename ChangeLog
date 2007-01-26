@@ -1,7 +1,19 @@
 2007-01-26  dima  <dima.exe@gmail.com>
-   * rails-for-view.el (rails-for-view): remove detect mmm-mode, always apply hotkeys to mmm-mode-map (if exist)
-   * rails.el: apply ruby-mode to *.rake files and setup utf9 encoding
-   * rails-lib.el (list->alist): skip if LIST entry is list
+
+	* rails-navigation.el (rails-nav:create-goto-menu): now support
+	nested lists in append-to-menu (ex. (list (cons) (cons)))
+	(rails-nav:create-new-layout): cleanup
+	(rails-nav:goto-layouts): cleanup
+
+	* rails-core.el
+	(rails-core:plugins): fix invalid path passed into directory-files
+	(rails-core:layouts): new function
+
+	* rails-for-view.el (rails-for-view): remove detect mmm-mode, always apply hotkeys to mmm-mode-map (if exist)
+
+	* rails.el: apply ruby-mode to *.rake files and setup utf9 encoding
+
+	* rails-lib.el (list->alist): skip if LIST entry is list	
 
 2007-01-25  dima  <dima.exe@gmail.com>
   * rails-navigation.el, rails-ui.el: add rails-nav:goto-plugins

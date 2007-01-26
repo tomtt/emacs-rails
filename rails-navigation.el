@@ -26,11 +26,13 @@
 ;; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 (defun rails-nav:create-goto-menu (items title &optional append-to-menu)
-  (let* ((items (if append-to-menu
-                    (add-to-list 'items append-to-menu t) items))
-         (selected (when items
-                     (rails-core:menu
-                      (list title (cons title items))))))
+  (when append-to-menu
+    (dolist (l append-to-menu items)
+      (add-to-list 'items l t)))
+  (let ((selected
+         (when items
+           (rails-core:menu
+            (list title (cons title items))))))
     (if selected selected (message "No files found"))))
 
 (defun rails-nav:goto-file-with-menu (dir title &optional ext no-inflector append-to-menu)
@@ -107,24 +109,30 @@
   (rails-nav:goto-file-with-menu-from-list
    (rails-core:plugins)
    "Go to plugin.."
-   #'(lambda(plugin)
-       (concat "vendor/plugins/" plugin "/init.rb"))))
+   (lambda(plugin)
+     (concat "vendor/plugins/" plugin "/init.rb"))))
 
 (defun rails-nav:create-new-layout (&optional name)
   "Create a new layout."
-  (let ((name (or name (read-string "Layout name? ")))
-        (root (rails-core:root)))
-    (rails-core:find-file (rails-core:layout-file name))
-    (if (y-or-n-p "Insert initial template? ")
-        (insert rails-layout-template))))
+  (let ((name (or name (read-string "Layout name? "))))
+    (when name
+      (rails-core:find-file (rails-core:layout-file name))
+      (if (y-or-n-p "Insert initial template? ")
+          (insert rails-layout-template)))))
 
 (defun rails-nav:goto-layouts ()
   "Go to layouts."
   (interactive)
-  (let ((path "app/views/layouts/")
-        item)
-    (setq item (cons "Create new layout" 'rails-nav:create-new-layout))
-    (rails-nav:goto-file-with-menu path "Go to layout.." "rhtml" t item)))
+  (let ((items (list (cons "--" "--")
+                     (cons "Create new layout" 'rails-nav:create-new-layout))))
+    (rails-nav:goto-file-with-menu-from-list
+     (rails-core:layouts)
+     "Go to layout.."
+     (lambda (l)
+       (if (stringp l)
+           (rails-core:layout-file l)
+         (apply l (list))))
+     items)))
 
 (defun rails-nav:goto-stylesheets ()
   "Go to stylesheets."
