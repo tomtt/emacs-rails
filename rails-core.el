@@ -238,6 +238,10 @@ CONTROLLER."
   (if (string-match "\\(Observer\\|_observer\\(\\.rb\\)?\\)$" name)
       t nil))
 
+(defun rails-core:observer-p (name)
+  (if (string-match "\\(Observer\\|_observer\\(\\.rb\\)?\\)$" name)
+      t nil))
+
 (defun rails-core:controllers (&optional cut-contoller-suffix)
   "Return a list of Rails controllers. Remove the '_controller'
 suffix if CUT-CONTOLLER-SUFFIX is non nil."
@@ -255,10 +259,10 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
 
 (defun rails-core:models ()
   "Return a list of Rails models."
-  (delete-if
-   #'rails-core:observer-p
-   (mapcar
-    #'rails-core:class-by-file
+  (mapcar
+   #'rails-core:class-by-file
+   (delete-if
+    #'rails-core:observer-p
     (find-recursive-files "\\.rb$" (rails-core:file "app/models/")))))
 
 (defun rails-core:observers ()

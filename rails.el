@@ -445,11 +445,13 @@ necessary."
                 (rails-minor-mode t))))
 
 (setq auto-mode-alist  (cons '("\\.rb$" . ruby-mode) auto-mode-alist))
+(setq auto-mode-alist  (cons '("\\.rake$" . ruby-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.rjs$" . ruby-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.rxml$" . ruby-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.rhtml$" . html-mode) auto-mode-alist))
 
 (modify-coding-system-alist 'file "\\.rb$" 'utf-8)
+(modify-coding-system-alist 'file "\\.rake$" 'utf-8)
 (modify-coding-system-alist 'file (rails-core:regex-for-match-view) 'utf-8)
 
 (provide 'rails)

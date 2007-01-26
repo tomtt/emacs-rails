@@ -1,6 +1,7 @@
 2007-01-26  dima  <dima.exe@gmail.com>
-	
-  * rails-lib.el (list->alist): skip if LIST entry is list
+   * rails-for-view.el (rails-for-view): remove detect mmm-mode, always apply hotkeys to mmm-mode-map (if exist)
+   * rails.el: apply ruby-mode to *.rake files and setup utf9 encoding
+   * rails-lib.el (list->alist): skip if LIST entry is list
 
 2007-01-25  dima  <dima.exe@gmail.com>
   * rails-navigation.el, rails-ui.el: add rails-nav:goto-plugins
