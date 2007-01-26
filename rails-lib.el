@@ -56,9 +56,11 @@ If EXPR is not nil exeutes BODY.
 ;; Lists
 
 (defun list->alist (list)
-  "Convert (a b c) to ((a . a) (b . b) (c . c))."
-  (mapcar #'(lambda (el) (cons el el))
-    list))
+  "Convert ((a . b) c d) to ((a . b) (c . c) (d . d))."
+  (mapcar
+   #'(lambda (el)
+       (if (listp el) el(cons el el)))
+   list))
 
 (defun uniq-list (list)
   "Return a list of unique elements."
