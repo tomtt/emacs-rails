@@ -362,8 +362,6 @@ necessary."
 (add-hook 'ruby-mode-hook
           (lambda()
             (require 'rails-ruby)
-            (set (make-local-variable 'indent-tabs-mode) 'nil)
-            (set (make-local-variable 'tab-width) 2)
             (require 'ruby-electric)
             (ruby-electric-mode t)
             (imenu-add-to-menubar "IMENU")
