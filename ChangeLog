@@ -1,5 +1,10 @@
 2007-01-27  dima  <dima.exe@gmail.com>
 
+	* rails-for-controller.el (rails-controller:switch-with-menu):
+	call rails-controller:switch-to-view for "Current view" 
+
+	* rails-log.el (rails-log:open-file): run rails-minor-mode in log buffer
+
 	* rails-ui.el: update "Open log" menu
 
 	* rails.el: relete function rails-open-log, and place all log

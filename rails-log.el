@@ -38,8 +38,9 @@
     (unless (get-buffer buffer)
       (get-buffer-create buffer)
       (set-buffer buffer)
-      (setq buffer-read-only t)
       (setq auto-window-vscroll t)
+      (rails-minor-mode t)
+      (setq buffer-read-only t)
       (set-buffer current)
       (apply-colorize-to-buffer buffer))
     (start-process "tail"

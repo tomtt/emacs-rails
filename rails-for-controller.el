@@ -27,7 +27,7 @@
 
 ;;; Code:
 
-(defun rails-controller:switch-to-view()
+(defun rails-controller:switch-to-view ()
   "Switch to the view corresponding to the current action."
   (interactive)
   (let* ((controller (rails-core:current-controller))
@@ -75,19 +75,22 @@ menu."
          (views (list))
          (helper (rails-core:file (rails-core:helper-file controller)))
          (test (rails-core:file (rails-core:functional-test-file controller)))
-         file)
+         item)
     (when test
       (add-to-list 'menu (list "Functional test" test)))
     (when action
-      (add-to-list 'menu (list "Current action" (car (rails-core:get-view-files controller action)))))
+      (add-to-list 'menu (list "Current view" 'rails-controller:switch-to-view)))
     (when helper
       (add-to-list 'menu (list "Helper" helper)))
-    (setq file
+    (setq item
           (rails-core:menu
            (list (concat "Controller " controller)
-            (cons "Please select.." menu))))
-    (when (and file (file-exists-p file))
-      (find-file file))))
+                 (cons "Please select.." menu))))
+    (when item
+      (if (symbolp item)
+          (apply item nil)
+        (when (file-exists-p file)
+          (find-file file))))))
 
 (defun rails-for-controller ()
   "Enable controller configurations."
