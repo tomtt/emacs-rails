@@ -1,5 +1,7 @@
 2007-01-27  dima  <dima.exe@gmail.com>
 
+	* rails-ws.el: update rails-ws:*browser* functions
+
 	* rails.el (rails-directory<-->types): add plugin directory
 
 	* rails-for-view.el (rails-view:switch-with-menu): update menu title
@@ -36,7 +38,7 @@
 
 	* rails-for-view.el (rails-for-view): remove detect mmm-mode, always apply hotkeys to mmm-mode-map (if exist)
 
-	* rails.el: apply ruby-mode to *.rake files and setup utf9 encoding
+	* rails.el: apply ruby-mode to *.rake files and setup utf8 encoding
 
 	* rails-lib.el (list->alist): skip if LIST entry is list	
 

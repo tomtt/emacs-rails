@@ -654,13 +654,13 @@
   ([rails ws separator] '("--"))
 
   ([rails ws brows] '(menu-item "Open browser..."
-             rails-webrick:open-browser-on-controller
+             rails-ws:open-browser-on-controller
             :enable (rails-ws:running-p)))
   ([rails ws auto-brows] '(menu-item "Open browser on current action"
-            rails-webrick:auto-open-browser
+            rails-ws:auto-open-browser
             :enable (rails-ws:running-p)))
   ([rails ws url] '(menu-item "Open browser"
-           rails-webrick:open-browser
+           rails-ws:open-browser
             :enable (rails-ws:running-p)))
   ([rails ws separator2] '("--"))
 
@@ -747,7 +747,7 @@
   ((kbd "\C-c \C-c \C-t") 'rails-create-tags)
 
   ;; Browser
-  ((kbd "\C-c <f5>") 'rails-webrick:auto-open-browser)
+  ((kbd "\C-c \C-c w a") 'rails-ws:auto-open-browser)
 
   ;; Documentation
   ([f1]  'rails-search-doc)

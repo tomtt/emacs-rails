@@ -143,19 +143,19 @@ using `rails-webrick:default-env'."
 
 ;;;;;;;;;; Open browser ;;;;;;;;;;
 
-(defun rails-webrick:open-browser (&optional address)
+(defun rails-ws:open-browser (&optional address)
   "Open a browser on the main page of the current Rails project
 server."
   (interactive)
-  (let ((url (concat (concat rails-webrick:server-name
+  (let ((url (concat (concat rails-ws:server-name
                              ":"
-                             rails-webrick:port
+                             rails-ws:port
                              "/"
                              address ))))
     (message "Opening browser: %s" url)
     (browse-url url)))
 
-(defun rails-webrick:open-browser-on-controller (&optional controller action params)
+(defun rails-ws:open-browser-on-controller (&optional controller action params)
   "Open browser on the controller/action/id for the current
 file."
   (interactive
@@ -164,14 +164,12 @@ file."
                      (list->alist (rails-core:controllers t)))
     (read-from-minibuffer "Action name: ")
     (read-from-minibuffer "Params: ")))
-  (rails-core:with-root
-   (root)
-   (when (string-not-empty controller)
-     (rails-webrick:open-browser
-      (concat (rails-core:file-by-class controller t) "/"
-              (if (string-not-empty action) (concat action "/")) params)))))
+  (when (string-not-empty controller)
+    (rails-ws:open-browser
+     (concat (rails-core:file-by-class controller t) "/"
+             (if (string-not-empty action) (concat action "/")) params))))
 
-(defun rails-webrick:auto-open-browser (ask-parameters?)
+(defun rails-ws:auto-open-browser (ask-parameters?)
   "Autodetect the current action and open browser on it with.
 Prefix the command to ask parameters for action."
   (interactive "P")
@@ -179,7 +177,7 @@ Prefix the command to ask parameters for action."
    (root)
    (if (find (rails-core:buffer-type) '(:view :controller))
        (when-bind (controller (rails-core:current-controller))
-                  (rails-webrick:open-browser-on-controller
+                  (rails-ws:open-browser-on-controller
                    controller (rails-core:current-action)
                    (when ask-parameters?
                      (read-from-minibuffer "Parameters: "))))

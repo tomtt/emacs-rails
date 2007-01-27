@@ -1,0 +1,8 @@
+0.5.1 at 27.01.2007
+
+* Support plugin: quick menu "Go to plugins" and navigate inside plugin
+* Update Web Server support, add Lighttd to list of supported servers 
+* Automatic apply ruby-mode to *.rake files and setup utf-8 encoding
+* Add more targets to generate/destroy
+* Add autocomplete in generate/destroy/rake/test commands
+* Small fixes indentation in snippets
