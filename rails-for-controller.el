@@ -84,7 +84,8 @@ menu."
       (add-to-list 'menu (list "Helper" helper)))
     (setq file
           (rails-core:menu
-           (list "Please select.." (cons "Please select.." menu))))
+           (list (concat "Controller " controller)
+            (cons "Please select.." menu))))
     (when (and file (file-exists-p file))
       (find-file file))))
 

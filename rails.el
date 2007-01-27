@@ -133,6 +133,7 @@ Emacs w3m browser."
     (:view             "app/views/")
     (:model            "app/models/")
     (:helper           "app/helpers/")
+    (:plugin           "vendor/plugins/")
     (:unit-test        "test/unit/")
     (:functional-test  "test/functional/")
     (:fixtures         "test/fixtures/"))

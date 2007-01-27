@@ -170,6 +170,10 @@ it does not exist, ask to create it using QUESTION as a prompt."
   "Return the path to the observer HELPER-NAME."
   (concat "app/helpers/" (rails-core:file-by-class (concat helper-name "Helper"))))
 
+(defun rails-core:plugin-file (plugin file)
+  "Return the path to the FILE in Rails PLUGIN."
+  (concat "vendor/plugins/" plugin "/" file))
+
 (defun rails-core:layout-file (layout)
   "Return the path to the layout file named LAYOUT."
   (concat "app/views/layouts/" layout ".rhtml"))
@@ -238,10 +242,6 @@ CONTROLLER."
   (if (string-match "\\(Observer\\|_observer\\(\\.rb\\)?\\)$" name)
       t nil))
 
-(defun rails-core:observer-p (name)
-  (if (string-match "\\(Observer\\|_observer\\(\\.rb\\)?\\)$" name)
-      t nil))
-
 (defun rails-core:controllers (&optional cut-contoller-suffix)
   "Return a list of Rails controllers. Remove the '_controller'
 suffix if CUT-CONTOLLER-SUFFIX is non nil."
@@ -298,6 +298,10 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
    (delete-if-not
     #'file-directory-p
     (directory-files (rails-core:file "vendor/plugins") t "^[^\\.]"))))
+
+(defun rails-core:plugin-files (plugin)
+  "Return a list of files in specific Rails plugin."
+  (find-recursive-files  "^[^.]" (rails-core:file (concat "vendor/plugins/" plugin))))
 
 (defun rails-core:layouts ()
   "Return a list of Rails layouts."
@@ -378,6 +382,12 @@ If the action is nil, return all views for the controller."
 (defun rails-core:current-helper ()
   "Return the current helper"
   (concat (rails-core:current-controller) "Helper"))
+
+(defun rails-core:current-plugin ()
+  "Return the current plugin name."
+  (let ((name (buffer-file-name)))
+    (when (string-match "vendor\\/plugins\\/\\([^\\/]+\\)" name)
+      (match-string 1 name))))
 
 ;;;;;;;;;; Determination of buffer type ;;;;;;;;;;
 
@@ -481,7 +491,7 @@ If optional parameter ADD_SEPARATOR is present, then add separator to menu."
   (let ((result
          (if (rails-use-text-menu)
              (tmm-prompt menu)
-           (x-popup-menu (list '(200 100) (selected-window))
+           (x-popup-menu (list '(300 50) (selected-window))
                          menu))))
     (if (listp result)
         (first result)

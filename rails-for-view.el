@@ -117,7 +117,11 @@
     (add-to-list 'menu (list "Controller" 'rails-view:switch-to-action))
     (setq item
           (rails-core:menu
-           (list "Please select.." (cons "Please select.." menu))))
+           (list (concat "View "
+                         (rails-core:current-controller)
+                         "#"
+                         (rails-core:current-action))
+                 (cons "Please select.." menu))))
 
     (when item
       (if (symbolp item)

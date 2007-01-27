@@ -1,3 +1,21 @@
+2007-01-27  dima  <dima.exe@gmail.com>
+
+	* rails.el (rails-directory<-->types): add plugin directory
+
+	* rails-for-view.el (rails-view:switch-with-menu): update menu title
+
+	* rails-for-plugin.el: create
+
+	* rails-for-helper.el (rails-helper:switch-with-menu): update menu title
+
+	* rails-for-functional-test.el (rails-for-functional-test:switch-with-menu): update-menu-title
+
+	* rails-for-controller.el (rails-controller:switch-with-menu): update menu title
+
+	* rails-core.el (rails-core:menu): fix menu position 
+	add new functions rails-core:plugin-files, rails-core:plugin-file,
+	rails-core:current-plugin
+
 2007-01-26  dima  <dima.exe@gmail.com>
 
 	* rails-ui.el (rails-minor-mode-menu-bar-map): rename menu item WEBrick to Web Server.
