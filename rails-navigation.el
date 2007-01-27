@@ -288,7 +288,7 @@ rails-goto-file-on-current-line is run.")
      ("Helper"          rails-for-controller:switch-to-helper)
      ("Functional test" rails-for-controller:switch-to-functional-test))
     (:view
-     ("Controller"      rails-for-rhtml:switch-to-controller-action)
+     ("Controller"      rails-view:switch-to-action)
      ("Helper"          rails-for-controller:switch-to-helper)
      ("Functional test" rails-for-controller:switch-to-functional-test))
     (:helper

@@ -1,5 +1,7 @@
 2007-01-28  dima  <dima.exe@gmail.com>
 
+	* rails-navigation.el: patch #8228
+
 	* rails.el (ruby-mode-hook): remove variables tab-width and indent-tabs
 
 	* rails-ws.el: make variable  rails-ws:default-server-type are customized (to fix #8223)
