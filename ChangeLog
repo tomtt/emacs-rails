@@ -1,3 +1,9 @@
+2007-01-28  dima  <dima.exe@gmail.com>
+
+	* rails-ws.el: make variable  rails-ws:default-server-type are customized (to fix #8223)
+
+	* rails-lib.el: add cross declaration indent-or-complete (to fix #8221)
+
 2007-01-27  dima  <dima.exe@gmail.com>
 
 	* rails-for-controller.el (rails-controller:switch-with-menu):

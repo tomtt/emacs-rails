@@ -31,17 +31,22 @@
   "Default web server port"
   :group 'rails
   :type 'string
-  :tag "Rails Web Server  Port")
+  :tag "Rails Server Port")
 
 (defcustom rails-ws:server-name "http://localhost"
   "Protocol and the hostname for web server or other rails server"
   :group 'rails
   :type 'string
-  :tag "Rails Web Server Default Server")
+  :tag "Rails Server Default")
 
-(defvar rails-ws:buffer-name "*RailsWebServer*")
+(defcustom rails-ws:default-server-type "mongrel"
+  "Web server to run Rails application."
+  :group 'rails
+  :type 'string
+  :tag "Rails Server Type")
+
 (defvar rails-ws:available-servers-list (list "mongrel" "lighttpd" "webrick"))
-(defvar rails-ws:default-server-type (first rails-ws:available-servers-list))
+(defvar rails-ws:buffer-name "*RailsWebServer*")
 (defvar rails-ws:process-environment nil)
 
 (defun rails-ws:default-server-type-p (type)

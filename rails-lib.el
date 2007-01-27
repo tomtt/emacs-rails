@@ -330,4 +330,23 @@ the user explicit sets `rails-use-alternative-browse-url'."
 ;;     ad-do-it))
 ;; (ad-activate 'ruby-indent-line)
 
+
+;; Cross define functions from my rc files
+
+(unless (fboundp 'indent-or-complete)
+  (defun indent-or-complete ()
+    "Complete if point is at end of a word, otherwise indent line."
+    (interactive)
+    (unless
+        (when (and (boundp 'snippet)
+                   snippet)
+          (progn
+            (snippet-next-field)))
+      (if (looking-at "\\>")
+          (progn
+            (hippie-expand nil)
+            (message ""))
+        (indent-for-tab-command)))))
+
+
 (provide 'rails-lib)
