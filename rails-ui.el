@@ -553,11 +553,13 @@
   ([rails snip assertions rsk-as] (snippet-menu-line 'ruby-mode-abbrev-table "as"))
   ([rails snip assertions rsk-art] (snippet-menu-line 'ruby-mode-abbrev-table "art"))
 
-  ([rails log] (cons "Open log" (make-sparse-keymap "Open log")))
+  ([rails log] (cons "Open log files" (make-sparse-keymap "Open log files")))
 
-  ([rails log test] '("test.log" . (lambda() (interactive) (rails-open-log "test"))))
-  ([rails log pro] '("production.log" . (lambda() (interactive) (rails-open-log "production"))))
-  ([rails log dev] '("development.log" . (lambda() (interactive) (rails-open-log "development"))))
+  ([rails log test] '("test.log" . rails-log:open-test))
+  ([rails log pro] '("production.log" . rails-log:open-production))
+  ([rails log dev] '("development.log" . rails-log:open-development))
+  ([rails log separator] '("---"))
+  ([rails log open] '("Open log file..." . rails-log:open))
 
   ([rails config] (cons "Configuration" (make-sparse-keymap "Configuration")))
 
@@ -741,7 +743,7 @@
   ((kbd "<M-S-down>") 'rails-goto-file-from-file-with-menu)
   ((kbd "<M-S-up>")   'rails-goto-file-from-file)
 
-  ((kbd "\C-c \C-c l") 'rails-open-log)
+  ((kbd "\C-c \C-c l") 'rails-log:open)
   ((kbd "\C-c \C-c j") 'rails-create-project)
   ;; Tags
   ((kbd "\C-c \C-c \C-t") 'rails-create-tags)

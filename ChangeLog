@@ -1,5 +1,14 @@
 2007-01-27  dima  <dima.exe@gmail.com>
 
+	* rails-ui.el: update "Open log" menu
+
+	* rails.el: relete function rails-open-log, and place all log
+	related fuction to rails-log.el
+
+	* rails-log.el: create
+
+	* rails-lib.el (apply-colorize-to-buffer): create
+
 	* rails-ws.el: update rails-ws:*browser* functions
 
 	* rails.el (rails-directory<-->types): add plugin directory

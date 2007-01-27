@@ -245,6 +245,19 @@ the user explicit sets `rails-use-alternative-browse-url'."
       (w32-shell-execute "open" "iexplore" url)
     (browse-url url args)))
 
+;; Colorize
+
+(defun apply-colorize-to-buffer (name)
+  (let ((buffer (current-buffer)))
+    (set-buffer name)
+    (make-variable-buffer-local 'after-change-functions)
+    (add-hook 'after-change-functions
+              '(lambda (start end len)
+                 (ansi-color-apply-on-region start end)))
+    (set-buffer buffer)))
+
+;; MMM
+
 (defvar mmm-indent-sandbox-finish-position nil)
 
 (defun mmm-run-indent-with-sandbox (indent-func)

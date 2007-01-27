@@ -1,3 +1,6 @@
+SVN
+* Using system `tail` program for display log files
+
 0.5.1 at 27.01.2007
 
 * Support plugin: quick menu "Go to plugins" and navigate inside plugin

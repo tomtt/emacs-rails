@@ -44,6 +44,7 @@
 (require 'rails-navigation)
 (require 'rails-scripts)
 (require 'rails-ws)
+(require 'rails-log)
 (require 'rails-ui)
 
 ;;;;;;;;;; Variable definition ;;;;;;;;;;
@@ -159,53 +160,12 @@ Emacs w3m browser."
   "Function witch called by rails finds")
 
 ;;;;;;;; hack ;;;;
-
-;; replace in autorevert.el
-(defun auto-revert-tail-handler ()
-  (let ((size (nth 7 (file-attributes buffer-file-name)))
-        (modified (buffer-modified-p))
-        buffer-read-only    ; ignore
-        (file buffer-file-name)
-        buffer-file-name)   ; ignore that file has changed
-    (when (> size auto-revert-tail-pos)
-      (undo-boundary)
-      (save-restriction
-        (widen)
-        (save-excursion
-          (let ((cur-point (point-max)))
-            (goto-char (point-max))
-            (insert-file-contents file nil auto-revert-tail-pos size)
-            (ansi-color-apply-on-region cur-point (point-max)))))
-      (undo-boundary)
-      (setq auto-revert-tail-pos size)
-      (set-buffer-modified-p modified)))
-  (set-visited-file-modtime))
-
 (defun rails-svn-status-into-root ()
   (interactive)
   (rails-core:with-root (root)
                         (svn-status root)))
 
 ;; helper functions/macros
-(defun rails-open-log (env)
-  "Open Rails log file for environment ENV (development, production, test)"
-  (interactive (list (rails-read-enviroment-name)))
-  (rails-core:with-root
-   (root)
-   (let ((log-file (rails-core:file (concat "log/" env ".log"))))
-     (when (file-exists-p log-file)
-       (find-file log-file)
-         (set-buffer-file-coding-system 'utf-8)
-         (ansi-color-apply-on-region (point-min) (point-max))
-         (set-buffer-modified-p nil)
-         (rails-minor-mode t)
-         (goto-char (point-max))
-         (setq auto-revert-interval 0.5)
-         (auto-revert-set-timer)
-         (setq auto-window-vscroll t)
-         (make-local-variable 'rails-api-root)
-         (auto-revert-tail-mode t)))))
-
 (defun rails-search-doc (&optional item)
   (interactive)
   (setq item (if item item (thing-at-point 'sexp)))
