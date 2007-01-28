@@ -1,4 +1,6 @@
 SVN
+* allow web server selection auto-save
+* fix errors at work with sql
 * fix byte-compile warnings
 
 0.5.2

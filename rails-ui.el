@@ -679,11 +679,12 @@
                                       :enable (not (rails-ws:running-p))))
   ([rails ws separator3] '("--"))
   ([rails ws status] '(menu-item "Print status" rails-ws:print-status))
-  ([rails ws default] '(menu-item "Toggle start(with default environment)/stop" rails-ws:toggle-start-stop))
+  ([rails ws default] '(menu-item "Start/stop web server (with default environment)"
+                        rails-ws:toggle-start-stop))
 
   ([rails separator2] '("--"))
 
-  ([rails goto-plugins] '("Go to plugin" . rails-nav:goto-plugins))
+  ([rails goto-plugins] '("Go to plugins" . rails-nav:goto-plugins))
   ([rails goto-migrate] '("Go to migrations" . rails-nav:goto-migrate))
   ([rails goto-layouts] '("Go to layouts" . rails-nav:goto-layouts))
   ([rails goto-stylesheets] '("Go to stylesheets" . rails-nav:goto-stylesheets))

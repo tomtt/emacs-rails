@@ -1,3 +1,12 @@
+2007-01-29  dima  <dima.exe@gmail.com>
+
+	* rails.el (rails-db-parameters): patch #8232 (by Ronaldo Ferraz)
+	Console is not starting because env is not quoted in the function
+	call, resulting in a Ruby error
+
+	* rails-ws.el, rails-wi.el: patch #8233 (by Ronaldo Ferraz) Fixes
+	a couple of UI messages and allows web server selection auto-save
+
 2007-01-28  dima  <dima.exe@gmail.com>
 
 	* *.el: fix bytecompile warnings

@@ -59,7 +59,8 @@
                                       nil t
                                       rails-ws:default-server-type)))
   (setq rails-ws:default-server-type type)
-  (message (concat "Using " (upcase type) " as default server type")))
+  (customize-save-variable 'rails-ws:default-server-type rails-ws:default-server-type)
+  (message (concat "Switching to " (upcase type) " as default server type")))
 
 (defun rails-ws:running-p ()
   "Return t if a WebServer process is running."
@@ -143,8 +144,8 @@ using `rails-webrick:default-env'."
                   rails-default-environment) ")"
            " is "
            (if (rails-ws:running-p)
-               (concat "running with port " rails-ws:port)
-             "stoping"))))
+               (concat "running on port " rails-ws:port)
+             "stopped"))))
 
 ;;;;;;;;;; Open browser ;;;;;;;;;;
 
