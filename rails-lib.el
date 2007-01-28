@@ -234,7 +234,8 @@ it."
 (defun rails-browse-api-url (url)
   "Browse preferentially with Emacs w3m browser."
   (if rails-browse-api-with-w3m
-      (w3m-find-file (remove-prefix url "file://"))
+      (when (fboundp 'w3m-find-file)
+        (w3m-find-file (remove-prefix url "file://")))
     (rails-alternative-browse-url url)))
 
 (defun rails-alternative-browse-url (url &rest args)
@@ -245,12 +246,50 @@ the user explicit sets `rails-use-alternative-browse-url'."
       (w32-shell-execute "open" "iexplore" url)
     (browse-url url args)))
 
+;; menu related
+
+;; (setq
+;;  m
+;;  (list '(:m "menu_0"
+;;            (:m "root_0"
+;;                (:m "sub_0_0"
+;;                    ("item" "title" message)
+;;                    ("item_1" "title_1" message)
+;;                    ("item_2" "title_3" message))
+;;                (:m "sub_0_1"
+;;                    ("item2" "title2" message)))
+;;            (:m "root_1"
+;;                (:m "sub_1_0"
+;;                    ("item3" "title3" message))))
+;;        '(:m "menu_1")))
+
+(defun create-menu-map-from-list (path body menu)
+  (dolist (i body)
+    (let ((p path)
+          (a (nth 0 i))
+          (b (nth 1 i))
+          (c (cddr i)))
+      (if (eq a :m)
+          (progn
+            (add-to-list 'p b t)
+            (add-to-list 'menu (list
+                                (vconcat (mapcar 'make-symbol p))
+                                (cons (make-symbol b) b)))
+            (setq menu (create-menu-map-from-list p c menu))
+        )
+        )
+      ))
+  menu)
+
+;(setq m (list m))
+;; (create-menu-map-from-list (list) m (list))
+
 ;; Colorize
 
 (defun apply-colorize-to-buffer (name)
   (let ((buffer (current-buffer)))
     (set-buffer name)
-    (make-variable-buffer-local 'after-change-functions)
+    (make-local-variable 'after-change-functions)
     (add-hook 'after-change-functions
               '(lambda (start end len)
                  (ansi-color-apply-on-region start end)))
@@ -258,70 +297,70 @@ the user explicit sets `rails-use-alternative-browse-url'."
 
 ;; MMM
 
-(defvar mmm-indent-sandbox-finish-position nil)
+;; (defvar mmm-indent-sandbox-finish-position nil)
 
-(defun mmm-run-indent-with-sandbox (indent-func)
-  (interactive)
-  (let* ((fragment-name "*mmm-indent-sandbox*")
-         (ovl (mmm-overlay-at (point)))
-         (current (when ovl (overlay-buffer ovl)))
-         (start (when ovl (overlay-start ovl)))
-         (end (when ovl (overlay-end ovl)))
-         (current-pos (when ovl (point)))
-         (ovl-line-start (when start
-                           (progn (goto-char start)
-                                  (line-beginning-position))))
-         (current-line-start (when current-pos
-                               (progn (goto-char current-pos)
-                                      (line-beginning-position))))
-         (fragment-pos (when (and start end) (- (point) (- start 1))))
-         (ovl-offset (when ovl (- (progn
-                                    (goto-char start)
-                                    (while (not (looking-at "<"))
-                                      (goto-char (- (point) 1)))
-                                    (point))
-                                  ovl-line-start)))
-         (content (when (and start end) (buffer-substring-no-properties start end)))
-         (fragment (when content (get-buffer-create fragment-name))))
-    (when fragment
-      (setq mmm-indent-sandbox-finish-position nil)
-      (save-excursion
-        (set-buffer fragment-name)
-        (beginning-of-buffer)
-        (insert content)
-        (goto-char fragment-pos)
-        (funcall indent-func t)
-        (let ((start-line)
-              (end-line)
-              (kill-after-start)
-              (finish-pos (- (+ start (point)) 1))
-              (indented (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
-          (set-buffer current)
-          (kill-buffer fragment-name)
-          (princ ovl-offset)
-          (goto-char current-pos)
-          (setq start-line (line-beginning-position))
-          (setq end-line (line-end-position))
-          (when (> start start-line)
-            (setq start-line (+ start 1))
-            (setq kill-after-start t))
-          (when (> end-line end)
-            (setq end-line end))
-          (kill-region start-line end-line)
-          (goto-char start-line)
-          (unless (= ovl-line-start current-line-start)
-            (dotimes (i ovl-offset)
-              (setq indented (concat " " indented))))
-;;           (insert-char (string-to-char " ") ovl-offset))
-          (insert indented)
-          (when kill-after-start
-            (goto-char (+ start 1))
-            (backward-delete-char 1))
-;;           (setq mmm-indent-sandbox-finish-position finish-pos)))
-          (if (= ovl-line-start current-line-start)
-              (setq mmm-indent-sandbox-finish-position finish-pos)
-            (setq mmm-indent-sandbox-finish-position (+ finish-pos ovl-offset)))))
-      (goto-char mmm-indent-sandbox-finish-position))))
+;; (defun mmm-run-indent-with-sandbox (indent-func)
+;;   (interactive)
+;;   (let* ((fragment-name "*mmm-indent-sandbox*")
+;;          (ovl (mmm-overlay-at (point)))
+;;          (current (when ovl (overlay-buffer ovl)))
+;;          (start (when ovl (overlay-start ovl)))
+;;          (end (when ovl (overlay-end ovl)))
+;;          (current-pos (when ovl (point)))
+;;          (ovl-line-start (when start
+;;                            (progn (goto-char start)
+;;                                   (line-beginning-position))))
+;;          (current-line-start (when current-pos
+;;                                (progn (goto-char current-pos)
+;;                                       (line-beginning-position))))
+;;          (fragment-pos (when (and start end) (- (point) (- start 1))))
+;;          (ovl-offset (when ovl (- (progn
+;;                                     (goto-char start)
+;;                                     (while (not (looking-at "<"))
+;;                                       (goto-char (- (point) 1)))
+;;                                     (point))
+;;                                   ovl-line-start)))
+;;          (content (when (and start end) (buffer-substring-no-properties start end)))
+;;          (fragment (when content (get-buffer-create fragment-name))))
+;;     (when fragment
+;;       (setq mmm-indent-sandbox-finish-position nil)
+;;       (save-excursion
+;;         (set-buffer fragment-name)
+;;         (beginning-of-buffer)
+;;         (insert content)
+;;         (goto-char fragment-pos)
+;;         (funcall indent-func t)
+;;         (let ((start-line)
+;;               (end-line)
+;;               (kill-after-start)
+;;               (finish-pos (- (+ start (point)) 1))
+;;               (indented (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+;;           (set-buffer current)
+;;           (kill-buffer fragment-name)
+;;           (princ ovl-offset)
+;;           (goto-char current-pos)
+;;           (setq start-line (line-beginning-position))
+;;           (setq end-line (line-end-position))
+;;           (when (> start start-line)
+;;             (setq start-line (+ start 1))
+;;             (setq kill-after-start t))
+;;           (when (> end-line end)
+;;             (setq end-line end))
+;;           (kill-region start-line end-line)
+;;           (goto-char start-line)
+;;           (unless (= ovl-line-start current-line-start)
+;;             (dotimes (i ovl-offset)
+;;               (setq indented (concat " " indented))))
+;; ;;           (insert-char (string-to-char " ") ovl-offset))
+;;           (insert indented)
+;;           (when kill-after-start
+;;             (goto-char (+ start 1))
+;;             (backward-delete-char 1))
+;; ;;           (setq mmm-indent-sandbox-finish-position finish-pos)))
+;;           (if (= ovl-line-start current-line-start)
+;;               (setq mmm-indent-sandbox-finish-position finish-pos)
+;;             (setq mmm-indent-sandbox-finish-position (+ finish-pos ovl-offset)))))
+;;       (goto-char mmm-indent-sandbox-finish-position))))
 
 ;; (defadvice ruby-indent-line (around mmm-sandbox-ruby-indent-line)
 ;;   (if (and (fboundp 'mmm-overlay-at)

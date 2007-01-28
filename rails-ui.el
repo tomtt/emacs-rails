@@ -38,6 +38,9 @@
 ;; Snips
 
 (def-snips (ruby-mode-abbrev-table)
+  ("if:" "$${cond} ? $${if_match} : $${if_not_match}" "cond ? if_match : if_not_match")
+  ("nr" "@$${item}.new_record?" "item.new_record?")
+  ("attr=" "attributes = $${items}")
   ("all" "all? { |$${e}| $. }" "all? { |e| ... }")
   ("am" "alias_method :$${new_name}, :$${old_name}" "alias_method ...")
   ("amc" "alias_method_chain :$${first_method}, :$${second_method}" "alias_method_chain ...")
@@ -304,6 +307,7 @@
   ([rails snip ruby ruby-conditions] (cons "conditions" (make-sparse-keymap "ruby-conditions")))
   ([rails snip ruby ruby-collections] (cons "collections" (make-sparse-keymap "ruby-collections")))
 
+  ([rails snip ruby ruby-conditions ifinline] (snippet-menu-line 'ruby-mode-abbrev-table "if:"))
   ([rails snip ruby ruby-collections rsk-zip] (snippet-menu-line 'ruby-mode-abbrev-table "zip"))
   ([rails snip ruby ruby-general rsk-yl] (snippet-menu-line 'ruby-mode-abbrev-table "yl"))
   ([rails snip ruby ruby-general rsk-yd] (snippet-menu-line 'ruby-mode-abbrev-table "yd"))
@@ -493,6 +497,7 @@
 
   ([rails snip model] (cons "model" (make-sparse-keymap "model")))
 
+  ([rails snip model rsk-nr] (snippet-menu-line 'ruby-mode-abbrev-table "nr"))
   ([rails snip model rsk-ve] (snippet-menu-line 'ruby-mode-abbrev-table "ve"))
   ([rails snip model rsk-vc] (snippet-menu-line 'ruby-mode-abbrev-table "vc"))
   ([rails snip model rsk-va] (snippet-menu-line 'ruby-mode-abbrev-table "va"))

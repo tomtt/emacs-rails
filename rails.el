@@ -33,6 +33,7 @@
   (require 'ruby-mode)
   (require 'ruby-electric))
 
+(require 'sql)
 (require 'ansi-color)
 (require 'snippet)
 (require 'etags)
@@ -243,7 +244,6 @@ Emacs w3m browser."
 (defun* rails-run-sql (&optional env)
   "Run a SQL process for the current Rails project."
   (interactive (list (rails-read-enviroment-name "development")))
-  (require 'sql)
   (rails-core:with-root (root)
     (cd root)
     (if (bufferp (sql-find-sqli-buffer))

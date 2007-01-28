@@ -166,10 +166,6 @@ it does not exist, ask to create it using QUESTION as a prompt."
                          " " "_"
                          (rails-core:file-by-class migrate-name))))
 
-(defun rails-core:helper-file (helper-name)
-  "Return the path to the observer HELPER-NAME."
-  (concat "app/helpers/" (rails-core:file-by-class (concat helper-name "Helper"))))
-
 (defun rails-core:plugin-file (plugin file)
   "Return the path to the FILE in Rails PLUGIN."
   (concat "vendor/plugins/" plugin "/" file))
@@ -381,7 +377,7 @@ If the action is nil, return all views for the controller."
 
 (defun rails-core:current-helper ()
   "Return the current helper"
-  (concat (rails-core:current-controller) "Helper"))
+  (rails-core:current-controller))
 
 (defun rails-core:current-plugin ()
   "Return the current plugin name."

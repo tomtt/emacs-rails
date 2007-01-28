@@ -1,5 +1,9 @@
 2007-01-28  dima  <dima.exe@gmail.com>
 
+	* *.el: fix bytecompile warnings
+	
+	* rails-core.el: remove dublicate of fucntion rails-core:helper-file
+
 	* rails-navigation.el: patch #8228
 
 	* rails.el (ruby-mode-hook): remove variables tab-width and indent-tabs

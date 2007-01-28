@@ -89,8 +89,8 @@ menu."
     (when item
       (if (symbolp item)
           (apply item nil)
-        (when (file-exists-p file)
-          (find-file file))))))
+        (when (file-exists-p item)
+          (find-file item))))))
 
 (defun rails-for-controller ()
   "Enable controller configurations."
