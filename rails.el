@@ -46,6 +46,7 @@
 (require 'rails-scripts)
 (require 'rails-ws)
 (require 'rails-log)
+(require 'rails-snippets)
 (require 'rails-ui)
 
 ;;;;;;;;;; Variable definition ;;;;;;;;;;

@@ -1,3 +1,9 @@
+2007-01-30  dima  <dima.exe@gmail.com>
+
+	* rails-snippets.el: create and place into it all snippets code
+
+	* rails-ui.el: drop snippets declaration, make separate menu "Snippets"
+
 2007-01-29  dima  <dima.exe@gmail.com>
 
 	* rails-lib.el: create function compile-snippet and create-snippets-and-menumap-from-dsl

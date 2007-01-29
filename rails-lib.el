@@ -248,26 +248,11 @@ the user explicit sets `rails-use-alternative-browse-url'."
 
 ;; snippets related
 
-(setq
- m
- (list '(:m "menu_0"
-           (:m "root_0"
-               (:m "sub_0_0" lisp-mode-abbrev-table
-                   ("mc" "(mapcar #'$${lambda} '$${list})" "mapcar")
-                   ("dl" "(dolist ($${it} $${list}) $.)" "dolist")
-                   ("dt" "(dotimes ($${it} $${count}) $.)" "dotimes"))
-               (:m "sub_0_1" lisp-mode-abbrev-table
-                   ("vc" "(vconcat $${list})" "vconcat")))
-           (:m "root_1"
-               (:m "sub_1_0" lisp-mode-abbrev-table text-mode-abbrev-table
-                   ("sq" "(setq $${var} $${value})" "setq"))))
-       '(:m "menu_1")))
-
-;; (setq pp (create-menu-map-from-list (list) m (list) mm))
+;; (setq pp (create-snippets-and-menumap-from-dsl rails-snippets-menu-list))
 
 ;; ;; (symbol-value 'lisp-mode-abbrev-table)
-;; (setq mm (make-sparse-keymap "test"))
-;; (local-set-key [menu-bar test] (cons "Test" pp))
+;; (setq mm (make-sparse-keymap "test3"))
+;; (local-set-key [menu-bar test3] (cons "Test3" pp))
 
 (defmacro compile-snippet(expand)
   `(lambda () (interactive) (snippet-insert ,(symbol-value expand))))
@@ -275,31 +260,36 @@ the user explicit sets `rails-use-alternative-browse-url'."
 ;; (setq b "for")
 ;; (macroexpand '(compile-snippet b))
 
-(defun create-snippets-and-menumap-from-dsl (path body menu keymap &optional abbrev-table)
-  (unless abbrev-table
-    (setq abbrev-table (list)))
+;; ([rails] (cons "RubyOnRails" (make-sparse-keymap "RubyOnRails")))
+
+(defun create-snippets-and-menumap-from-dsl (body &optional path menu keymap abbrev-table)
+  (unless path (setq path (list)))
+  (unless menu (setq menu (list)))
+  (unless abbrev-table (setq abbrev-table (list)))
+  (unless keymap (setq keymap (make-sparse-keymap "Snippets")))
   (dolist (tail body)
     (let ((p path)
           (a (nth 0 tail))
           (b (nth 1 tail))
-          (c (cddr tail)))
+          (c (cddr tail))
+          (abbr abbrev-table))
       (if (eq a :m)
           (progn
             (while (not (listp (car c)))
-              (add-to-list 'abbrev-table (car c))
+              (add-to-list 'abbr (car c))
               (setq c (cdr c)))
             (add-to-list 'p b t)
             (define-key keymap
               (vconcat (mapcar #'make-symbol p))
               (cons b (make-sparse-keymap b)))
-            (setq keymap (create-snippets-and-menumap-from-dsl p c menu keymap abbrev-table)))
+            (setq keymap (create-snippets-and-menumap-from-dsl c p menu keymap abbr)))
         (let ((c (car c)))
-          (while (car abbrev-table)
-            (snippet-abbrev (car abbrev-table) a b)
-            (setq abbrev-table (cdr abbrev-table)))
+          (while (car abbr)
+            (define-abbrev (symbol-value (car abbr)) a "" (compile-snippet b))
+            (setq abbr (cdr abbr)))
           (define-key keymap
             (vconcat (mapcar #'make-symbol (add-to-list 'p a t)))
-            (cons (concat a " - " c) (compile-snippet b)))))))
+            (cons (concat a " \t" c) (compile-snippet b)))))))
   keymap)
 
 ;; Colorize
