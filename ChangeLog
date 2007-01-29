@@ -1,5 +1,9 @@
 2007-01-29  dima  <dima.exe@gmail.com>
 
+	* rails-lib.el: create function compile-snippet and create-snippets-and-menumap-from-dsl
+
+	* rails-ui.el (ruby-mode-abbrev-table): add mai snippet (add_index in migrations)
+
 	* rails.el (rails-db-parameters): patch #8232 (by Ronaldo Ferraz)
 	Console is not starting because env is not quoted in the function
 	call, resulting in a Ruby error

@@ -246,43 +246,61 @@ the user explicit sets `rails-use-alternative-browse-url'."
       (w32-shell-execute "open" "iexplore" url)
     (browse-url url args)))
 
-;; menu related
+;; snippets related
 
-;; (setq
-;;  m
-;;  (list '(:m "menu_0"
-;;            (:m "root_0"
-;;                (:m "sub_0_0"
-;;                    ("item" "title" message)
-;;                    ("item_1" "title_1" message)
-;;                    ("item_2" "title_3" message))
-;;                (:m "sub_0_1"
-;;                    ("item2" "title2" message)))
-;;            (:m "root_1"
-;;                (:m "sub_1_0"
-;;                    ("item3" "title3" message))))
-;;        '(:m "menu_1")))
+(setq
+ m
+ (list '(:m "menu_0"
+           (:m "root_0"
+               (:m "sub_0_0" lisp-mode-abbrev-table
+                   ("mc" "(mapcar #'$${lambda} '$${list})" "mapcar")
+                   ("dl" "(dolist ($${it} $${list}) $.)" "dolist")
+                   ("dt" "(dotimes ($${it} $${count}) $.)" "dotimes"))
+               (:m "sub_0_1" lisp-mode-abbrev-table
+                   ("vc" "(vconcat $${list})" "vconcat")))
+           (:m "root_1"
+               (:m "sub_1_0" lisp-mode-abbrev-table text-mode-abbrev-table
+                   ("sq" "(setq $${var} $${value})" "setq"))))
+       '(:m "menu_1")))
 
-(defun create-menu-map-from-list (path body menu)
-  (dolist (i body)
+;; (setq pp (create-menu-map-from-list (list) m (list) mm))
+
+;; ;; (symbol-value 'lisp-mode-abbrev-table)
+;; (setq mm (make-sparse-keymap "test"))
+;; (local-set-key [menu-bar test] (cons "Test" pp))
+
+(defmacro compile-snippet(expand)
+  `(lambda () (interactive) (snippet-insert ,(symbol-value expand))))
+
+;; (setq b "for")
+;; (macroexpand '(compile-snippet b))
+
+(defun create-snippets-and-menumap-from-dsl (path body menu keymap &optional abbrev-table)
+  (unless abbrev-table
+    (setq abbrev-table (list)))
+  (dolist (tail body)
     (let ((p path)
-          (a (nth 0 i))
-          (b (nth 1 i))
-          (c (cddr i)))
+          (a (nth 0 tail))
+          (b (nth 1 tail))
+          (c (cddr tail)))
       (if (eq a :m)
           (progn
+            (while (not (listp (car c)))
+              (add-to-list 'abbrev-table (car c))
+              (setq c (cdr c)))
             (add-to-list 'p b t)
-            (add-to-list 'menu (list
-                                (vconcat (mapcar 'make-symbol p))
-                                (cons (make-symbol b) b)))
-            (setq menu (create-menu-map-from-list p c menu))
-        )
-        )
-      ))
-  menu)
-
-;(setq m (list m))
-;; (create-menu-map-from-list (list) m (list))
+            (define-key keymap
+              (vconcat (mapcar #'make-symbol p))
+              (cons b (make-sparse-keymap b)))
+            (setq keymap (create-snippets-and-menumap-from-dsl p c menu keymap abbrev-table)))
+        (let ((c (car c)))
+          (while (car abbrev-table)
+            (snippet-abbrev (car abbrev-table) a b)
+            (setq abbrev-table (cdr abbrev-table)))
+          (define-key keymap
+            (vconcat (mapcar #'make-symbol (add-to-list 'p a t)))
+            (cons (concat a " - " c) (compile-snippet b)))))))
+  keymap)
 
 ;; Colorize
 

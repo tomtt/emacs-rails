@@ -141,6 +141,7 @@
   ("max" "max { |a, b| $. }" "max { |a, b| ... }")
   ("mtclm" "t.column :$${title}, :$${string}\n$>mtclm$." "create several columns")
   ("mac" "add_column :$${table}, :$${column}, :$${string}" "add column")
+  ("mai" "add_index :$${table}, $${column}")
   ("mtcl" "t.column :$${title}, :$${string}$." "create column")
   ("mrmc" "remove_column :$${table}, :$${column}" "remove column")
   ("mrec" "rename_column :$${column}, :$${new_column}" "rename column")
