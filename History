@@ -1,4 +1,4 @@
-SVN
+0.5.3
 * create separate menubar entry "Snippets"
 * allow web server selection auto-save
 * fix errors at work with sql
