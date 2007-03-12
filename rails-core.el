@@ -395,9 +395,11 @@ If the action is nil, return all views for the controller."
 (defun rails-core:buffer-type ()
   "Return the type of the current Rails file or nil if the type
 cannot be determinated."
-  (loop for (type dir) in rails-directory<-->types
-        when (rails-core:buffer-file-match dir)
+  (loop for (type dir func) in rails-directory<-->types
+        when (and (rails-core:buffer-file-match dir)
+                  (if func (apply func) t))
         do (return type)))
+
 
 ;;;;;;;;;; Openning of controller + action in controller and view ;;;;;;;;;;
 

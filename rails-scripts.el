@@ -297,6 +297,7 @@ MESSAGE-FORMAT to format the output."
 (defun rails-rake (&optional task message)
   "Run a Rake task in RAILS_ROOT."
   (interactive (list (completing-read "Rake task (use autocomplete): " (list->alist (rails-rake-tasks)))))
+  (save-some-buffers)
   (rails-core:in-root
    (message (or message (format "Running rake task \"%s\"" task)))
    (shell-command (concat "rake " task) "*Rails Rake Output*" "*Rails Rake Errors*")))
