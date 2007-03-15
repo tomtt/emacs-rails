@@ -1,3 +1,9 @@
+2007-03-15  dima  <dima.exe@gmail.com>
+
+	* rails-scripts.el (rails-rake-tests): using `compile`
+
+	* rails-ui.el (rails-minor-mode-menu-bar-map): add (interactive) to lambda functions
+
 2007-03-13  dima  <dima.exe@gmail.com>
 
 	* rails-for-model.el: create
