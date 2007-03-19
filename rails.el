@@ -125,7 +125,7 @@ Emacs w3m browser."
   :type 'string)
 
 (defvar rails-version "0.5")
-(defvar rails-templates-list '("rhtml" "rxml" "rjs"))
+(defvar rails-templates-list '("rhtml" "rxml" "rjs" "haml"))
 (defvar rails-use-another-define-key nil)
 (defvar rails-primary-switch-func nil)
 (defvar rails-secondary-switch-func nil)
@@ -405,8 +405,11 @@ necessary."
             (if (rails-core:root)
                 (rails-minor-mode t))))
 
+(autoload 'haml-mode "haml-mode" "" t)
+
 (setq auto-mode-alist  (cons '("\\.rb$" . ruby-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.rake$" . ruby-mode) auto-mode-alist))
+(setq auto-mode-alist  (cons '("\\.haml$" . haml-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.rjs$" . ruby-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.rxml$" . ruby-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.rhtml$" . html-mode) auto-mode-alist))

@@ -27,6 +27,25 @@
 
 ;;; Code:
 
+(defvar rails-controller:recent-template-type nil)
+
+(defun rails-controller:create-view-for-action (controller action)
+  (let ((type
+         (if rails-controller:recent-template-type
+             rails-controller:recent-template-type
+           (car rails-templates-list))))
+    (setq type
+          (completing-read (format "View for %s#%s not found, create %s.[%s]? "
+                                   controller action action type)
+                           rails-templates-list
+                           nil t type))
+    (setq rails-controller:recent-template-type type)
+    (let ((file (rails-core:file (concat "app/views/"
+                                         (replace-regexp-in-string "_controller" ""
+                                                                   (rails-core:file-by-class controller t))))))
+        (make-directory file t)
+        (find-file (format "%s/%s.%s" file action type)))))
+
 (defun rails-controller:switch-to-view ()
   "Switch to the view corresponding to the current action."
   (interactive)
@@ -57,12 +76,7 @@
                 (find-file (car files))
                 (message (concat controller "#" action))))
           (if (= 0 (list-length files)) ;; view not found
-              (if (y-or-n-p (format "View for %s#%s not found, create %s.rhtml? " controller action action))
-                  (let ((file (concat (rails-core:root) "app/views/"
-                                      (replace-regexp-in-string "_controller" ""
-                                                                (rails-core:file-by-class controller t)))))
-                    (make-directory file t)
-                    (find-file (format "%s/%s.rhtml" file action)))))))))
+              (rails-controller:create-view-for-action controller action))))))
 
 (defun rails-controller:switch-with-menu ()
   "Switch to various files related to the current action using a

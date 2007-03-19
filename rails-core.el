@@ -172,7 +172,14 @@ it does not exist, ask to create it using QUESTION as a prompt."
 
 (defun rails-core:layout-file (layout)
   "Return the path to the layout file named LAYOUT."
-  (concat "app/views/layouts/" layout ".rhtml"))
+  (let ((its rails-templates-list)
+        filename)
+    (while (and (car its)
+                (not filename))
+      (when (file-exists-p (format "%sapp/views/layouts/%s.%s" (rails-core:root) layout (car its)))
+        (setq filename (format "app/views/layouts/%s.%s" layout (car its))))
+      (setq its (cdr its)))
+    filename))
 
 (defun rails-core:js-file (js)
   "Return the path to the JavaScript file named JS."
@@ -304,7 +311,7 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
   (mapcar
    #'(lambda (l)
        (replace-regexp-in-string "\\.[^.]+$" "" l))
-   (find-recursive-files "\\.rhtml" (rails-core:file "app/views/layouts"))))
+   (find-recursive-files (rails-core:regex-for-match-view) (rails-core:file "app/views/layouts"))))
 
 (defun rails-core:regex-for-match-view ()
   "Return a regex to match Rails view templates.

@@ -1,4 +1,6 @@
 SVN
+* support template types in layouts menu 
+* support haml template engine
 * using `compile` to run `rake tests`
 * ask to save modified buffers before run rake
 * add "quick switch" support to models and unit tests
