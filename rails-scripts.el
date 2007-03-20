@@ -299,8 +299,8 @@ MESSAGE-FORMAT to format the output."
 (defun rails-rake (&optional task message)
   "Run a Rake task in RAILS_ROOT."
   (interactive (list (completing-read "Rake task (use autocomplete): " (list->alist (rails-rake-tasks)))))
-  (save-some-buffers)
   (rails-core:in-root
+   (save-some-buffers)
    (message (or message (format "Running rake task \"%s\"" task)))
    (shell-command (concat "rake " task) "*Rails Rake Output*" "*Rails Rake Errors*")))
 
@@ -321,6 +321,7 @@ MESSAGE-FORMAT to format the output."
       (make-local-variable 'compilation-error-regexp-alist)
       (setq compilation-error-regexp-alist rails-rake-test-error-regexp-alist)
       (save-excursion
+        (save-some-buffers)
         (setq default-directory (rails-core:root))
         (compile (format "rake %s" task))))))
 

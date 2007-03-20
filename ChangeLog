@@ -1,4 +1,5 @@
 2007-03-19  dima  <dima.exe@gmail.com>
+	* rails-scripts.el (rails-rake): restore ask to save modified buffers before run rake test:*
 
 	* rails-core.el (rails-core:layout-file): support template types on go to layout menu
 
