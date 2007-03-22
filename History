@@ -1,9 +1,10 @@
 SVN
-* support template types in layouts menu 
-* support haml template engine
-* using `compile` to run `rake tests`
+* fixed incorrect indentation in snippets [#9460]
+* added support template types in layouts menu 
+* added support haml template engine
+* use `compile` to run `rake tests`
 * ask to save modified buffers before run rake
-* add "quick switch" support to models and unit tests
+* added "quick switch" to support models and unit tests
 
 0.5.3
 * create separate menubar entry "Snippets"
