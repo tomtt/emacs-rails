@@ -1,4 +1,4 @@
-;;; rails-for-rhtml.el ---
+;;; rails-layout-minor-mode.el --- minor mode for RubyOnRails layouts
 
 ;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
 
@@ -24,8 +24,10 @@
 
 ;;; Code:
 
-(defun rails-for-layout ()
-  "Enable layout configurations."
-  (interactive))
+(define-minor-mode rails-layout-minor-mode
+  "Minor mode for RubyOnRails layouts."
+  nil
+  " layout"
+  nil)
 
-(provide 'rails-for-layout)
+(provide 'rails-layout-minor-mode)

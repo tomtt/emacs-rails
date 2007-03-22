@@ -1,4 +1,4 @@
-;;; rails-for-unit-test.el ---
+;;; rails-plugin-minor-mode.el --- minor mode for RubyOnRails plugins
 
 ;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
 
@@ -24,28 +24,30 @@
 
 ;;; Code:
 
-(defun rails-unit-test:switch-to-model ()
+(defun rails-plugin-minor-mode:switch-to-init ()
   (interactive)
   (rails-core:find-file-if-exist
-   (rails-core:model-file (rails-core:current-model))))
+   (rails-core:plugin-file (rails-core:current-plugin) "init.rb")))
 
-(defun rails-unit-test:switch-with-menu ()
+(defun rails-plugin-minor-mode:switch-with-menu ()
   (interactive)
   (let* ((item)
-         (model (rails-core:current-model))
-         (model-file (rails-core:model-file model)))
+         (plugin (rails-core:current-plugin))
+         (menu (rails-core:plugin-files plugin)))
     (setq item
           (rails-core:menu
-           (list (concat "Unit test " model)
-                 (cons "Please select.."
-                       (list (cons "Model" model-file))))))
+           (list (concat "Plugin " plugin)
+                 (cons "Please select.." (list->alist menu)))))
     (when item
-      (rails-core:find-file-if-exist item))))
+      (rails-core:find-file-if-exist
+       (rails-core:plugin-file plugin item)))))
 
-(defun rails-for-unit-test ()
-  "Enable Rails Plugins Configurations."
-  (interactive)
-  (setq rails-primary-switch-func 'rails-unit-test:switch-to-model)
-  (setq rails-secondary-switch-func 'rails-unit-test:switch-with-menu))
+(define-minor-mode rails-plugin-minor-mode
+  "Minor mode for RubyOnRails plugins."
+  nil
+  " plugin"
+  nil
+  (setq rails-primary-switch-func 'rails-plugin-minor-mode:switch-to-init)
+  (setq rails-secondary-switch-func 'rails-plugin-minor-mode:switch-with-menu))
 
-(provide 'rails-for-unit-test)
+(provide 'rails-plugin-minor-mode)

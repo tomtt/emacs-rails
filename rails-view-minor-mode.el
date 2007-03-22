@@ -1,4 +1,4 @@
-;;; rails-for-view.el ---
+;;; rails-view-minor-mode.el --- minor mode for RubyOnRails views
 
 ;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
 
@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(defun rails-view:create-partial-from-selection ()
+(defun rails-view-minor-mode:create-partial-from-selection ()
   "Create a partial from current buffer selection."
   (interactive)
   (if mark-active
@@ -51,7 +51,7 @@
           (unless modified (save-buffer))
           (message "type `C-x +` to balance windows")))))
 
-(defun rails-view:create-helper-from-block (&optional helper-name)
+(defun rails-view-minor-mode:create-helper-from-block (&optional helper-name)
   "Create a helper function from current ERb block (<% .. %>)."
   (interactive)
   (let ((current-pos (point))
@@ -96,14 +96,14 @@
              (message "helper not found")))
        (message "block not found"))))
 
-(defun rails-view:switch-to-action ()
+(defun rails-view-minor-mode:switch-to-action ()
   "Switch to the current action."
   (interactive)
   (rails-core:open-controller+action :controller
                                      (rails-core:current-controller)
                                      (rails-core:current-action)))
 
-(defun rails-view:switch-with-menu ()
+(defun rails-view-minor-mode:switch-with-menu ()
   "Switch to various files related to this view using a menu."
   (interactive)
   (let ((menu (rails-core:menu-of-views (rails-core:current-controller) t))
@@ -114,7 +114,7 @@
       (add-to-list 'menu (list "Functional Test" functional-test)))
     (when (file-exists-p helper)
       (add-to-list 'menu (list "Helper" helper)))
-    (add-to-list 'menu (list "Controller" 'rails-view:switch-to-action))
+    (add-to-list 'menu (list "Controller" 'rails-view-minor-mode:switch-to-action))
     (setq item
           (rails-core:menu
            (list (concat "View "
@@ -129,17 +129,19 @@
         (when (file-exists-p item)
           (find-file item))))))
 
-(defun rails-for-view ()
-  "Enable RHTML configurations."
-  (interactive)
-  (setq rails-primary-switch-func 'rails-view:switch-to-action)
-  (setq rails-secondary-switch-func 'rails-view:switch-with-menu)
+(define-minor-mode rails-view-minor-mode
+  "Minor mode for RubyOnRails views."
+  nil
+  " view"
+  nil
+  (setq rails-primary-switch-func 'rails-view-minor-mode:switch-to-action)
+  (setq rails-secondary-switch-func 'rails-view-minor-mode:switch-with-menu)
   (if (boundp 'mmm-mode-map)
       (progn
-        (define-key mmm-mode-map (kbd "\C-c p") 'rails-view:create-partial-from-selection)
-        (define-key mmm-mode-map (kbd "\C-c b") 'rails-view:create-helper-from-block))
+        (define-key mmm-mode-map (kbd "\C-c p") 'rails-view-minor-mode:create-partial-from-selection)
+        (define-key mmm-mode-map (kbd "\C-c b") 'rails-view-minor-mode:create-helper-from-block))
     (progn
-      (local-set-key (kbd "\C-c p") 'rails-view:create-partial-from-selection)
-      (local-set-key (kbd "\C-c b") 'rails-view:create-helper-from-block))))
+      (local-set-key (kbd "\C-c p") 'rails-view-minor-mode:create-partial-from-selection)
+      (local-set-key (kbd "\C-c b") 'rails-view-minor-mode:create-helper-from-block))))
 
-(provide 'rails-for-view)
+(provide 'rails-view-minor-mode)

@@ -1,4 +1,4 @@
-;;; rails-for-controller.el ---
+;;; rails-controller-minor-mode.el --- minor mode for RubyOnRails controllers
 
 ;; Copyright (C) 2006-2007 Galinsky Dmitry <dima dot exe at gmail dot com>
 
@@ -27,26 +27,26 @@
 
 ;;; Code:
 
-(defvar rails-controller:recent-template-type nil)
+(defvar rails-controller-minor-mode:recent-template-type nil)
 
-(defun rails-controller:create-view-for-action (controller action)
+(defun rails-controller-minor-mode:create-view-for-action (controller action)
   (let ((type
-         (if rails-controller:recent-template-type
-             rails-controller:recent-template-type
+         (if rails-controller-minor-mode:recent-template-type
+             rails-controller-minor-mode:recent-template-type
            (car rails-templates-list))))
     (setq type
           (completing-read (format "View for %s#%s not found, create %s.[%s]? "
                                    controller action action type)
                            rails-templates-list
                            nil t type))
-    (setq rails-controller:recent-template-type type)
+    (setq rails-controller-minor-mode:recent-template-type type)
     (let ((file (rails-core:file (concat "app/views/"
                                          (replace-regexp-in-string "_controller" ""
                                                                    (rails-core:file-by-class controller t))))))
         (make-directory file t)
         (find-file (format "%s/%s.%s" file action type)))))
 
-(defun rails-controller:switch-to-view ()
+(defun rails-controller-minor-mode:switch-to-view ()
   "Switch to the view corresponding to the current action."
   (interactive)
   (let* ((controller (rails-core:current-controller))
@@ -76,9 +76,9 @@
                 (find-file (car files))
                 (message (concat controller "#" action))))
           (if (= 0 (list-length files)) ;; view not found
-              (rails-controller:create-view-for-action controller action))))))
+              (rails-controller-minor-mode:create-view-for-action controller action))))))
 
-(defun rails-controller:switch-with-menu ()
+(defun rails-controller-minor-mode:switch-with-menu ()
   "Switch to various files related to the current action using a
 menu."
   (interactive)
@@ -93,7 +93,7 @@ menu."
     (when test
       (add-to-list 'menu (list "Functional test" test)))
     (when action
-      (add-to-list 'menu (list "Current view" 'rails-controller:switch-to-view)))
+      (add-to-list 'menu (list "Current view" 'rails-controller-minor-mode:switch-to-view)))
     (when helper
       (add-to-list 'menu (list "Helper" helper)))
     (setq item
@@ -106,15 +106,17 @@ menu."
         (when (file-exists-p item)
           (find-file item))))))
 
-(defun rails-for-controller ()
-  "Enable controller configurations."
-  (interactive)
-  (setq rails-secondary-switch-func 'rails-controller:switch-with-menu)
-  (setq rails-primary-switch-func 'rails-controller:switch-to-view))
+(define-minor-mode rails-controller-minor-mode
+  "Minor mode for RubyOnRails controllers."
+  nil
+  " controller"
+  nil
+  (setq rails-secondary-switch-func 'rails-controller-minor-mode:switch-with-menu)
+  (setq rails-primary-switch-func 'rails-controller-minor-mode:switch-to-view))
 
 ;;;;;;;; Open file from file stuff, please do not delete, while open file from file works fine
 
-(defun rails-for-controller:views-for-current-action ()
+(defun rails-controller-minor-mode:views-for-current-action ()
   "Return a list of views for the current action."
   (mapcar (lambda (view-file)
       (list (replace-regexp-in-string "\\(.*/\\)\\([^/]+\\)$" "View\: \\2" view-file)
@@ -123,37 +125,37 @@ menu."
           (rails-core:get-view-files (rails-core:current-controller)
                                      (rails-core:current-action))))
 
-(defun rails-for-controller:switch-by-current-controller (to-what file-func)
+(defun rails-controller-minor-mode:switch-by-current-controller (to-what file-func)
   "Switch by the current controller position."
   (let ((controller (rails-core:current-controller)))
     (rails-core:find-or-ask-to-create
      (format "%s for controller %s does not exist, create it? " to-what controller)
      (funcall file-func controller))))
 
-(defun rails-for-controller:switch-to-functional-test ()
+(defun rails-controller-minor-mode:switch-to-functional-test ()
   "Switch to the functional test correspoding to the current controller."
-  (rails-for-controller:switch-by-current-controller
+  (rails-controller-minor-mode:switch-by-current-controller
    "Functional test" 'rails-core:functional-test-file))
 
-(defun rails-for-controller:switch-to-helper ()
+(defun rails-controller-minor-mode:switch-to-helper ()
   "Switch to the helper correspoding to the current controller."
-  (rails-for-controller:switch-by-current-controller
+  (rails-controller-minor-mode:switch-by-current-controller
    "Helper file" 'rails-core:helper-file))
 
-(defun rails-for-controller:switch-to-view2 ()
+(defun rails-controller-minor-mode:switch-to-view2 ()
   "Switch to the view correspoding to the current action and
 controller."
   (rails-core:open-controller+action
    :view (rails-core:current-controller) (rails-core:current-action)))
 
-(defun rails-for-controller:switch-to-controller ()
+(defun rails-controller-minor-mode:switch-to-controller ()
   "Switch to the controller."
   (rails-core:open-controller+action
    :controller (rails-core:current-controller) nil))
 
-(defun rails-for-controller:switch-to-views ()
+(defun rails-controller-minor-mode:switch-to-views ()
   "Switch to the views."
   (rails-core:open-controller+action
    :view (rails-core:current-controller) nil))
 
-(provide 'rails-for-controller)
+(provide 'rails-controller-minor-mode)

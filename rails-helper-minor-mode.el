@@ -1,4 +1,4 @@
-;;; rails-for-functional-test.el ---
+;;; rails-helper-minor-mode.el --- minor mode for RubyOnRails helpers
 
 ;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
 
@@ -24,33 +24,33 @@
 
 ;;; Code:
 
-(defun rails-for-functional-test:switch-to-controller ()
+(defun rails-helper-minor-mode:switch-to-controller ()
   (interactive)
   (rails-core:find-file-if-exist (rails-core:controller-file (rails-core:current-controller))))
 
-(defun rails-for-functional-test:switch-with-menu ()
+(defun rails-helper-minor-mode:switch-with-menu ()
   (interactive)
   (let ((menu (rails-core:menu-of-views (rails-core:current-controller) t))
-        (helper (rails-core:file (rails-core:helper-file (rails-core:current-controller))))
+        (functional-test (rails-core:file (rails-core:functional-test-file (rails-core:current-controller))))
         (controller (rails-core:file (rails-core:controller-file (rails-core:current-controller))))
         item)
-    (when (file-exists-p helper)
-      (add-to-list 'menu (list "Helper" helper)))
+    (when (file-exists-p functional-test)
+      (add-to-list 'menu (list "Functional Test" functional-test)))
     (when (file-exists-p controller)
       (add-to-list 'menu (list "Controller" controller)))
     (setq item
           (rails-core:menu
-           (list (concat "Functional Test "
-                         (rails-core:current-controller)
-                         "Test")
+           (list (concat "Helper " (rails-core:current-helper))
                  (cons "Please select.." menu))))
     (when (and item (file-exists-p item))
       (find-file item))))
 
-(defun rails-for-functional-test ()
-  "Enable Functional test configurations."
-  (interactive)
-  (setq rails-primary-switch-func 'rails-for-functional-test:switch-to-controller)
-  (setq rails-secondary-switch-func 'rails-for-functional-test:switch-with-menu))
+(define-minor-mode rails-helper-minor-mode
+  "Minor mode for RubyOnRails helpers."
+  nil
+  " helper"
+  nil
+  (setq rails-primary-switch-func 'rails-helper-minor-mode:switch-to-controller)
+  (setq rails-secondary-switch-func 'rails-helper-minor-mode:switch-with-menu))
 
-(provide 'rails-for-functional-test)
+(provide 'rails-helper-minor-mode)

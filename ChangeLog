@@ -1,4 +1,15 @@
+2007-03-23  dima  <dima.exe@gmail.com>
+
+	* rails.el (rails-apply-for-buffer-type): added support to load new style submodes
+
+	* rails-lib.el (merge-abbrev-tables): created this function
+
+	* moved all rails-for-* to rails-*-minor-mode
+	
+	* rails-snippets.el (rails-snippets-menu-list): closed bug #9460, incorect indentation in snippets
+
 2007-03-19  dima  <dima.exe@gmail.com>
+
 	* rails-scripts.el (rails-rake): restore ask to save modified buffers before run rake test:*
 
 	* rails-core.el (rails-core:layout-file): support template types on go to layout menu

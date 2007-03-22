@@ -248,19 +248,8 @@ the user explicit sets `rails-use-alternative-browse-url'."
 
 ;; snippets related
 
-;; (setq pp (create-snippets-and-menumap-from-dsl rails-snippets-menu-list))
-
-;; ;; (symbol-value 'lisp-mode-abbrev-table)
-;; (setq mm (make-sparse-keymap "test3"))
-;; (local-set-key [menu-bar test3] (cons "Test3" pp))
-
 (defmacro compile-snippet(expand)
   `(lambda () (interactive) (snippet-insert ,(symbol-value expand))))
-
-;; (setq b "for")
-;; (macroexpand '(compile-snippet b))
-
-;; ([rails] (cons "RubyOnRails" (make-sparse-keymap "RubyOnRails")))
 
 (defun create-snippets-and-menumap-from-dsl (body &optional path menu keymap abbrev-table)
   (unless path (setq path (list)))
@@ -291,6 +280,21 @@ the user explicit sets `rails-use-alternative-browse-url'."
             (vconcat (mapcar #'make-symbol (add-to-list 'p a t)))
             (cons (concat a " \t" c) (compile-snippet b)))))))
   keymap)
+
+;; abbrev
+;; from http://www.opensource.apple.com/darwinsource/Current/emacs-59/emacs/lisp/derived.el
+(defun merge-abbrev-tables (old new)
+  "Merge an old abbrev table into a new one.
+This function requires internal knowledge of how abbrev tables work,
+presuming that they are obarrays with the abbrev as the symbol, the expansion
+as the value of the symbol, and the hook as the function definition."
+  (when old
+    (mapatoms
+     (lambda(it)
+       (or (intern-soft (symbol-name it) new)
+           (define-abbrev new (symbol-name it)
+             (symbol-value it) (symbol-function it))))
+     old)))
 
 ;; Colorize
 
@@ -384,16 +388,13 @@ the user explicit sets `rails-use-alternative-browse-url'."
   (defun indent-or-complete ()
     "Complete if point is at end of a word, otherwise indent line."
     (interactive)
-    (unless
-        (when (and (boundp 'snippet)
-                   snippet)
-          (progn
-            (snippet-next-field)))
+    (if (and (boundp 'snippet)
+             snippet)
+        (snippet-next-field)
       (if (looking-at "\\>")
           (progn
             (hippie-expand nil)
             (message ""))
         (indent-for-tab-command)))))
-
 
 (provide 'rails-lib)
