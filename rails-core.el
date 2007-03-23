@@ -344,6 +344,13 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
        (replace-regexp-in-string "\\.[^.]+$" "" l))
    (find-recursive-files (rails-core:regex-for-match-view) (rails-core:file "app/views/layouts"))))
 
+(defun rails-core:fixtures ()
+  "Return a list of Rails fixtures."
+  (mapcar
+   #'(lambda (l)
+       (replace-regexp-in-string "\\.[^.]+$" "" l))
+   (find-recursive-files "\\.yml$" (rails-core:file "test/fixtures/"))))
+
 (defun rails-core:regex-for-match-view ()
   "Return a regex to match Rails view templates.
 The file extensions used for views are defined in

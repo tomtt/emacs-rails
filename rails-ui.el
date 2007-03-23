@@ -181,6 +181,7 @@
 
   ([rails separator2] '("--"))
 
+  ([rails goto-fixtures] '("Go to fixtures" . rails-nav:goto-fixtures))
   ([rails goto-plugins] '("Go to plugins" . rails-nav:goto-plugins))
   ([rails goto-migrate] '("Go to migrations" . rails-nav:goto-migrate))
   ([rails goto-layouts] '("Go to layouts" . rails-nav:goto-layouts))
@@ -208,6 +209,7 @@
   ((kbd "\C-c \C-c g j") 'rails-nav:goto-javascripts)
   ((kbd "\C-c \C-c g g") 'rails-nav:goto-migrate)
   ((kbd "\C-c \C-c g p") 'rails-nav:goto-plugins)
+  ((kbd "\C-c \C-c g f") 'rails-nav:goto-fixtures)
 
   ;; Switch
   ((kbd "C-c <up>") 'rails-lib:run-primary-switch)

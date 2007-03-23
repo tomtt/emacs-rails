@@ -117,7 +117,7 @@
   (rails-nav:goto-file-with-menu-from-list
    (rails-core:plugins)
    "Go to plugin.."
-   (lambda(plugin)
+   (lambda (plugin)
      (concat "vendor/plugins/" plugin "/init.rb"))))
 
 (defun rails-nav:create-new-layout (&optional name)
@@ -141,6 +141,14 @@
            (rails-core:layout-file l)
          (apply l (list))))
      items)))
+
+(defun rails-nav:goto-fixtures ()
+  "Go to fixtures."
+  (interactive)
+  (rails-nav:goto-file-with-menu-from-list
+   (rails-core:fixtures)
+   "Go to fixture.."
+   'rails-core:fixture-file))
 
 (defun rails-nav:goto-stylesheets ()
   "Go to stylesheets."

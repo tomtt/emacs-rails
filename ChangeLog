@@ -1,5 +1,9 @@
 2007-03-23  dima  <dima.exe@gmail.com>
 
+	* rails-navigation.el (rails-nav:goto-fixtures): created
+
+	* rails-core.el (rails-core:fixtures): created
+
 	* rails-view-minor-mode.el (rails-view-minor-mode): cleanup and switch to use
 	`rails-controller-layout`, added support mailers
 
