@@ -87,6 +87,14 @@
    "Go to observer.."
    'rails-core:observer-file))
 
+(defun rails-nav:goto-mailers ()
+  "Go to mailers."
+  (interactive)
+  (rails-nav:goto-file-with-menu-from-list
+   (rails-core:mailers)
+   "Go to mailers.."
+   'rails-core:mailer-file))
+
 (defun rails-nav:goto-migrate ()
   "Go to migrations."
   (interactive)

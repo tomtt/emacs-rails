@@ -24,33 +24,12 @@
 
 ;;; Code:
 
-(defun rails-helper-minor-mode:switch-to-controller ()
-  (interactive)
-  (rails-core:find-file-if-exist (rails-core:controller-file (rails-core:current-controller))))
-
-(defun rails-helper-minor-mode:switch-with-menu ()
-  (interactive)
-  (let ((menu (rails-core:menu-of-views (rails-core:current-controller) t))
-        (functional-test (rails-core:file (rails-core:functional-test-file (rails-core:current-controller))))
-        (controller (rails-core:file (rails-core:controller-file (rails-core:current-controller))))
-        item)
-    (when (file-exists-p functional-test)
-      (add-to-list 'menu (list "Functional Test" functional-test)))
-    (when (file-exists-p controller)
-      (add-to-list 'menu (list "Controller" controller)))
-    (setq item
-          (rails-core:menu
-           (list (concat "Helper " (rails-core:current-helper))
-                 (cons "Please select.." menu))))
-    (when (and item (file-exists-p item))
-      (find-file item))))
-
 (define-minor-mode rails-helper-minor-mode
   "Minor mode for RubyOnRails helpers."
   nil
   " helper"
   nil
-  (setq rails-primary-switch-func 'rails-helper-minor-mode:switch-to-controller)
-  (setq rails-secondary-switch-func 'rails-helper-minor-mode:switch-with-menu))
+  (setq rails-primary-switch-func (lambda() (interactive) (rails-controller-layout:switch-to :controller)))
+  (setq rails-secondary-switch-func 'rails-controller-layout:menu))
 
 (provide 'rails-helper-minor-mode)

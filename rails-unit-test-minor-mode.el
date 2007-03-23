@@ -29,7 +29,11 @@
   nil
   " unit-test"
   nil
-  (setq rails-primary-switch-func (lambda() (interactive) (rails-model-layout:switch-to :model)))
+  (setq rails-primary-switch-func (lambda()
+                                    (interactive)
+                                    (if (rails-core:mailer-p rails-core:current-model)
+                                        (rails-model-layout:switch-to :mailer)
+                                      (rails-model-layout:switch-to :model))))
   (setq rails-secondary-switch-func 'rails-model-layout:menu))
 
 (provide 'rails-unit-test-minor-mode)

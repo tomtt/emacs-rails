@@ -27,11 +27,13 @@
 (defun rails-model-layout:switch-to (type)
   (let* ((model (rails-core:current-model))
          (item (case type
+                 (:mailer (rails-core:mailer-file model))
                  (:controller (rails-core:controller-file (pluralize-string model)))
                  (:fixture (rails-core:fixture-file model))
                  (:unit-test (rails-core:unit-test-file model))
                  (:model (rails-core:model-file model)))))
-    (rails-core:find-file-if-exist item)))
+    (rails-core:find-file-if-exist item)
+    (message (format "%s: %s" (substring (symbol-name type) 1) model))))
 
 (defun rails-model-layout:menu ()
   (interactive)
@@ -40,20 +42,26 @@
          (title (capitalize (substring (symbol-name type) 1)))
          (model (rails-core:current-model))
          (controller (pluralize-string model)))
-    (when (rails-core:controller-exist-p controller)
-      (setq item (add-to-list 'item (cons "Controller" :controller))))
-    (unless (eq type :fixture)
-      (setq item (add-to-list 'item (cons "Fixture" :fixture))))
-    (unless (eq type :unit-test)
-      (setq item (add-to-list 'item (cons "Unit test" :unit-test))))
-    (unless (eq type :model)
-      (setq item (add-to-list 'item (cons "Model" :model))))
+    (unless (rails-core:mailer-p model)
+      (when (rails-core:controller-exist-p controller)
+        (add-to-list 'item (cons "Controller" :controller)))
+      (unless (eq type :fixture)
+        (add-to-list 'item (cons "Fixture" :fixture)))
+      (unless (eq type :unit-test)
+        (add-to-list 'item (cons "Unit test" :unit-test)))
+      (unless (eq type :model)
+        (add-to-list 'item (cons "Model" :model))))
+    (when (rails-core:mailer-p model)
+      (setq item (rails-controller-layout:views-menu model))
+      (add-to-list 'item (rails-core:menu-separator))
+      (add-to-list 'item (cons "Mailer" :mailer)))
     (setq item
           (rails-core:menu
            (list (concat title " " model)
                  (cons "Please select.."
                        item))))
-    (when item
-      (rails-model-layout:switch-to item))))
+    (typecase item
+      (symbol (rails-model-layout:switch-to item))
+      (string (rails-core:find-file-if-exist item)))))
 
 (provide 'rails-model-layout)

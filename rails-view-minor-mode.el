@@ -96,46 +96,13 @@
              (message "helper not found")))
        (message "block not found"))))
 
-(defun rails-view-minor-mode:switch-to-action ()
-  "Switch to the current action."
-  (interactive)
-  (rails-core:open-controller+action :controller
-                                     (rails-core:current-controller)
-                                     (rails-core:current-action)))
-
-(defun rails-view-minor-mode:switch-with-menu ()
-  "Switch to various files related to this view using a menu."
-  (interactive)
-  (let ((menu (rails-core:menu-of-views (rails-core:current-controller) t))
-        (functional-test (rails-core:file (rails-core:functional-test-file (rails-core:current-controller))))
-        (helper (rails-core:file (rails-core:helper-file (rails-core:current-controller))))
-        item)
-    (when (file-exists-p functional-test)
-      (add-to-list 'menu (list "Functional Test" functional-test)))
-    (when (file-exists-p helper)
-      (add-to-list 'menu (list "Helper" helper)))
-    (add-to-list 'menu (list "Controller" 'rails-view-minor-mode:switch-to-action))
-    (setq item
-          (rails-core:menu
-           (list (concat "View "
-                         (rails-core:current-controller)
-                         "#"
-                         (rails-core:current-action))
-                 (cons "Please select.." menu))))
-
-    (when item
-      (if (symbolp item)
-          (apply item nil)
-        (when (file-exists-p item)
-          (find-file item))))))
-
 (define-minor-mode rails-view-minor-mode
   "Minor mode for RubyOnRails views."
   nil
   " view"
   nil
-  (setq rails-primary-switch-func 'rails-view-minor-mode:switch-to-action)
-  (setq rails-secondary-switch-func 'rails-view-minor-mode:switch-with-menu)
+  (setq rails-primary-switch-func 'rails-controller-layout:toggle-action-view)
+  (setq rails-secondary-switch-func 'rails-controller-layout:menu)
   (if (boundp 'mmm-mode-map)
       (progn
         (define-key mmm-mode-map (kbd "\C-c p") 'rails-view-minor-mode:create-partial-from-selection)

@@ -1,10 +1,13 @@
-;;; rails-functional-test-minor-mode.el --- minor mode for RubyOnRails functional tests
+;;; rails-mailer-minor-mode.el --- minor mode for RubyOnRails mailers
 
-;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
+;; Copyright (C) 2006-2007 Galinsky Dmitry <dima dot exe at gmail dot com>
+
+;; Authors: Galinsky Dmitry <dima dot exe at gmail dot com>,
+;;          Rezikov Peter <crazypit13 (at) gmail.com>
 
 ;; Keywords: ruby rails languages oop
-;; $URL: svn+ssh://rubyforge/var/svn/emacs-rails/trunk/rails-for-rhtml.el $
-;; $Id: rails-for-rhtml.el 58 2006-12-17 21:47:39Z dimaexe $
+;; $URL: svn+ssh://rubyforge/var/svn/emacs-rails/trunk/rails-controller-minor-mode.el $
+;; $Id: rails-controller-minor-mode.el 96 2007-03-22 22:44:04Z dimaexe $
 
 ;;; License
 
@@ -24,12 +27,12 @@
 
 ;;; Code:
 
-(define-minor-mode rails-functional-test-minor-mode
-  "Minor mode for RubyOnRails functional tests."
+(define-minor-mode rails-mailer-minor-mode
+  "Minor mode for RubyOnRails mailers."
   nil
-  " func-test"
+  " mailer"
   nil
-  (setq rails-primary-switch-func (lambda() (interactive) (rails-controller-layout:switch-to :controller)))
-  (setq rails-secondary-switch-func 'rails-controller-layout:menu))
+  (setq rails-secondary-switch-func 'rails-controller-layout:menu)
+  (setq rails-primary-switch-func 'rails-controller-layout:toggle-action-view))
 
-(provide 'rails-functional-test-minor-mode)
+(provide 'rails-mailer-minor-mode)

@@ -1,4 +1,5 @@
 SVN
+* added mailers support
 * added fixtures support
 * fixed incorrect indentation in snippets [#9460]
 * added support template types in layouts menu

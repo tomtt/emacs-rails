@@ -52,6 +52,7 @@
 (require 'rails-ui)
 (require 'rails-cmd-proxy)
 (require 'rails-model-layout)
+(require 'rails-controller-layout)
 
 ;;;;;;;;;; Variable definition ;;;;;;;;;;
 
@@ -138,13 +139,19 @@ Emacs w3m browser."
   '((:controller       "app/controllers/")
     (:layout           "app/layouts/")
     (:view             "app/views/")
-    (:model            "app/models/")
+    (:observer         "app/models/" (lambda (file) (rails-core:observer-p file)))
+    (:mailer           "app/models/" (lambda (file) (rails-core:mailer-p file)))
+    (:model            "app/models/" (lambda (file) (and (not (rails-core:mailer-p file))
+                                                         (not (rails-core:observer-p file)))))
     (:helper           "app/helpers/")
     (:plugin           "vendor/plugins/")
     (:unit-test        "test/unit/")
     (:functional-test  "test/functional/")
     (:fixture          "test/fixtures/"))
   "Rails file types -- rails directories map")
+
+(apply
+ (quote (lambda (file) (rails-core:observer-p file))) (list "test"))
 
 (defvar rails-enviroments '("development" "production" "test"))
 (defvar rails-default-environment (first rails-enviroments))

@@ -1,24 +1,48 @@
 2007-03-23  dima  <dima.exe@gmail.com>
 
+	* rails-view-minor-mode.el (rails-view-minor-mode): cleanup and switch to use
+	`rails-controller-layout`, added support mailers
+
+	* rails-unit-test-minor-mode.el (rails-unit-test-minor-mode): added support mailers
+
+	* rails-navigation.el (rails-nav:goto-mailers): created
+
+	* rails-model-layout.el: added support mailers
+
+	* rails-mailer-minor-mode.el: created
+
+	* rails-helper-minor-mode.el: cleanup and switch to use `rails-controller-layout`
+
+	* rails-functional-test-minor-mode.el: cleanup and switch to use
+	`rails-controller-layout`, added support mailers
+
+	* rails-core.el: created functions: rails-core:model-exist-p,
+	rails-core:mailer-file, rails-core:mailer-p, rails-core:mailers,
+	rails-core:current-function-name. Cleanup unsed functions.
+	
+	* rails-controller-minor-mode.el: cleanup and switch to use `rails-controller-layout`
+
+	* rails-controller-layout.el: created
+
 	* rails.el (rails-directory<-->types): rename fixtures to fixture
 
 	* rails-unit-test-minor-mode.el: using functions from `rails-model-layout` to navigate
 
 	* rails-model-minor-mode.el: using functions from `rails-model-layout` to navigate
 
-	* rails-model-layout.el: create
+	* rails-model-layout.el: created
 
-	* rails-lib.el (string=~): create, by Howard Yeh
+	* rails-lib.el (string=~): created, by Howard Yeh
 
-	* rails-fixture-minor-mode.el: create
+	* rails-fixture-minor-mode.el: created
 
 	* rails-core.el (rails-core:controller-exist-p): create
 	(rails-core:fixture-file): used `pluralize-string` to match fixture
 	(rails-core:current-model): used `pluralize-string` to match fixture
 
-	* inflections.el: create, by Howard Yeh
+	* inflections.el: created, by Howard Yeh
 
-	* rails-cmd-proxy.el: create
+	* rails-cmd-proxy.el: created
 
 	* rails-ws.el (rails-ws:stop): stopped server with interrupt-process
 	(rails-ws:start): starting server useing rails-cmd-proxy:start-process-shell-command

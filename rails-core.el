@@ -68,8 +68,13 @@ BODY is executed."
         ,@body))))
 
 (defvar rails-core:class-dirs
-  '("app/controllers" "app/views" "app/models" "app/helpers"
-    "test/unit" "test/functional" "test/fixtures")
+  '("app/controllers"
+    "app/views"
+    "app/models"
+    "app/helpers"
+    "test/unit"
+    "test/functional"
+    "test/fixtures")
   "Directories with Rails classes")
 
 (defun rails-core:class-by-file (filename)
@@ -148,6 +153,12 @@ it does not exist, ask to create it using QUESTION as a prompt."
   "Return the model file from the model name."
   (concat "app/models/" (rails-core:file-by-class model-name)))
 
+(defun rails-core:model-exist-p (model-name)
+  "Return t if controller CONTROLLER-NAME exist."
+  (file-exists-p
+   (rails-core:file
+    (rails-core:model-file model-name))))
+
 (defun rails-core:controller-file (controller-name)
   "Return the path to the controller CONTROLLER-NAME."
   (concat "app/controllers/"
@@ -165,6 +176,10 @@ it does not exist, ask to create it using QUESTION as a prompt."
 (defun rails-core:observer-file (observer-name)
   "Return the path to the observer OBSERVER-NAME."
   (rails-core:model-file (concat observer-name "Observer")))
+
+(defun rails-core:mailer-file (mailer-name)
+  "Return the path to the observer MAILER-NAME."
+  (rails-core:model-file mailer-name))
 
 (defun rails-core:migrate-file (migrate-name)
   "Return the model file from the MIGRATE-NAME."
@@ -250,6 +265,10 @@ CONTROLLER."
   (if (string-match "\\(Observer\\|_observer\\(\\.rb\\)?\\)$" name)
       t nil))
 
+(defun rails-core:mailer-p (name)
+  (if (string-match "\\(Mailer\\|Notifier\\|_mailer\\|_notifier\\(\\.rb\\)?\\)$" name)
+      t nil))
+
 (defun rails-core:controllers (&optional cut-contoller-suffix)
   "Return a list of Rails controllers. Remove the '_controller'
 suffix if CUT-CONTOLLER-SUFFIX is non nil."
@@ -270,7 +289,8 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
   (mapcar
    #'rails-core:class-by-file
    (delete-if
-    #'rails-core:observer-p
+    #'(lambda (file) (or (rails-core:observer-p file)
+                         (rails-core:mailer-p file)))
     (find-recursive-files "\\.rb$" (rails-core:file "app/models/")))))
 
 (defun rails-core:observers ()
@@ -280,6 +300,12 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
    (mapcar
     #'rails-core:class-by-file
     (find-recursive-files "\\(_observer\\)\\.rb$" (rails-core:file "app/models/")))))
+
+(defun rails-core:mailers ()
+  "Return a list of Rails mailers."
+  (mapcar
+   #'rails-core:class-by-file
+   (find-recursive-files "\\(_mailer\\|_notifier\\)\\.rb$" (rails-core:file "app/models/"))))
 
 (defun rails-core:helpers ()
   "Return a list of Rails helpers."
@@ -366,6 +392,7 @@ If the action is nil, return all views for the controller."
       (:controller (rails-core:short-controller-name file-class))
       (:view (rails-core:class-by-file
               (directory-file-name (directory-of-file (buffer-file-name)))))
+      (:mailer file-class)
       (:helper (remove-postfix file-class "Helper"))
       (:functional-test (remove-postfix file-class "ControllerTest")))))
 
@@ -375,17 +402,15 @@ If the action is nil, return all views for the controller."
     (case (rails-core:buffer-type)
       (:model file-class)
       (:unit-test (remove-postfix file-class "Test"))
-      ;;BUG!
       (:fixture (singularize-string file-class)))))
 
 (defun rails-core:current-action ()
   "Return the current action in the current Rails controller."
   (case (rails-core:buffer-type)
-    (:controller (save-excursion
-       (when (search-backward-regexp "^[ ]*def \\([a-z0-9_]+\\)" nil t)
-         (match-string 1))))
+    (:controller (rails-core:current-function-name))
+    (:mailer (rails-core:current-function-name))
     (:view (string-match "/\\([a-z0-9_]+\\)\.[a-z]+$" (buffer-file-name))
-     (match-string 1 (buffer-file-name)))))
+           (match-string 1 (buffer-file-name)))))
 
 (defun rails-core:current-helper ()
   "Return the current helper"
@@ -396,6 +421,11 @@ If the action is nil, return all views for the controller."
   (let ((name (buffer-file-name)))
     (when (string-match "vendor\\/plugins\\/\\([^\\/]+\\)" name)
       (match-string 1 name))))
+
+(defun rails-core:current-function-name ()
+  (save-excursion
+    (when (search-backward-regexp "^[ ]*def \\([a-z0-9_]+\\)" nil t)
+      (match-string 1))))
 
 ;;;;;;;;;; Determination of buffer type ;;;;;;;;;;
 
@@ -409,51 +439,11 @@ If the action is nil, return all views for the controller."
 cannot be determinated."
   (loop for (type dir func) in rails-directory<-->types
         when (and (rails-core:buffer-file-match dir)
-                  (if func (apply func) t))
+                  (if func
+                      (apply func (list (buffer-file-name (current-buffer))))
+                    t))
         do (return type)))
 
-
-;;;;;;;;;; Openning of controller + action in controller and view ;;;;;;;;;;
-
-(defun rails-core:open-controller+action-view (controller action)
-  "Open the ACTION file for CONTROLLER in the views directory."
-  (let ((controller (rails-core:file-by-class
-                     (rails-core:short-controller-name controller) t)))
-    (if action
-        (let ((views (rails-core:get-view-files controller action)))
-          (cond
-           ((= (length views) 1) (find-file (first views)))
-           ((= (length views) 0)
-            (rails-core:find-or-ask-to-create
-             (format "View for %s#%s does not exist, create it?" controller action)
-             (format "app/views/%s/%s.rhtml" controller action)))
-           (t (find-file
-               (rails-core:menu
-                (list "Please select view.."
-                      (cons "Please select view.."
-                            (loop for view in views collect
-                                  (list
-                                   (replace-regexp-in-string ".*\.r\\([A-Za-z]+\\)$" "\\1" view)
-                                   view)))))))))
-      (dired (rails-core:file (concat "app/views/" controller))))))
-
-(defun rails-core:open-controller+action-controller (controller action)
-  "Open CONTROLLER and go to ACTION."
-  (if (rails-core:find-file-if-exist  (rails-core:controller-file controller))
-      (progn
-        (goto-char (point-min))
-        (when action
-          (if (search-forward-regexp (concat "^[ ]*def[ ]*" action) nil t)
-              (recenter)))
-        t)
-    (error "Controller %s does not exist" controller)))
-
-(defun rails-core:open-controller+action (where controller action)
-  "Go to CONTROLLER/ACTION in WHERE."
-  (ecase where
-    (:view (rails-core:open-controller+action-view controller action))
-    (:controller (rails-core:open-controller+action-controller controller action)))
-  (message (concat controller (if action "#") action)))
 
 ;;;;;;;;;; Rails minor mode logs ;;;;;;;;;;
 
@@ -477,24 +467,6 @@ the Rails minor mode log."
 
 (defun rails-core:menu-separator ()
   (unless (rails-use-text-menu) 'menu (list "--" "--")))
-
-(defun rails-core:menu-of-views(controller &optional add-separator)
-  "Make menu of view for CONTROLLER.
-If optional parameter ADD_SEPARATOR is present, then add separator to menu."
-  (let (menu)
-    (setq menu
-          (mapcar (lambda(i)
-                    (list (concat (if (string-match "^_" (file-name-nondirectory i))
-                                      "Partial" "View")
-                                  ": "
-                                  (file-name-nondirectory i))
-                          i))
-                  (rails-core:get-view-files controller nil)))
-    (if (zerop (length menu))
-        (setq menu (list))
-      (if add-separator
-          (add-to-list 'menu (rails-core:menu-separator))))
-    menu))
 
 (defun rails-core:menu (menu)
   "Show a menu."
