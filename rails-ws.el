@@ -1,4 +1,4 @@
-;;; rails-webkick.el --- functions for manadge webrick
+;;; rails-ws.el --- functions for manadge application server
 
 ;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
 
@@ -90,13 +90,12 @@ using `rails-webrick:default-env'."
            (setq env rails-default-environment))
          (let ((rails-ws:process-environment env)
                (process
-                (apply 'start-process-shell-command
-                       rails-ruby-command
-                       rails-ws:buffer-name
-                       rails-ruby-command
-                       (list "script/server"
-                             (concat "-e " env)
-                             (concat "-p " rails-ws:port)))))
+                (rails-cmd-proxy:start-process-shell-command rails-ruby-command
+                                                             rails-ws:buffer-name
+                                                             rails-ruby-command
+                                                             (list "script/server"
+                                                                   (concat "-e " env)
+                                                                   (concat "-p " rails-ws:port)))))
            (set-process-sentinel process 'rails-ws:sentinel-proc)
            (setq default-directory dir)
            (message (format "%s (%s) starting with port %s"
@@ -122,11 +121,11 @@ using `rails-webrick:default-env'."
   (interactive)
   (rails-ws:start "test"))
 
-(defun rails-ws:stop()
+(defun rails-ws:stop ()
   "Stop the WebServer process."
   (interactive)
   (let ((proc (get-buffer-process rails-ws:buffer-name)))
-    (if proc (kill-process proc))))
+    (when proc (interrupt-process proc t))))
 
 (defun rails-ws:toggle-start-stop ()
   "Toggle Rails WebServer start/stop with default environment."

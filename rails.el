@@ -48,6 +48,7 @@
 (require 'rails-log)
 (require 'rails-snippets)
 (require 'rails-ui)
+(require 'rails-cmd-proxy)
 
 ;;;;;;;;;; Variable definition ;;;;;;;;;;
 

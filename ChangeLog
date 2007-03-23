@@ -1,5 +1,10 @@
 2007-03-23  dima  <dima.exe@gmail.com>
 
+	* rails-cmd-proxy.el: create
+
+	* rails-ws.el (rails-ws:stop): stopped server with interrupt-process
+	(rails-ws:start): starting server useing rails-cmd-proxy:start-process-shell-command
+
 	* rails.el (rails-apply-for-buffer-type): added support to load new style submodes
 
 	* rails-lib.el (merge-abbrev-tables): created this function

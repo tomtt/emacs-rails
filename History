@@ -1,6 +1,6 @@
 SVN
 * fixed incorrect indentation in snippets [#9460]
-* added support template types in layouts menu 
+* added support template types in layouts menu
 * added support haml template engine
 * use `compile` to run `rake tests`
 * ask to save modified buffers before run rake
