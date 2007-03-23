@@ -1,5 +1,23 @@
 2007-03-23  dima  <dima.exe@gmail.com>
 
+	* rails.el (rails-directory<-->types): rename fixtures to fixture
+
+	* rails-unit-test-minor-mode.el: using functions from `rails-model-layout` to navigate
+
+	* rails-model-minor-mode.el: using functions from `rails-model-layout` to navigate
+
+	* rails-model-layout.el: create
+
+	* rails-lib.el (string=~): create, by Howard Yeh
+
+	* rails-fixture-minor-mode.el: create
+
+	* rails-core.el (rails-core:controller-exist-p): create
+	(rails-core:fixture-file): used `pluralize-string` to match fixture
+	(rails-core:current-model): used `pluralize-string` to match fixture
+
+	* inflections.el: create, by Howard Yeh
+
 	* rails-cmd-proxy.el: create
 
 	* rails-ws.el (rails-ws:stop): stopped server with interrupt-process

@@ -24,36 +24,12 @@
 
 ;;; Code:
 
-(defun rails-model-minor-mode:switch-to-unit-test ()
-  (interactive)
-  (rails-core:find-file-if-exist
-   (rails-core:unit-test-file (rails-core:current-model))))
-
-(defun rails-model-minor-mode:switch-with-menu ()
-  (interactive)
-  (let* ((item)
-         (model (rails-core:current-model))
-         (unit-test-file (rails-core:unit-test-file model)))
-    (setq item
-          (rails-core:menu
-           (list (concat "Model " model)
-                 (cons "Please select.."
-                       (list (cons "Unit test" unit-test-file))))))
-    (when item
-      (rails-core:find-file-if-exist item))))
-
-;; (defun rails-for-model ()
-;;   "Enable Rails Plugins Configurations."
-;;   (interactive)
-;;   (setq rails-primary-switch-func 'rails-model:switch-to-unit-test)
-;;   (setq rails-secondary-switch-func 'rails-model:switch-with-menu))
-
 (define-minor-mode rails-model-minor-mode
   "Minor mode for RubyOnRails models."
   nil
   " model"
   nil
-  (setq rails-primary-switch-func 'rails-model-minor-mode:switch-to-unit-test)
-  (setq rails-secondary-switch-func 'rails-model-minor-mode:switch-with-menu))
+  (setq rails-primary-switch-func (lambda() (interactive) (rails-model-layout:switch-to :unit-test)))
+  (setq rails-secondary-switch-func 'rails-model-layout:menu))
 
 (provide 'rails-model-minor-mode)

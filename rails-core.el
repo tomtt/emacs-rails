@@ -156,6 +156,12 @@ it does not exist, ask to create it using QUESTION as a prompt."
     (unless (string-equal controller-name "Application") "_controller")
     ".rb"))
 
+(defun rails-core:controller-exist-p (controller-name)
+  "Return t if controller CONTROLLER-NAME exist."
+  (file-exists-p
+   (rails-core:file
+    (rails-core:controller-file controller-name))))
+
 (defun rails-core:observer-file (observer-name)
   "Return the path to the observer OBSERVER-NAME."
   (rails-core:model-file (concat observer-name "Observer")))
@@ -215,10 +221,9 @@ CONTROLLER."
   "Return the unit test file name for the model named MODEL."
   (format "test/unit/%s_test.rb" (rails-core:file-by-class model t)))
 
-(defun rails-core:fixtures-file (model)
+(defun rails-core:fixture-file (model)
   "Return the fixtures file name for the model named MODEL."
-  ;;; Buggy: plurality conversion does not right
-  (format "test/fixtures/%ss.yml" (rails-core:file-by-class model t)))
+  (format "test/fixtures/%s.yml" (pluralize-string (rails-core:file-by-class model t))))
 
 (defun rails-core:views-dir (controller)
   "Return the view directory name for the controller named CONTROLLER."
@@ -371,7 +376,7 @@ If the action is nil, return all views for the controller."
       (:model file-class)
       (:unit-test (remove-postfix file-class "Test"))
       ;;BUG!
-      (:fixtures file-class))))
+      (:fixture (singularize-string file-class)))))
 
 (defun rails-core:current-action ()
   "Return the current action in the current Rails controller."

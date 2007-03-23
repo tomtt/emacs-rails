@@ -40,6 +40,8 @@
 (require 'find-recursive)
 (require 'autorevert)
 
+(require 'inflections)
+
 (require 'rails-core)
 (require 'rails-lib)
 (require 'rails-navigation)
@@ -49,6 +51,7 @@
 (require 'rails-snippets)
 (require 'rails-ui)
 (require 'rails-cmd-proxy)
+(require 'rails-model-layout)
 
 ;;;;;;;;;; Variable definition ;;;;;;;;;;
 
@@ -140,7 +143,7 @@ Emacs w3m browser."
     (:plugin           "vendor/plugins/")
     (:unit-test        "test/unit/")
     (:functional-test  "test/functional/")
-    (:fixtures         "test/fixtures/"))
+    (:fixture          "test/fixtures/"))
   "Rails file types -- rails directories map")
 
 (defvar rails-enviroments '("development" "production" "test"))

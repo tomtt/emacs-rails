@@ -1,4 +1,4 @@
-;;; rails-unit-test-minor-mode.el --- minor mode for RubyOnRails unit tests
+;;; rails-fixture-minor-mode.el --- minor mode for RubyOnRails fixtures
 
 ;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
 
@@ -24,12 +24,12 @@
 
 ;;; Code:
 
-(define-minor-mode rails-unit-test-minor-mode
-  "Minor mode for RubyOnRails unit tests."
+(define-minor-mode rails-fixture-minor-mode
+  "Minor mode for RubyOnRails fixtures."
   nil
-  " unit-test"
+  " fixture"
   nil
-  (setq rails-primary-switch-func (lambda() (interactive) (rails-model-layout:switch-to :model)))
+  (setq rails-primary-switch-func (lambda() (interactive) (rails-model-layout:switch-to :unit-test)))
   (setq rails-secondary-switch-func 'rails-model-layout:menu))
 
-(provide 'rails-unit-test-minor-mode)
+(provide 'rails-fixture-minor-mode)
