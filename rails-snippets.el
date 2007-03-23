@@ -39,6 +39,21 @@
 (unless (boundp 'rails-model-minor-mode-abbrev-table)
   (defvar rails-model-minor-mode-abbrev-table)
   (define-abbrev-table 'rails-model-minor-mode-abbrev-table ()))
+(unless (boundp 'rails-functional-test-minor-mode-abbrev-table)
+  (defvar rails-functional-test-minor-mode-abbrev-table)
+  (define-abbrev-table 'rails-functional-test-minor-mode-abbrev-table ()))
+(unless (boundp 'rails-unit-test-minor-mode-abbrev-table)
+  (defvar rails-unit-test-minor-mode-abbrev-table)
+  (define-abbrev-table 'rails-unit-test-minor-mode-abbrev-table ()))
+(unless (boundp 'rails-controller-test-minor-mode-abbrev-table)
+  (defvar rails-controller-minor-mode-abbrev-table)
+  (define-abbrev-table 'rails-controller-minor-mode-abbrev-table ()))
+(unless (boundp 'rails-view-minor-mode-abbrev-table)
+  (defvar rails-view-minor-mode-abbrev-table)
+  (define-abbrev-table 'rails-view-minor-mode-abbrev-table ()))
+(unless (boundp 'rails-helper-minor-mode-abbrev-table)
+  (defvar rails-helper-minor-mode-abbrev-table)
+  (define-abbrev-table 'rails-helper-minor-mode-abbrev-table ()))
 
 (defvar rails-snippets-menu-list
   (list '(:m "ruby"
@@ -200,7 +215,9 @@
              ("%" "<% $. -%>" "<% ... %>")
              ("%%" "<%= $. %>" "<%= ... %>")
              ) ; rhtml
-        '(:m "render" ruby-mode-abbrev-table
+        '(:m "render" rails-controller-minor-mode-abbrev-table
+                      rails-view-minor-mode-abbrev-table
+                      rails-helper-minor-mode-abbrev-table
              ("rps" "render :partial => \"$${item}\", :status => $${500}" "render (partial, status)")
              ("rt" "render :text => \"$${render}\"" "render (text)")
              ("rtl" "render :text => \"$${render}\", :layout => \"$${layoutname}\"" "render (text, layout)")
@@ -224,7 +241,9 @@
              ("ra" "render :action => \"$${action}\"" "render (action)")
              ("ral" "render :action => \"$${action}\", :layout => \"$${layoutname}\"" "render (action, layout)")
              ) ; render
-        '(:m "redirect_to" ruby-mode-abbrev-table
+        '(:m "redirect_to" rails-controller-minor-mode-abbrev-table
+                           rails-view-minor-mode-abbrev-table
+                           rails-helper-minor-mode-abbrev-table
              ("rea" "redirect_to :action => \"$${index}\"" "redirect_to (action)")
              ("reai" "redirect_to :action => \"$${show}\", :id => $${item}" "redirect_to (action, id)")
              ("rec" "redirect_to :controller => \"$${items}\"" "redirect_to (controller)")
@@ -267,7 +286,7 @@
              ("session" "session[:$${User}]" "session[...]")
              ("flash" "flash[:$${notice}] = \"$${Successfully}\"$." "flash[...]")
              ) ; environment
-        '(:m "assertions" ruby-mode-abbrev-table
+        '(:m "assertions" rails-functional-test-minor-mode-abbrev-table rails-unit-test-minor-mode-abbrev-table
              ("art" "assert_redirected_to :action => \"$${index}\"" "assert_redirected_to")
              ("as" "assert($${test}, \"$${message}\")" "assert(...)")
              ("ase" "assert_equal($${expected}, $${actual})" "assert_equal(...)")

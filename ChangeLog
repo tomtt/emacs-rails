@@ -1,5 +1,7 @@
 2007-03-23  dima  <dima.exe@gmail.com>
 
+	* rails-snippets.el (rails-snippets-menu-list): splited snippets into separate modes
+
 	* rails-navigation.el (rails-nav:goto-fixtures): created
 
 	* rails-core.el (rails-core:fixtures): created
