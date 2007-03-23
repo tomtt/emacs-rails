@@ -1,4 +1,7 @@
 SVN
+added [C-c f] hotkey to popup a menu with list of functions in ruby-mode
+
+0.5.4
 * added mailers support
 * added fixtures support
 * fixed incorrect indentation in snippets [#9460]

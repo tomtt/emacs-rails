@@ -475,12 +475,15 @@ the Rails minor mode log."
 (defun rails-core:menu-separator ()
   (unless (rails-use-text-menu) 'menu (list "--" "--")))
 
+(defvar rails-core:menu-position
+  (list '(300 50) (selected-window)))
+
 (defun rails-core:menu (menu)
   "Show a menu."
   (let ((result
          (if (rails-use-text-menu)
              (tmm-prompt menu)
-           (x-popup-menu (list '(300 50) (selected-window))
+           (x-popup-menu rails-core:menu-position
                          menu))))
     (if (listp result)
         (first result)

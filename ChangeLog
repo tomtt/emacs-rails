@@ -1,5 +1,10 @@
 2007-03-23  dima  <dima.exe@gmail.com>
 
+	* rails.el (ruby-mode-hook): added `C-c f` hotkey to popup `major-menu-mode` menu
+
+	* rails-core.el (rails-core:menu-position): created variable
+	(rails-core:menu): using `rails-core:menu-position`
+
 	* rails-snippets.el (rails-snippets-menu-list): splited snippets into separate modes
 
 	* rails-navigation.el (rails-nav:goto-fixtures): created

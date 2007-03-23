@@ -389,6 +389,9 @@ necessary."
             (local-set-key (if rails-use-another-define-key
                                (kbd "TAB") (kbd "<tab>"))
                            'indent-or-complete)
+            (local-set-key (kbd "C-c f") '(lambda()
+                                            (interactive)
+                                            (mouse-major-mode-menu rails-core:menu-position)))
             (local-set-key (if rails-use-another-define-key
                                (kbd "RET") (kbd "<return>"))
                            'ruby-newline-and-indent)))
