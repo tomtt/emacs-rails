@@ -11,11 +11,11 @@ SVN
 0.5.3
 * create separate menubar entry "Snippets"
 * allow web server selection auto-save
-* fix errors at work with sql
-* fix byte-compile warnings
+* fixed errors at work with sql
+* fixed byte-compile warnings
 
 0.5.2
-* Bug fixes: #8221, #8223
+* Fixed bugs: #8221, #8223
 * Using system `tail` program for display log files
 
 0.5.1 at 27.01.2007
