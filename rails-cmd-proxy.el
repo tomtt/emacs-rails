@@ -1,9 +1,8 @@
-;;; rails-remote-cmd.el ---
+;;; rails-cmd-proxy.el ---
 
 ;; Copyright (C) 2006 Dmitry Galinsky <dima dot exe at gmail dot com>
 
-;; Authors: Dmitry Galinsky <dima dot exe at gmail dot com>,
-;;          Rezikov Peter <crazypit13 (at) gmail.com>
+;; Authors: Dmitry Galinsky <dima dot exe at gmail dot com>
 
 ;; Keywords: ruby rails languages oop
 ;; $URL$
