@@ -50,22 +50,21 @@
       (setq cmd (concat cmd " " it)))
     (concat "\"" cmd "\"")))
 
-(defun rails-cmd-proxy:start-process-shell-command (name buffer command &rest command-args)
+(defun rails-cmd-proxy:start-process (name buffer command command-args)
   (let ((remote (rails-cmd-proxy:get-remote)))
     (if remote
         (let* ((remote-path (car remote))
                (remote-args (car (cdr remote)))
                (remote-cmd-args (list remote-args
                                       (rails-cmd-proxy:apply-remote remote-path command command-args))))
-           (apply 'start-process-shell-command
+           (start-process
                   name
                   buffer
                   rails-cmd-proxy:remote-cmd
                   remote-cmd-args))
-       (apply 'start-process-shell-command
-              name
-              buffer
-              command
-              command-args))))
+      (start-process-shell-command name
+                                   buffer
+                                   command
+                                   command-args))))
 
 (provide 'rails-cmd-proxy)

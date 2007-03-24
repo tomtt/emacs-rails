@@ -1,5 +1,8 @@
 2007-03-24  dima  <dima.exe@gmail.com>
 
+	* rails-ws.el (rails-ws:sentinel-proc): change format of the message
+	(rails-ws:start): fixed
+
 	* rails-navigation.el: removed old style goto-* functions
 
 	* rails.el (ruby-mode-hook): bind ruby-toggle-string<>symbol to [C-:] in ruby mode
