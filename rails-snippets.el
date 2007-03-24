@@ -273,7 +273,7 @@
              ("vl" "validates_length_of :$${attribute}, :within => $${20}" "validates_length_of")
              ("bt" "belongs_to :$${model}" "belongs_to")
              ("hm" "has_many :$${objects}" "has_many")
-             ("hmt" "has_many :$${objects}, :through => $${proxy}" "has_many :through")
+             ("hmt" "has_many :$${objects}, :through => :$${,rails-snippets:prev-has-many-table-name}" "has_many :through")
              ("ho" "has_one :$${object}" "has_one")
              ("habtm" "has_and_belongs_to_many :$${object}" "has_and_belongs_to_many")
              ) ; model
@@ -326,10 +326,44 @@
         )
   )
 
+;;       (let* ((field (snippet-make-field-overlay (match-string 2)))
+;;              (start (match-beginning 0))
+;;              (snip-str (match-string 2))
+;;              (repl "\\2"))
+;;         (push field (snippet-fields snippet))
+;;         (when (= 44 (car (string-to-list snip-str))) ;; 44 - [,]
+;;           (save-match-data
+;;             (setq repl (apply (intern (substring snip-str 1)) (list)))))
+
+(defadvice snippet-insert (before snippet-insert-before-advice first (template) activate)
+  (let ((pos 0))
+    (while (setq pos (string-match (snippet-field-regexp) template pos))
+      (let ((match (match-string 2 template))
+            (beg (match-beginning 2))
+            (end (match-end 2))
+            (repl))
+        (setq pos end)
+        (when (= 44 (car (string-to-list match))) ;; 44 - [,]
+          (save-match-data
+            (setq repl (apply (intern (substring match 1)) (list)))))
+        (when repl
+          (setq template
+                (concat (substring template 0 beg)
+                        repl
+                        (substring template end (length template))))
+          (setq pos (- pos
+                       (- (length match) (length repl)))))))))
+
 (defun rails-snippets:migration-table-name ()
   (let (str)
     (string=~ "[0-9]+_create_\\([^\\.]+\\)\\.rb$" (buffer-name)
               (setq str $1))
     (if str str "table")))
+
+(defun rails-snippets:prev-has-many-table-name ()
+  (save-excursion
+    (if (search-backward-regexp "has_many :\\(\\w+\\)" nil t)
+        (match-string-no-properties 1)
+      "table")))
 
 (provide 'rails-snippets)

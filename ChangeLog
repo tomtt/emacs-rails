@@ -1,5 +1,8 @@
 2007-03-24  dima  <dima.exe@gmail.com>
 
+	* rails-snippets.el (snippet-insert): added advice
+	(rails-snippets-menu-list): updated snippets
+
 	* rails-ws.el (rails-ws:sentinel-proc): change format of the message
 	(rails-ws:start): fixed
 
