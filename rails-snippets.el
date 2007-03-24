@@ -1,8 +1,8 @@
 ;;; rails-snippets.el --- snippets for rails related modes
 
-;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
+;; Copyright (C) 2006 Dmitry Galinsky <dima dot exe at gmail dot com>
 
-;; Authors: Galinsky Dmitry <dima dot exe at gmail dot com>,
+;; Authors: Dmitry Galinsky <dima dot exe at gmail dot com>,
 
 ;; Keywords: ruby rails languages oop
 ;; $URL$

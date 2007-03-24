@@ -1,6 +1,6 @@
 ;;; rails-functional-test-minor-mode.el --- minor mode for RubyOnRails functional tests
 
-;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
+;; Copyright (C) 2006 Dmitry Galinsky <dima dot exe at gmail dot com>
 
 ;; Keywords: ruby rails languages oop
 ;; $URL$

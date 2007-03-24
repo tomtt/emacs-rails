@@ -1,8 +1,8 @@
 ;;; rails.el --- minor mode for editing RubyOnRails code
 
-;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
+;; Copyright (C) 2006 Dmitry Galinsky <dima dot exe at gmail dot com>
 
-;; Authors: Galinsky Dmitry <dima dot exe at gmail dot com>,
+;; Authors: Dmitry Galinsky <dima dot exe at gmail dot com>,
 ;;          Rezikov Peter <crazypit13 (at) gmail.com>
 
 ;; Keywords: ruby rails languages oop
