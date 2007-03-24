@@ -3,8 +3,8 @@
 ;; Copyright (C) 2006 Galinsky Dmitry <dima dot exe at gmail dot com>
 
 ;; Keywords: ruby rails languages oop
-;; $URL: svn+ssh://rubyforge/var/svn/emacs-rails/trunk/rails-for-rhtml.el $
-;; $Id: rails-for-rhtml.el 43 2006-04-11 17:07:11Z dimaexe $
+;; $URL$
+;; $Id$
 
 ;;; License
 

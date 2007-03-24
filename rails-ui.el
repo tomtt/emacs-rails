@@ -6,8 +6,8 @@
 ;;          Rezikov Peter <crazypit13 (at) gmail.com>
 
 ;; Keywords: ruby rails languages oop
-;; $URL: svn+ssh://crazypit@rubyforge.org/var/svn/emacs-rails/trunk/rails-core.el $
-;; $Id: rails-navigation.el 23 2006-03-27 21:35:16Z crazypit $
+;; $URL$
+;; $Id$
 
 ;;; License
 
@@ -35,162 +35,132 @@
   ([rails rails-customize] '(menu-item "Customize"
                                        (lambda () (interactive) (customize-group 'rails))
                                        :enable (rails-core:root)))
-
   ([rails separator0] '("--"))
-
   ([rails svn-status] '(menu-item "SVN status" rails-svn-status-into-root
                                   :enable (rails-core:root)))
+  ([rails api-doc]           '("Rails API doc at point" . rails-browse-api-at-point))
+  ([rails sql]               '("SQL Rails buffer"       . rails-run-sql))
+  ([rails tag]               '("Update TAGS file"       . rails-create-tags))
+  ([rails ri]                '("Search documentation"   . rails-search-doc))
+  ([rails goto-file-by-line] '("Goto file by line"      . rails-goto-file-on-current-line))
+  ([rails switch-file-menu]  '("Switch file menu..."    . rails-lib:run-secondary-switch))
+  ([rails switch-file]       '("Switch file"            . rails-lib:run-primary-switch))
+  ([rails separator1]        '("--"))
 
-  ([rails api-doc] '("Rails API doc at point" . rails-browse-api-at-point))
-
-  ([rails sql] '("SQL Rails buffer" . rails-run-sql))
-
-  ([rails tag] '("Update TAGS file" . rails-create-tags))
-
-  ([rails ri] '("Search documentation" . rails-search-doc))
-
-  ([rails goto-file-by-line] '("Goto file by line" . rails-goto-file-on-current-line))
-
-  ([rails switch-file-menu] '("Switch file menu..." . rails-lib:run-secondary-switch))
-  ([rails switch-file] '("Switch file" . rails-lib:run-primary-switch))
-
-  ([rails separator1] '("--"))
   ([rails log] (cons "Open log files" (make-sparse-keymap "Open log files")))
-
-  ([rails log test] '("test.log" . rails-log:open-test))
-  ([rails log pro] '("production.log" . rails-log:open-production))
-  ([rails log dev] '("development.log" . rails-log:open-development))
+  ([rails log test]      '("test.log"         . rails-log:open-test))
+  ([rails log pro]       '("production.log"   . rails-log:open-production))
+  ([rails log dev]       '("development.log"  . rails-log:open-development))
   ([rails log separator] '("---"))
-  ([rails log open] '("Open log file..." . rails-log:open))
+  ([rails log open]      '("Open log file..." . rails-log:open))
 
   ([rails config] (cons "Configuration" (make-sparse-keymap "Configuration")))
-
-  ([rails config routes] '("routes.rb" .
-         (lambda ()
-           (interactive)
-           (rails-core:find-file "config/routes.rb"))))
-
+  ([rails config routes]      '("routes.rb" .
+                                (lambda () (interactive)
+                                  (rails-core:find-file "config/routes.rb"))))
   ([rails config environment] '("environment.rb" .
-        (lambda()
-          (interactive)
-          (rails-core:find-file "config/environment.rb"))))
-
-  ([rails config database] '("database.yml" .
-           (lambda()
-             (interactive)
-             (rails-core:find-file "config/database.yml"))))
-
-  ([rails config boot] '("boot.rb" .
-       (lambda()
-         (interactive)
-         (rails-core:find-file "config/boot.rb"))))
+                                (lambda() (interactive)
+                                  (rails-core:find-file "config/environment.rb"))))
+  ([rails config database]    '("database.yml" .
+                                (lambda() (interactive)
+                                  (rails-core:find-file "config/database.yml"))))
+  ([rails config boot]        '("boot.rb" .
+                                (lambda() (interactive)
+                                  (rails-core:find-file "config/boot.rb"))))
 
   ([rails config env] (cons "environments" (make-sparse-keymap "environments")))
-
-  ([rails config env test] '("test.rb" .
-           (lambda()
-             (interactive)
-             (rails-core:find-file "config/environments/test.rb"))))
-
-  ([rails config env production] '("production.rb" .
-           (lambda()
-             (interactive)
-             (rails-core:find-file "config/environments/production.rb"))))
-
+  ([rails config env test]        '("test.rb" .
+                                    (lambda() (interactive)
+                                      (rails-core:find-file "config/environments/test.rb"))))
+  ([rails config env production]  '("production.rb" .
+                                    (lambda() (interactive)
+                                      (rails-core:find-file "config/environments/production.rb"))))
   ([rails config env development] '("development.rb" .
-            (lambda()
-              (interactive)
-              (rails-core:find-file "config/environments/development.rb"))))
+                                    (lambda()(interactive)
+                                      (rails-core:find-file "config/environments/development.rb"))))
 
   ([rails scr] (cons "Scripts" (make-sparse-keymap "Scripts")))
-
-  ([rails scr proj] '("Create project" . rails-create-project))
-  ([rails scr rake] '("Rake..." . rails-rake))
-  ([rails scr console] '("Console" . rails-run-console))
-  ([rails scr break] '("Breakpointer" . rails-run-breakpointer))
+  ([rails scr proj]    '("Create project" . rails-create-project))
+  ([rails scr rake]    '("Rake..."        . rails-rake))
+  ([rails scr console] '("Console"        . rails-run-console))
+  ([rails scr break]   '("Breakpointer"   . rails-run-breakpointer))
 
   ([rails scr tests] (cons "Tests" (make-sparse-keymap "Tests")))
-
   ([rails scr tests integration] '("Integration tests" . (lambda() (interactive) (rails-rake-tests "integration"))))
-  ([rails scr tests unit] '("Unit tests" . (lambda() (interactive) (rails-rake-tests "unit"))))
-  ([rails scr tests functional] '("Functional tests" . (lambda() (interactive) (rails-rake-tests "functionals"))))
-  ([rails scr tests recent] '("Recent tests" . (lambda() (interactive) (rails-rake-tests "recent"))))
-  ([rails scr tests tests] '("All" . (lambda() (interactive) (rails-rake-tests "all"))))
-  ([rails scr tests separator] '("--"))
-  ([rails scr tests run] '("Run tests ..." . rails-rake-tests))
+  ([rails scr tests unit]        '("Unit tests"        . (lambda() (interactive) (rails-rake-tests "unit"))))
+  ([rails scr tests functional]  '("Functional tests"  . (lambda() (interactive) (rails-rake-tests "functionals"))))
+  ([rails scr tests recent]      '("Recent tests"      . (lambda() (interactive) (rails-rake-tests "recent"))))
+  ([rails scr tests tests]       '("All"               . (lambda() (interactive) (rails-rake-tests "all"))))
+  ([rails scr tests separator]   '("--"))
+  ([rails scr tests run]         '("Run tests ..."     . rails-rake-tests))
 
   ([rails scr gen] (cons "Generate" (make-sparse-keymap "Generate")))
-
-  ([rails scr gen resource] '("Resource" . rails-generate-resource))
-  ([rails scr gen observer] '("Observer" . rails-generate-observer))
-  ([rails scr gen mailer] '("Mailer" . rails-generate-mailer))
-  ([rails scr gen plugin] '("Plugin" . rails-generate-plugin))
-  ([rails scr gen migration] '("Migration" . rails-generate-migration))
-  ([rails scr gen scaffold] '("Scaffold" . rails-generate-scaffold))
-  ([rails scr gen model] '("Model" . rails-generate-model))
-  ([rails scr gen controller] '("Controller" . rails-generate-controller))
-  ([rails scr gen separator] '("--"))
-  ([rails scr gen run] '("Run generate ..." . rails-generate))
+  ([rails scr gen resource]   '("Resource"         . rails-generate-resource))
+  ([rails scr gen observer]   '("Observer"         . rails-generate-observer))
+  ([rails scr gen mailer]     '("Mailer"           . rails-generate-mailer))
+  ([rails scr gen plugin]     '("Plugin"           . rails-generate-plugin))
+  ([rails scr gen migration]  '("Migration"        . rails-generate-migration))
+  ([rails scr gen scaffold]   '("Scaffold"         . rails-generate-scaffold))
+  ([rails scr gen model]      '("Model"            . rails-generate-model))
+  ([rails scr gen controller] '("Controller"       . rails-generate-controller))
+  ([rails scr gen separator]  '("--"))
+  ([rails scr gen run]        '("Run generate ..." . rails-generate))
 
   ([rails scr destr] (cons "Destroy" (make-sparse-keymap "Generators")))
-
-  ([rails scr destr resource] '("Resource" . rails-destroy-resource))
-  ([rails scr destr observer] '("Observer" . rails-destroy-observer))
-  ([rails scr destr mailer] '("Mailer" . rails-destroy-mailer))
-  ([rails scr destr migration] '("Migration" . rails-destroy-migration))
-  ([rails scr destr scaffold] '("Scaffold" . rails-destroy-scaffold))
-  ([rails scr destr model] '("Model" . rails-destroy-model))
-  ([rails scr destr controller] '("Controller" . rails-destroy-controller))
-  ([rails scr destr separator] '("--"))
-  ([rails scr destr run] '("Run destroy ..." . rails-destroy))
+  ([rails scr destr resource]   '("Resource"        . rails-destroy-resource))
+  ([rails scr destr observer]   '("Observer"        . rails-destroy-observer))
+  ([rails scr destr mailer]     '("Mailer"          . rails-destroy-mailer))
+  ([rails scr destr migration]  '("Migration"       . rails-destroy-migration))
+  ([rails scr destr scaffold]   '("Scaffold"        . rails-destroy-scaffold))
+  ([rails scr destr model]      '("Model"           . rails-destroy-model))
+  ([rails scr destr controller] '("Controller"      . rails-destroy-controller))
+  ([rails scr destr separator]  '("--"))
+  ([rails scr destr run]        '("Run destroy ..." . rails-destroy))
 
   ([rails ws] (cons "Web Server" (make-sparse-keymap "WebServer")))
 
-  ([rails ws use-webrick] '(menu-item "Use WEBrick"
-                                      (lambda()(interactive)(rails-ws:switch-default-server-type "webrick"))
-                                      :button (:toggle . (rails-ws:default-server-type-p "webrick"))))
-  ([rails ws use-lighttpd] '(menu-item "Use Lighty"
-                                       (lambda()(interactive)(rails-ws:switch-default-server-type "lighttpd"))
+  ([rails ws use-webrick]  '(menu-item "Use WEBrick" (lambda() (interactive)
+                                                       (rails-ws:switch-default-server-type "webrick"))
+                                       :button (:toggle . (rails-ws:default-server-type-p "webrick"))))
+  ([rails ws use-lighttpd] '(menu-item "Use Lighty" (lambda() (interactive)
+                                                      (rails-ws:switch-default-server-type "lighttpd"))
                                        :button (:toggle . (rails-ws:default-server-type-p "lighttpd"))))
-  ([rails ws use-mongrel] '(menu-item "Use Mongrel"
-                                      (lambda()(interactive)(rails-ws:switch-default-server-type "mongrel"))
-                                      :button (:toggle . (rails-ws:default-server-type-p "mongrel"))))
+  ([rails ws use-mongrel]  '(menu-item "Use Mongrel" (lambda() (interactive)
+                                                       (rails-ws:switch-default-server-type "mongrel"))
+                                       :button (:toggle . (rails-ws:default-server-type-p "mongrel"))))
   ([rails ws separator] '("--"))
 
-  ([rails ws brows] '(menu-item "Open browser..."
-             rails-ws:open-browser-on-controller
-            :enable (rails-ws:running-p)))
-  ([rails ws auto-brows] '(menu-item "Open browser on current action"
-            rails-ws:auto-open-browser
-            :enable (rails-ws:running-p)))
-  ([rails ws url] '(menu-item "Open browser"
-           rails-ws:open-browser
-            :enable (rails-ws:running-p)))
+  ([rails ws brows]      '(menu-item "Open browser..." rails-ws:open-browser-on-controller
+                                     :enable (rails-ws:running-p)))
+  ([rails ws auto-brows] '(menu-item "Open browser on current action" rails-ws:auto-open-browser
+                                     :enable (rails-ws:running-p)))
+  ([rails ws url]        '(menu-item "Open browser" rails-ws:open-browser
+                                     :enable (rails-ws:running-p)))
   ([rails ws separator2] '("--"))
 
-  ([rails ws test] '(menu-item "Start test" rails-ws:start-test
-                               :enable (not (rails-ws:running-p))))
-  ([rails ws production] '(menu-item "Start production" rails-ws:start-production
-                                     :enable (not (rails-ws:running-p))))
+  ([rails ws test]        '(menu-item "Start test" rails-ws:start-test
+                                      :enable (not (rails-ws:running-p))))
+  ([rails ws production]  '(menu-item "Start production" rails-ws:start-production
+                                      :enable (not (rails-ws:running-p))))
   ([rails ws development] '(menu-item "Start development" rails-ws:start-development
                                       :enable (not (rails-ws:running-p))))
   ([rails ws separator3] '("--"))
-  ([rails ws status] '(menu-item "Print status" rails-ws:print-status))
-  ([rails ws default] '(menu-item "Start/stop web server (with default environment)"
-                        rails-ws:toggle-start-stop))
+
+  ([rails ws status]  '(menu-item "Print status"                                     rails-ws:print-status))
+  ([rails ws default] '(menu-item "Start/stop web server (with default environment)" rails-ws:toggle-start-stop))
 
   ([rails separator2] '("--"))
 
-  ([rails goto-fixtures] '("Go to fixtures" . rails-nav:goto-fixtures))
-  ([rails goto-plugins] '("Go to plugins" . rails-nav:goto-plugins))
-  ([rails goto-migrate] '("Go to migrations" . rails-nav:goto-migrate))
-  ([rails goto-layouts] '("Go to layouts" . rails-nav:goto-layouts))
+  ([rails goto-fixtures]    '("Go to fixtures"    . rails-nav:goto-fixtures))
+  ([rails goto-plugins]     '("Go to plugins"     . rails-nav:goto-plugins))
+  ([rails goto-migrate]     '("Go to migrations"  . rails-nav:goto-migrate))
+  ([rails goto-layouts]     '("Go to layouts"     . rails-nav:goto-layouts))
   ([rails goto-stylesheets] '("Go to stylesheets" . rails-nav:goto-stylesheets))
   ([rails goto-javascripts] '("Go to javascripts" . rails-nav:goto-javascripts))
-  ([rails goto-helpers] '("Go to helpers" . rails-nav:goto-helpers))
-  ([rails goto-mailers] '("Go to mailers" . rails-nav:goto-mailers))
-  ([rails goto-observers] '("Go to observers" . rails-nav:goto-observers))
-  ([rails goto-models] '("Go to models" . rails-nav:goto-models))
+  ([rails goto-helpers]     '("Go to helpers"     . rails-nav:goto-helpers))
+  ([rails goto-mailers]     '("Go to mailers"     . rails-nav:goto-mailers))
+  ([rails goto-observers]   '("Go to observers"   . rails-nav:goto-observers))
+  ([rails goto-models]      '("Go to models"      . rails-nav:goto-models))
   ([rails goto-controllers] '("Go to controllers" . rails-nav:goto-controllers)))
 
 (setq rails-minor-mode-map (make-sparse-keymap))
@@ -212,15 +182,15 @@
   ((kbd "\C-c \C-c g f") 'rails-nav:goto-fixtures)
 
   ;; Switch
-  ((kbd "C-c <up>")   'rails-lib:run-primary-switch)
-  ((kbd "C-c <down>") 'rails-lib:run-secondary-switch)
-  ((kbd "<M-S-up>")   'rails-lib:run-primary-switch)
-  ((kbd "<M-S-down>") 'rails-lib:run-secondary-switch)
-  ((kbd "<C-return>") 'rails-goto-file-on-current-line)
+  ((kbd "C-c <up>")      'rails-lib:run-primary-switch)
+  ((kbd "C-c <down>")    'rails-lib:run-secondary-switch)
+  ((kbd "<M-S-up>")      'rails-lib:run-primary-switch)
+  ((kbd "<M-S-down>")    'rails-lib:run-secondary-switch)
+  ((kbd "<C-return>")    'rails-goto-file-on-current-line)
 
   ;; Scripts & SQL
-  ((kbd "\C-c \C-c e")   'rails-generate)
-  ((kbd "\C-c \C-c d")   'rails-destroy)
+  ((kbd "\C-c \C-c e")   'rails-script:generate)
+  ((kbd "\C-c \C-c d")   'rails-script:destroy)
   ((kbd "\C-c \C-c s c") 'rails-run-console)
   ((kbd "\C-c \C-c s b") 'rails-run-breakpointer)
   ((kbd "\C-c \C-c s s") 'rails-run-sql)
@@ -248,20 +218,20 @@
   ((kbd "\C-c \C-c f o") 'rails-find-config)
 
   ;; Tests
-  ((kbd "\C-c \C-c t") 'rails-rake-tests)
+  ((kbd "\C-c \C-c t")   'rails-rake-tests)
 
   ;; Navigation
 
-  ((kbd "\C-c \C-c l") 'rails-log:open)
-  ((kbd "\C-c \C-c j") 'rails-create-project)
+  ((kbd "\C-c \C-c l")    'rails-log:open)
+  ((kbd "\C-c \C-c j")    'rails-create-project)
   ;; Tags
   ((kbd "\C-c \C-c \C-t") 'rails-create-tags)
 
   ;; Documentation
-  ([f1]  'rails-search-doc)
-  ((kbd "<C-f1>")  'rails-browse-api-at-point)
-  ((kbd "C-c <f1>")  'rails-browse-api)
+  ([f1]                  'rails-search-doc)
+  ((kbd "<C-f1>")        'rails-browse-api-at-point)
+  ((kbd "C-c <f1>")      'rails-browse-api)
 
-  ([f9]  'rails-svn-status-into-root))
+  ([f9]                  'rails-svn-status-into-root))
 
 (provide 'rails-ui)

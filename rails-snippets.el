@@ -5,8 +5,8 @@
 ;; Authors: Galinsky Dmitry <dima dot exe at gmail dot com>,
 
 ;; Keywords: ruby rails languages oop
-;; $URL: svn+ssh://crazypit@rubyforge.org/var/svn/emacs-rails/trunk/rails-core.el $
-;; $Id: rails-navigation.el 23 2006-03-27 21:35:16Z crazypit $
+;; $URL$
+;; $Id$
 
 ;;; License
 

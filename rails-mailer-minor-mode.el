@@ -6,8 +6,8 @@
 ;;          Rezikov Peter <crazypit13 (at) gmail.com>
 
 ;; Keywords: ruby rails languages oop
-;; $URL: svn+ssh://rubyforge/var/svn/emacs-rails/trunk/rails-controller-minor-mode.el $
-;; $Id: rails-controller-minor-mode.el 96 2007-03-22 22:44:04Z dimaexe $
+;; $URL$
+;; $Id$
 
 ;;; License
 

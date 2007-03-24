@@ -1,5 +1,7 @@
 2007-03-25  dima  <dima.exe@gmail.com>
 
+	* rails-ui.el (rails-minor-mode-menu-bar-map): update indentation
+
 	* rails-scripts.el: refactored code
 
 2007-03-24  dima  <dima.exe@gmail.com>
@@ -22,7 +24,7 @@
 
 	* rails-ui.el (rails-minor-mode-map): added [M-S-up] & [M-S-down] hotkeys
 
-	* rails-snippets.el (rails-snippets-menu-list): updated, slit to separate modes
+	* rails-snippets.el (rails-snippets-menu-list): updated, split snippets to separate modes
 
 	* rails-ruby.el (ruby-toggle-string<>simbol): created
 

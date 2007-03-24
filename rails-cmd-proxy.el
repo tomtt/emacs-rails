@@ -6,8 +6,8 @@
 ;;          Rezikov Peter <crazypit13 (at) gmail.com>
 
 ;; Keywords: ruby rails languages oop
-;; $URL: svn+ssh://rubyforge/var/svn/emacs-rails/trunk/rails-ws.el $
-;; $Id: rails-ws.el 86 2007-01-28 22:37:59Z dimaexe $
+;; $URL$
+;; $Id$
 
 ;;; License
 
