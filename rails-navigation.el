@@ -258,12 +258,8 @@ rails-goto-file-on-current-line is run.")
         (setf action (match-string 1 line)))
       (when (string-match ":controller[ ]*=>[ ]*[\"']\\([^\"']*\\)[\"']" line)
         (setf controller (match-string 1 line)))
-      (rails-core:open-controller+action
-       (if (rails-core:rhtml-buffer-p)
-           (if prefix :controller :view)
-         (if prefix :view :controller))
-       (if controller
-           (rails-core:full-controller-name controller)
+      (rails-controller-layout:switch-to-action-in-controller
+       (if controller controller
          (rails-core:current-controller))
        action))))
 

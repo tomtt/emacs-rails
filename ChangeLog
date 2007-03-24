@@ -1,5 +1,11 @@
 2007-03-24  dima  <dima.exe@gmail.com>
 
+	* rails-unit-test-minor-mode.el (rails-unit-test-minor-mode): fixed
+
+	* rails-navigation.el (rails-line-->controller+action): replace
+	call rails-core:open-controller+action to
+	rails-controller-layout:switch-to-action-in-controller
+
 	* rails-snippets.el (snippet-insert): added advice
 	(rails-snippets-menu-list): updated snippets
 

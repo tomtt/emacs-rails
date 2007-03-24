@@ -31,7 +31,7 @@
   nil
   (setq rails-primary-switch-func (lambda()
                                     (interactive)
-                                    (if (rails-core:mailer-p rails-core:current-model)
+                                    (if (rails-core:mailer-p (rails-core:current-model))
                                         (rails-model-layout:switch-to :mailer)
                                       (rails-model-layout:switch-to :model))))
   (setq rails-secondary-switch-func 'rails-model-layout:menu))
