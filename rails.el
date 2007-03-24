@@ -147,7 +147,8 @@ Emacs w3m browser."
     (:plugin           "vendor/plugins/")
     (:unit-test        "test/unit/")
     (:functional-test  "test/functional/")
-    (:fixture          "test/fixtures/"))
+    (:fixture          "test/fixtures/")
+    (:migration        "db/migrate"))
   "Rails file types -- rails directories map")
 
 (apply
@@ -392,6 +393,7 @@ necessary."
             (local-set-key (kbd "C-c f") '(lambda()
                                             (interactive)
                                             (mouse-major-mode-menu rails-core:menu-position)))
+            (local-set-key (kbd "C-:") 'ruby-toggle-string<>simbol)
             (local-set-key (if rails-use-another-define-key
                                (kbd "RET") (kbd "<return>"))
                            'ruby-newline-and-indent)))

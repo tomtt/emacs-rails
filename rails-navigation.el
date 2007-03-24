@@ -156,7 +156,7 @@
   (rails-nav:goto-file-with-menu "public/stylesheets/" "Go to stylesheet.." "css" t))
 
 (defun rails-nav:goto-javascripts ()
-  "Go tto JavaScripts."
+  "Go to JavaScripts."
   (interactive)
   (rails-nav:goto-file-with-menu "public/javascripts/" "Go to stylesheet.." "js" t))
 
@@ -266,98 +266,6 @@ rails-goto-file-on-current-line is run.")
            (rails-core:full-controller-name controller)
          (rails-core:current-controller))
        action))))
-
-;;;;;;;;;; Go to file from file ;;;;;;;;;;
-
-;;; For Models
-
-(defun rails-by-model-switch-to (what file-func)
-  (let ((model (rails-core:current-model)))
-    (rails-core:find-or-ask-to-create
-     (format "%s for model %s does not exist, create it? " what model)
-     (funcall file-func  model))))
-
-(defun rails-by-model-switch-to-model ()
-  (rails-by-model-switch-to "Model" 'rails-core:model-file))
-
-;; Plural BUGS!!!
-;; (defun rails-goto-fixtures-->model ()
-;;   (rails-goto-model-->simple
-;;    "Model" 'rails-core:current-model-from-fixtures
-;;    'rails-core:model-file))
-
-;; (defun  rails-goto-fixtures-->unit-test ()
-;;   (rails-goto-model-->simple
-;;    "Unit test" 'rails-core:current-model-from-fixtures
-;;   'rails-core:unit-test-file))
-
-(defun rails-by-model-switch-to-unit-test ()
-  (rails-by-model-switch-to "Unit test" 'rails-core:unit-test-file))
-
-(defun rails-by-model-switch-to-fixtures ()
-  (rails-by-model-switch-to "Fixtures" 'rails-core:fixtures-file))
-
-(defvar rails-goto-file-from-file-actions
-  '((:controller
-     (:invisible        rails-for-controller:switch-to-view2)
-     rails-for-controller:views-for-current-action
-     ("Helper"          rails-for-controller:switch-to-helper)
-     ("Functional test" rails-for-controller:switch-to-functional-test))
-    (:view
-     ("Controller"      rails-view:switch-to-action)
-     ("Helper"          rails-for-controller:switch-to-helper)
-     ("Functional test" rails-for-controller:switch-to-functional-test))
-    (:helper
-     ("Controller"      rails-for-controller:switch-to-controller)
-     ("View"            rails-for-controller:switch-to-views))
-    (:functional-test
-     ("Controller"      rails-for-controller:switch-to-controller))
-;;; For Models
-    (:model
-     ("Unit test" rails-by-model-switch-to-unit-test)
-     ("Fixtures"  rails-by-model-switch-to-fixtures))
-    ;; Plural BUGS!!!
-    ;;     (rails-core:fixtures-buffer-p
-    ;;      (rails-goto-fixtures-->model "Model test")
-    ;;      (rails-goto-fixtures-->unit-test "Unit test"))
-    (:unit-test
-     ("Model"      rails-by-model-switch-to-model)
-     ("Fixtures"   rails-by-model-switch-to-fixtures))))
-
-(defun rails-goto-file-from-file (show-menu)
-  "Deteminate type of file and goto another file.
-  With prefix show menu with variants."
-  (interactive "P")
-  (rails-core:with-root
-   (root)
-   (let ((variants (rest (find (rails-core:buffer-type)
-                               rails-goto-file-from-file-actions
-                               :key #'first))))
-     (if variants
-         (let ((variants
-                (loop for variant in variants
-                      when (symbolp variant)
-                      append (funcall variant)
-                      else collect variant)))
-           (progn
-             ;; Menu
-             (if show-menu
-                 (when-bind
-                  (goto (rails-core:menu
-                         (list "Go To: "
-                               (cons "goto"
-                                     (loop for (title func) in variants
-                                           when (not (eq title :invisible))
-                                           collect `(,title  ,func))))))
-                  (funcall goto))
-               ;;
-               (funcall (second (first variants))))))
-       (message "Can't go to some file from this file.")))))
-
-(defun rails-goto-file-from-file-with-menu ()
-  "Deteminate type of file and goto another file (choose type from menu)"
-  (interactive)
-  (rails-goto-file-from-file t))
 
 ;;;;;;;;;; Rails finds ;;;;;;;;;;
 

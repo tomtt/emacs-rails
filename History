@@ -1,5 +1,6 @@
 SVN
-added [C-c f] hotkey to popup a menu with list of functions in ruby-mode
+new [C-:] hotkey to easy switch between strings and symbols at point in ruby-mode
+new [C-c f] hotkey to popup a menu with list of functions in ruby-mode
 
 0.5.4
 * added mailers support

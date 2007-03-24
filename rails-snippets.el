@@ -54,6 +54,9 @@
 (unless (boundp 'rails-helper-minor-mode-abbrev-table)
   (defvar rails-helper-minor-mode-abbrev-table)
   (define-abbrev-table 'rails-helper-minor-mode-abbrev-table ()))
+(unless (boundp 'rails-migration-minor-mode-abbrev-table)
+  (defvar rails-migration-minor-mode-abbrev-table)
+  (define-abbrev-table 'rails-migration-minor-mode-abbrev-table ()))
 
 (defvar rails-snippets-menu-list
   (list '(:m "ruby"
@@ -215,6 +218,13 @@
              ("%" "<% $. -%>" "<% ... %>")
              ("%%" "<%= $. %>" "<%= ... %>")
              ) ; rhtml
+        '(:m "controller" rails-controller-minor-mode-abbrev-table
+             ("rest" "respond_to do |format|\n$>format.html\n$>$.\nend$>" "respond_to ...")
+             ("ru"  "render :update do |page|\n$>$.\nend$>" "render :update ...")
+             ("bf"  "before_filter :$${filter}" "refore_filter")
+             ("af"  "after_filter :$${filter}" "after_filter")
+             ("arf"  "around_filter :$${filter}" "around_filter")
+             ) ; controller
         '(:m "render" rails-controller-minor-mode-abbrev-table
                       rails-view-minor-mode-abbrev-table
                       rails-helper-minor-mode-abbrev-table
@@ -250,12 +260,13 @@
              ("reca" "redirect_to :controller => \"$${items}\", :action => \"$${list}\"" "redirect_to (controller, action)")
              ("recai" "redirect_to :controller => \"$${items}\", :action => \"$${show}\", :id => $${item}" "redirect_to (controller, action, id)")
              ) ; redirect_to
-        '(:m "model" rails-model-minor-mode-abbrev-table
+        '(:m "rails" ruby-mode-abbrev-table
              ("nr" "@$${item}.new_record?" "item.new_record?")
+             ) ; rails
+        '(:m "model" rails-model-minor-mode-abbrev-table
              ("va" "validates_associated :$${attribute}" "validates_associated")
              ("vc" "validates_confirmation_of :$${attribute}" "validates_confirmation_of")
              ("ve" "validates_exclusion_of :$${attribute}" "validates_exclusion_of")
-             ("vpif" "validates_presence_of :$${attribute}, :if => proc { |obj| $${condition} }" "validates_presence_of if")
              ("vu" "validates_uniqueness_of :$${attribute}" "validates_uniqueness_of")
              ("vpif" "validates_presence_of :$${attribute}, :if => proc { |obj| $${condition} }" "validates_presence_of if")
              ("vp" "validates_presence_of :$${attribute}" "validates_presence_of")
@@ -266,15 +277,18 @@
              ("ho" "has_one :$${object}" "has_one")
              ("habtm" "has_and_belongs_to_many :$${object}" "has_and_belongs_to_many")
              ) ; model
-        '(:m "migrations" ruby-mode-abbrev-table
-             ("mtclm" "t.column :$${title}, :$${string}\n$>mtclm$." "create several columns")
-             ("mac" "add_column :$${table}, :$${column}, :$${string}" "add column")
-             ("mai" "add_index :$${table}, $${column}" "add index")
-             ("mtcl" "t.column :$${title}, :$${string}$." "create column")
-             ("mrmc" "remove_column :$${table}, :$${column}" "remove column")
-             ("mrec" "rename_column :$${column}, :$${new_column}" "rename column")
-             ("mdt" "drop_table :$${table}\n$." "drop table")
-             ("mrt" "rename_table :$${table}, :$${new_name}$." "rename table")
+        '(:m "migrations" rails-migration-minor-mode-abbrev-table
+             ("tcls" "t.column :$${title}, :$${string}\n$>tcls$." "create several columns")
+             ("tcl" "t.column :$${title}, :$${string}$." "create column")
+             ("tcln" "t.column :$${title}, :$${string}, :null => false$." "create column :null => false")
+             ("acl" "add_column :$${,rails-snippets:migration-table-name}, :$${column}, :$${string}" "add column")
+             ("ai" "add_index :$${,rails-snippets:migration-table-name}, $${column}" "add index")
+             ("aiu" "add_index :$${,rails-snippets:migration-table-name}, $${column}, :unique => true" "add unique index")
+             ("rmcl" "remove_column :$${,rails-snippets:migration-table-name}, :$${column}" "remove column")
+             ("recl" "rename_column :$${column}, :$${new_column}" "rename column")
+             ("dt" "drop_table :$${,rails-snippets:migration-table-name}\n$." "drop table")
+             ("ct" "create_table :$${,rails-snippets:migration-table-name} do |t|\n$>tcls$.\nend$>" "create_table")
+             ("ret" "rename_table :$${,rails-snippets:migration-table-name}, :$${new_name}$." "rename table")
              ) ; migrations
         '(:m "environment" ruby-mode-abbrev-table
              ("logd" "logger.debug \"$${message}\"$." "logger.debug")
@@ -311,5 +325,11 @@
              ) ; assertions
         )
   )
+
+(defun rails-snippets:migration-table-name ()
+  (let (str)
+    (string=~ "[0-9]+_create_\\([^\\.]+\\)\\.rb$" (buffer-name)
+              (setq str $1))
+    (if str str "table")))
 
 (provide 'rails-snippets)

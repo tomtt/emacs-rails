@@ -1,6 +1,24 @@
+2007-03-24  dima  <dima.exe@gmail.com>
+
+	* rails-navigation.el: removed old style goto-* functions
+
+	* rails.el (ruby-mode-hook): bind ruby-toggle-string<>symbol to [C-:] in ruby mode
+
+	* rails-ui.el (rails-minor-mode-map): added [M-S-up] & [M-S-down] hotkeys
+
+	* rails-snippets.el (rails-snippets-menu-list): updated, slit to separate modes
+
+	* rails-ruby.el (ruby-toggle-string<>simbol): created
+
+	* rails-migration-minor-mode.el (rails-migration-minor-mode): created
+
 2007-03-23  dima  <dima.exe@gmail.com>
 
-	* rails.el (ruby-mode-hook): added `C-c f` hotkey to popup `major-menu-mode` menu
+	* rails.el (ruby-mode-hook): added [C-:] hotkey to easy switch between strings and symbols
+
+	* rails-ruby.el (ruby-toggle-string<>simbol): created
+
+	* rails.el (ruby-mode-hook): added [C-c f] hotkey to popup `major-menu-mode` menu
 
 	* rails-core.el (rails-core:menu-position): created variable
 	(rails-core:menu): using `rails-core:menu-position`

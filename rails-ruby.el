@@ -33,9 +33,42 @@
 ;;     (if (looking-at "\\>")
 ;;         (hippie-expand nil)
 ;;       ad-do-it)))
+
 (defun ruby-newline-and-indent ()
   (interactive)
   (newline)
   (ruby-indent-command))
+
+(defun ruby-toggle-string<>simbol ()
+  "Easy to switch between strings and symbols."
+  (interactive)
+  (let ((initial-pos (point)))
+    (save-excursion
+      (when (looking-at "[\"']") ;; skip beggining quote
+        (goto-char (+ (point) 1))
+        (unless (looking-at "\\w")
+          (goto-char (- (point) 1))))
+      (let* ((point (point))
+             (start (skip-syntax-backward "w"))
+             (end (skip-syntax-forward "w"))
+             (end (+ point start end))
+             (start (+ point start))
+             (start-quote (- start 1))
+             (end-quote (+ end 1))
+             (quoted-str (buffer-substring-no-properties start-quote end-quote))
+             (symbol-str (buffer-substring-no-properties start end)))
+        (cond
+         ((or (string-match "^\"\\w+\"$" quoted-str)
+              (string-match "^\'\\w+\'$" quoted-str))
+          (setq quoted-str (substring quoted-str 1 (- (length quoted-str) 1)))
+          (kill-region start-quote end-quote)
+          (goto-char start-quote)
+          (insert (concat ":" quoted-str)))
+         ((string-match "^\:\\w+$" symbol-str)
+          (setq symbol-str (substring symbol-str 1))
+          (kill-region start end)
+          (goto-char start)
+          (insert (format "'%s'" symbol-str))))))
+    (goto-char initial-pos)))
 
 (provide 'rails-ruby)

@@ -212,8 +212,11 @@
   ((kbd "\C-c \C-c g f") 'rails-nav:goto-fixtures)
 
   ;; Switch
-  ((kbd "C-c <up>") 'rails-lib:run-primary-switch)
+  ((kbd "C-c <up>")   'rails-lib:run-primary-switch)
   ((kbd "C-c <down>") 'rails-lib:run-secondary-switch)
+  ((kbd "<M-S-up>")   'rails-lib:run-primary-switch)
+  ((kbd "<M-S-down>") 'rails-lib:run-secondary-switch)
+  ((kbd "<C-return>") 'rails-goto-file-on-current-line)
 
   ;; Scripts & SQL
   ((kbd "\C-c \C-c e")   'rails-generate)
@@ -227,6 +230,7 @@
   ((kbd "\C-c \C-c w p") 'rails-ws:start-production)
   ((kbd "\C-c \C-c w t") 'rails-ws:start-test)
   ((kbd "\C-c \C-c w i") 'rails-ws:print-status)
+  ((kbd "\C-c \C-c w a") 'rails-ws:auto-open-browser)
 
   ;; Rails finds
   ((kbd "\C-c \C-c f m") 'rails-find-models)
@@ -247,17 +251,11 @@
   ((kbd "\C-c \C-c t") 'rails-rake-tests)
 
   ;; Navigation
-  ((kbd "<C-return>") 'rails-goto-file-on-current-line)
-  ((kbd "<M-S-down>") 'rails-goto-file-from-file-with-menu)
-  ((kbd "<M-S-up>")   'rails-goto-file-from-file)
 
   ((kbd "\C-c \C-c l") 'rails-log:open)
   ((kbd "\C-c \C-c j") 'rails-create-project)
   ;; Tags
   ((kbd "\C-c \C-c \C-t") 'rails-create-tags)
-
-  ;; Browser
-  ((kbd "\C-c \C-c w a") 'rails-ws:auto-open-browser)
 
   ;; Documentation
   ([f1]  'rails-search-doc)
