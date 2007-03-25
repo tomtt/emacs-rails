@@ -105,11 +105,6 @@ will not append \".rb\" to result."
     (concat (downcase path)
             (unless do-not-append-ext ".rb"))))
 
-(defmacro rails-core:add-to-rails-menubar (item &rest prefix)
-  "Add ITEM to the local Rails menubar, where ITEM is (cons
-\"Menu title\" 'function)"
-  `(local-set-key [menu-bar file ,@prefix]  ,item))
-
 ;;;;;;;;;; Project ;;;;;;;;;;
 
 (defun rails-core:project-name ()
@@ -177,9 +172,8 @@ it does not exist, ask to create it using QUESTION as a prompt."
   "Return the path to the observer OBSERVER-NAME."
   (rails-core:model-file (concat observer-name "Observer")))
 
-(defun rails-core:mailer-file (mailer-name)
-  "Return the path to the observer MAILER-NAME."
-  (rails-core:model-file mailer-name))
+(defalias 'rails-core:mailer-file 'rails-core:model-file
+  "Return the path to the observer MAILER-NAME.")
 
 (defun rails-core:migrate-file (migrate-name)
   "Return the model file from the MIGRATE-NAME."
@@ -217,7 +211,7 @@ it does not exist, ask to create it using QUESTION as a prompt."
 (defun rails-core:view-name (name)
   "Return the file name of view NAME."
   (concat (rails-core:views-dir (rails-core:current-controller))
-          name ".rhtml"))
+          name ".rhtml")) ;; BUG: will fix it
 
 (defun rails-core:helper-file (controller)
   "Return the helper file name for the controller named
@@ -248,17 +242,27 @@ CONTROLLER."
   "Return the file name of the stylesheet named NAME."
   (concat "public/stylesheets/" name ".css"))
 
-(defun rails-core:full-controller-name (controller)
+(defun rails-core:controller-name (controller-file)
   "Return the class name of the controller named CONTROLLER.
    Bar in Foo dir -> Foo::Bar"
   (rails-core:class-by-file
-   (if (eq (elt controller 0) 47) ;;; 47 == '/'
-       (subseq controller 1)
+   (if (eq (elt controller-file 0) 47) ;;; 47 == '/'
+       (subseq controller-file 1)
      (let ((current-controller (rails-core:current-controller)))
        (if (string-match ":" current-controller)
      (concat (replace-regexp-in-string "[^:]*$" "" current-controller)
-       controller)
-   controller)))))
+       controller-file)
+   controller-file)))))
+
+(defun rails-core:short-controller-name (controller)
+  "Convert FooController -> Foo."
+  (remove-postfix  controller "Controller" ))
+
+(defun rails-core:long-controller-name (controller)
+  "Convert Foo/FooController -> FooController."
+  (if  (string-match "Controller$" controller)
+      controller
+    (concat controller "Controller")))
 
 ;;;;;;;;;; Functions that return collection of Rails objects  ;;;;;;;;;;
 (defun rails-core:observer-p (name)
@@ -353,11 +357,8 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
 
 (defun rails-core:regex-for-match-view ()
   "Return a regex to match Rails view templates.
-The file extensions used for views are defined in
-`rails-templates-list'."
-  (let ((reg-string "\\.\\("))
-    (mapcar (lambda (it) (setq reg-string (concat reg-string it "\\|"))) rails-templates-list)
-    (concat (substring reg-string 0 -1) ")$")))
+The file extensions used for views are defined in `rails-templates-list'."
+  (format "\\.\\(%s\\)$" (strings-join "\\|" rails-templates-list)))
 
 (defun rails-core:get-view-files (controller-class &optional action)
   "Retun a list containing the view file for CONTROLLER-CLASS#ACTION.
@@ -439,7 +440,7 @@ If the action is nil, return all views for the controller."
 (defun rails-core:buffer-file-match (regexp)
   "Match the current buffer file name to RAILS_ROOT + REGEXP."
   (string-match (rails-core:file regexp)
-    (buffer-file-name (current-buffer))))
+                (buffer-file-name (current-buffer))))
 
 (defun rails-core:buffer-type ()
   "Return the type of the current Rails file or nil if the type
@@ -490,16 +491,6 @@ the Rails minor mode log."
       result)))
 
 ;;;;;;;;;; Misc ;;;;;;;;;;
-
-(defun rails-core:short-controller-name (controller)
-  "Convert FooController -> Foo."
-  (remove-postfix  controller "Controller" ))
-
-(defun rails-core:long-controller-name (controller)
-  "Convert Foo/FooController -> FooController."
-  (if  (string-match "Controller$" controller)
-      controller
-    (concat controller "Controller")))
 
 (defun rails-core:erb-block-string ()
   "Return the contents of the current ERb block."

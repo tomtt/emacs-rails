@@ -4,6 +4,7 @@
 
 ;; Authors: Dmitry Galinsky <dima dot exe at gmail dot com>,
 ;;          Rezikov Peter <crazypit13 (at) gmail.com>
+;;          Howard Yeh <hayeah at gmail dot com>
 
 ;; Keywords: ruby rails languages oop
 ;; $URL$

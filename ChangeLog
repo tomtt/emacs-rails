@@ -1,5 +1,16 @@
 2007-03-25  dima  <dima.exe@gmail.com>
 
+	* rails-core.el (rails-core:add-to-rails-menubar): removed
+	(rails-core:mailer-file): maked as alias
+	(rails-core:controller-name): renamed from rails-core:full-controller-name
+	(rails-core:regex-for-match-view): cleanup
+
+	* rails-find.el: created
+
+	* rails-navigation.el: moved rails-find-* to separate file rails-find.el
+
+	* rails.el (rails-find-file-function): removed variable
+
 	* rails-ui.el (rails-minor-mode-menu-bar-map): update indentation
 
 	* rails-scripts.el: refactored code

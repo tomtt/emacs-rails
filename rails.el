@@ -45,6 +45,7 @@
 (require 'rails-core)
 (require 'rails-lib)
 (require 'rails-navigation)
+(require 'rails-find)
 (require 'rails-scripts)
 (require 'rails-ws)
 (require 'rails-log)
@@ -169,9 +170,6 @@ Emacs w3m browser."
 (defun rails-use-text-menu ()
   "If t use text menu, popup menu otherwise"
   (or (null window-system) rails-always-use-text-menus))
-
-(defvar rails-find-file-function 'find-file
-  "Function witch called by rails finds")
 
 ;;;;;;;; hack ;;;;
 (defun rails-svn-status-into-root ()
