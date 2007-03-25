@@ -80,7 +80,7 @@
                                       (rails-core:find-file "config/environments/development.rb"))))
 
   ([rails scr] (cons "Scripts" (make-sparse-keymap "Scripts")))
-  ([rails scr proj]    '("Create project" . rails-create-project))
+  ([rails scr proj]    '("Create project" . rails-script:create-project))
   ([rails scr rake]    '("Rake..."        . rails-rake))
   ([rails scr console] '("Console"        . rails-run-console))
   ([rails scr break]   '("Breakpointer"   . rails-run-breakpointer))
@@ -191,6 +191,7 @@
   ;; Scripts & SQL
   ((kbd "\C-c \C-c e")   'rails-script:generate)
   ((kbd "\C-c \C-c d")   'rails-script:destroy)
+  ((kbd "\C-c \C-c j")   'rails-script:create-project)
   ((kbd "\C-c \C-c s c") 'rails-run-console)
   ((kbd "\C-c \C-c s b") 'rails-run-breakpointer)
   ((kbd "\C-c \C-c s s") 'rails-run-sql)
@@ -224,7 +225,6 @@
   ;; Navigation
 
   ((kbd "\C-c \C-c l")    'rails-log:open)
-  ((kbd "\C-c \C-c j")    'rails-create-project)
   ;; Tags
   ((kbd "\C-c \C-c \C-t") 'rails-create-tags)
 

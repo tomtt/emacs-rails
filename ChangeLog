@@ -1,6 +1,9 @@
 2007-03-26  dima  <dima.exe@gmail.com>
 
 	* rails-scripts.el (rails-script:sentinel-proc): updated
+	(rails-script:generation-buffer-name): removed
+	(rails-script:run): updated
+	(rails-script:create-project): updated
 
 	* rails-lib.el (buffer-visible-p): created
 

@@ -29,7 +29,6 @@
   (require 'inf-ruby)
   (require 'ruby-mode))
 
-(defvar rails-script:generation-buffer-name "*RailsGeneration*")
 (defvar rails-script:rake-tests-alist
   '(("all"         . "test")
     ("recent"      . "test:recent")
@@ -125,13 +124,12 @@ MESSAGE-FORMAT to format the output."
                                                    (strings-join " " parameters))))
          (with-current-buffer (get-buffer rails-script:buffer-name)
            (let ((buffer-read-only nil))
-             (kill-region (point-min) (point-max))
-             (goto-char (point-min)))
+             (kill-region (point-min) (point-max)))
            (rails-script:output-mode))
          (setq rails-script:running-script-name
-               (format "%s %s"
-                       (first parameters)
-                       (first (cdr parameters))))
+               (if (= 1 (length parameters))
+                   (format "%s %s" command (first parameters))
+                 (format "%s %s" (first parameters) (first (cdr parameters)))))
          (set-process-sentinel proc 'rails-script:sentinel-proc)
          (message "Starting %s." rails-script:running-script-name))))))
 
@@ -237,13 +235,10 @@ MESSAGE-FORMAT to format the output."
 (defun rails-script:create-project (dir)
   "Create a new project in a directory named DIR."
   (interactive "FNew project directory: ")
-  (shell-command (concat "rails " dir)
-                 rails-script:generation-buffer-name)
-  (flet ((rails-core:root () (concat dir "/") ))
-    (rails-log-add
-     (format "\nCreating project %s\n%s"
-             dir (buffer-string-by-name rails-script:generation-buffer-name))))
-  (find-file dir))
+  (make-directory dir t)
+  (let ((default-directory (concat (expand-file-name dir) "/")))
+    (flet ((rails-core:root () default-directory))
+      (rails-script:run "rails" (list (rails-core:root))))))
 
 ;;;;;;;;;; Shells ;;;;;;;;;;
 
