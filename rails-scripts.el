@@ -92,18 +92,20 @@ For example -c to remove files from svn.")
   (get-buffer-process rails-script:buffer-name))
 
 (defun rails-script:sentinel-proc (proc msg)
-  (let ((name rails-script:running-script-name))
+  (let ((name rails-script:running-script-name)
+        (buf (current-buffer)))
     (when (memq (process-status proc) '(exit signal))
       (setq rails-script:running-script-name nil
             msg (format "%s was stopped (%s)." name msg)))
     (unless rails-script:running-script-name
-      (let (button)
-        (with-current-buffer (get-buffer rails-script:buffer-name)
-          (setq button (next-button 1))
-          (when button
-            (push-button (button-start button)))))
-      (delete-other-windows)
-      (display-buffer rails-script:buffer-name t)
+      (unless (buffer-visible-p rails-script:buffer-name)
+        (display-buffer rails-script:buffer-name t))
+      (pop-to-buffer (get-buffer rails-script:buffer-name))
+      (goto-char (point-min))
+      (let ((button (next-button 1)))
+        (if button
+            (push-button (button-start button))
+          (pop-to-buffer buf)))
       (shrink-window-if-larger-than-buffer (get-buffer-window rails-script:buffer-name)))
   (message
    (replace-regexp-in-string "\n" "" msg))))
@@ -123,7 +125,8 @@ MESSAGE-FORMAT to format the output."
                                                    (strings-join " " parameters))))
          (with-current-buffer (get-buffer rails-script:buffer-name)
            (let ((buffer-read-only nil))
-             (kill-region (point-min) (point-max)))
+             (kill-region (point-min) (point-max))
+             (goto-char (point-min)))
            (rails-script:output-mode))
          (setq rails-script:running-script-name
                (format "%s %s"

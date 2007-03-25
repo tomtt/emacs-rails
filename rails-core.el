@@ -116,11 +116,12 @@ will not append \".rb\" to result."
 
 (defun rails-core:file (file-name)
   "Return the full path for FILE-NAME in a Rails directory."
-  (if (file-name-absolute-p file-name)
-      file-name
-    (when-bind
-     (root (rails-core:root))
-     (concat root file-name))))
+  (when file-name
+    (if (file-name-absolute-p file-name)
+        file-name
+      (when-bind
+       (root (rails-core:root))
+       (concat root file-name)))))
 
 (defun rails-core:quoted-file (file-name)
   "Return the quoted full path for FILE-NAME in a Rails directory."

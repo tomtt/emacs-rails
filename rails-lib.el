@@ -250,6 +250,13 @@ it."
     (set-buffer buffer-name)
     (buffer-string)))
 
+(defun buffer-visible-p (buffer-name)
+  (find nil
+        (mapcar
+         #'(lambda (win) (buffer-name (window-buffer win)))
+         (window-list))
+        :if #'(lambda(buf)(string= buf buffer-name))))
+
 ;; Misc
 
 (defun rails-browse-api-url (url)

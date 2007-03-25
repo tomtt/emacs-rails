@@ -1,3 +1,11 @@
+2007-03-26  dima  <dima.exe@gmail.com>
+
+	* rails-scripts.el (rails-script:sentinel-proc): updated
+
+	* rails-lib.el (buffer-visible-p): created
+
+	* rails-core.el (rails-core:file): return nil if FILE-NAME is nil
+
 2007-03-25  dima  <dima.exe@gmail.com>
 
 	* rails-log.el (rails-log:buffer-name): renamed from rails-log:get-buffer-name
