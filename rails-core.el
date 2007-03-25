@@ -453,6 +453,23 @@ cannot be determinated."
         do (return type)))
 
 
+;;;;;;;;;; Rails minor mode Buttons ;;;;;;;;;;
+
+(define-button-type 'rails-button
+  'follow-link t
+  'action #'rails-core:button-action)
+
+(defun rails-core:button-action (button)
+  (let* ((file-name (button-get button :rails:file-name))
+         (line-number (button-get button :rails:line-number))
+         (file (rails-core:file file-name)))
+    (when (and file
+               (file-exists-p file))
+      (find-file-other-window file)
+      (when line-number
+        (goto-line line-number)))))
+
+
 ;;;;;;;;;; Rails minor mode logs ;;;;;;;;;;
 
 (defun rails-log-add (message)

@@ -67,14 +67,15 @@
   (if (get-buffer-process rails-ws:buffer-name) t nil))
 
 (defun rails-ws:sentinel-proc (proc msg)
-  (when (memq (process-status proc) '(exit signal))
-    (setq rails-ws:process-environment nil)
-    (setq msg (format "stopped (%s)" msg)))
-  (princ
+  (let ((env rails-ws:process-environment))
+    (when (memq (process-status proc) '(exit signal))
+      (setq rails-ws:process-environment nil)
+      (setq msg (format "stopped (%s)" msg)))
+  (message
    (replace-regexp-in-string "\n" ""
                              (format "%s - %s"
                                      (capitalize rails-ws:default-server-type)
-                                     msg))))
+                                     msg)))))
 
 (defun rails-ws:start(&optional env)
   "Start a WEBrick process with ENV environment if ENV is not set
@@ -84,9 +85,9 @@ using `rails-default-environment'."
    (root)
    (let ((proc (get-buffer-process rails-ws:buffer-name))
          (dir default-directory))
-     (unless proc
-       (progn
-         (setq default-directory root)
+     (if proc
+         (message "Only one instance rails-ws allowed")
+       (let ((default-direct root))
          (unless env
            (setq env rails-default-environment))
          (let* ((process
@@ -95,7 +96,7 @@ using `rails-default-environment'."
                                                 rails-ruby-command
                                                 (format "script/server -p %s -e %s" rails-ws:port env))))
            (set-process-sentinel process 'rails-ws:sentinel-proc)
-           (setq default-directory dir)
+           (setq rails-ws:process-environment env)
            (message (format "%s (%s) starting with port %s"
                             (capitalize rails-ws:default-server-type)
                             env

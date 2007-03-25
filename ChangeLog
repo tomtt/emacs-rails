@@ -1,9 +1,12 @@
 2007-03-25  dima  <dima.exe@gmail.com>
 
+	* rails-log.el (rails-log:buffer-name): renamed from rails-log:get-buffer-name
+
 	* rails-core.el (rails-core:add-to-rails-menubar): removed
 	(rails-core:mailer-file): maked as alias
 	(rails-core:controller-name): renamed from rails-core:full-controller-name
 	(rails-core:regex-for-match-view): cleanup
+	(rails-core:button-action): created
 
 	* rails-find.el: created
 

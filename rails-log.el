@@ -31,11 +31,11 @@
 (defun rails-log:files ()
   (directory-files (rails-core:file "log") nil "\\.log$"))
 
-(defun rails-log:get-buffer-name (log-file)
+(defun rails-log:buffer-name (log-file)
   (concat "*" log-file "*"))
 
 (defun rails-log:open-file (log-file)
-  (let ((buffer (rails-log:get-buffer-name log-file))
+  (let ((buffer (rails-log:buffer-name log-file))
         (current (buffer-name)))
     (unless (get-buffer buffer)
       (get-buffer-create buffer)
@@ -58,7 +58,7 @@
                           t
                           rails-log:last-log)))
   (setq rails-log:last-log log-file)
-  (let ((name (rails-log:get-buffer-name log-file)))
+  (let ((name (rails-log:buffer-name log-file)))
     (unless (get-buffer name)
       (rails-log:open-file log-file))
     (switch-to-buffer name)

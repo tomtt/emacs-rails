@@ -1,6 +1,10 @@
-SVN
-new [C-:] hotkey to easy switch between strings and symbols at point in ruby-mode
-new [C-c f] hotkey to popup a menu with list of functions in ruby-mode
+SVN 
+* Improvement of rails scripts output; colorize output and put links
+  in a buffer
+* new [C-:] hotkey to easy switch between strings and symbols at point
+  in ruby-mode
+* new [C-c f] hotkey to popup a menu with list of functions in
+  ruby-mode
 
 0.5.4
 * added mailers support
@@ -23,9 +27,9 @@ new [C-c f] hotkey to popup a menu with list of functions in ruby-mode
 * Using system `tail` program for display log files
 
 0.5.1 at 27.01.2007
-
-* Support plugin: quick menu "Go to plugins" and navigate inside plugin
-* Update Web Server support, add Lighttd to list of supported servers 
+* Support plugin: quick menu "Go to plugins" and navigate inside
+  plugin
+* Update Web Server support, add Lighttd to list of supported servers
 * Automatic apply ruby-mode to *.rake files and setup utf-8 encoding
 * Add more targets to generate/destroy
 * Add autocomplete in generate/destroy/rake/test commands
