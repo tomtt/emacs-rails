@@ -59,6 +59,9 @@ For example -c to remove files from svn.")
 (defconst rails-script:output-mode-link-regexp
   " \\(create\\) + \\([^ ]+\\.\\w+\\)")
 
+(defvar rails-script:push-first-button-after-stop t)
+(defvar rails-script:popup-buffer-after-stop-if-ok t)
+
 (defun rails-script:output-mode-make-links (start end len)
   (save-excursion
     (let ((buffer-read-only nil))
