@@ -1,5 +1,6 @@
 SVN
-* Prints total of tests, asertions, failures, errors after end of tests running
+* Prints total of tests, asertions, failures, errors after end of
+  tests running
 * Fixed recursive "require" error after compilation [#9547]
 
 0.5.99
