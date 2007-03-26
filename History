@@ -1,4 +1,4 @@
-SVN 
+0.5.99
 * Improvement of tests and rails scripts output; run async, colorize
   output, etc.
 * new [C-:] hotkey to easy switch between strings and symbols at point
