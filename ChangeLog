@@ -1,5 +1,11 @@
 2007-03-27  dima  <dima.exe@gmail.com>
 
+	* rails-model-layout.el (rails-model-layout:switch-to): 
+	display message if file not exists
+
+	* rails-controller-layout.el (rails-controller-layout:switch-to):
+	display message if file not exists
+
 	* rails-model-layout.el (rails-model-layout:switch-to)
 	(rails-model-layout:menu): added migrations support
 

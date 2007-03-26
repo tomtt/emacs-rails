@@ -36,8 +36,12 @@
                  (:model (rails-core:model-file model))
                  (:migration (rails-core:migration-file (concat "Create" (pluralize-string model)))))))
     (when item
-      (rails-core:find-file-if-exist item)
-      (message (format "%s: %s" (substring (symbol-name type) 1) model)))))
+      (let ((file (rails-core:file item)))
+        (if (file-exists-p file)
+            (progn
+              (find-file file)
+              (message (format "%s: %s" (substring (symbol-name type) 1) model)))
+          (message "File %s not exists" file))))))
 
 (defun rails-model-layout:menu ()
   (interactive)

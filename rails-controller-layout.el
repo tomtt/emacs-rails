@@ -119,8 +119,12 @@ If the action is nil, return all views for the controller."
                  (:model (rails-core:model-file model))
                  (:migration (rails-core:migration-file (concat "Create" controller))))))
     (when item
-      (rails-core:find-file-if-exist item)
-      (message (format "%s: %s" (substring (symbol-name type) 1) controller)))))
+      (let ((file (rails-core:file item)))
+        (if (file-exists-p file)
+            (progn
+              (find-file file)
+              (message (format "%s: %s" (substring (symbol-name type) 1) controller)))
+          (message "File %s not exists" file))))))
 
 (defun rails-controller-layout:menu ()
   (interactive)
