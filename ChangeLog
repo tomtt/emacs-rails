@@ -1,5 +1,7 @@
 2007-03-26  dima  <dima.exe@gmail.com>
 
+	* rails-rake.el (rails-rake:report-result): prints results of all tests
+
 	* rails-ruby.el: fixed compilation warnning
 
 	* rails-rake.el, rails-scripts.el: updated, printed result of tests

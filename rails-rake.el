@@ -57,10 +57,13 @@
 
 (defun rails-rake:report-result ()
   (with-current-buffer (get-buffer rails-script:buffer-name)
-    (save-excursion
-      (goto-char (point-min))
-      (when (search-forward-regexp rails-rake:output-mode-result-regexp nil t)
-        (message (match-string-no-properties 1))))))
+    (let ((msg (list)))
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward rails-rake:output-mode-result-regexp (point-max) t)
+          (add-to-list 'msg (match-string-no-properties 1))))
+      (unless (zerop (length msg))
+        (message (strings-join " || " (reverse msg)))))))
 
 (defun rails-rake:report-progress-of-test (start end len)
   (let (content)
