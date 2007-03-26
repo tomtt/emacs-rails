@@ -1,5 +1,7 @@
 2007-03-26  dima  <dima.exe@gmail.com>
 
+	* rails-find.el (rails-find:gen): call ido-find-file if possible
+
 	* rails-rake.el (rails-rake:report-result): prints results of all tests
 
 	* rails-ruby.el: fixed compilation warnning
