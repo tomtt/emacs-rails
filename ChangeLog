@@ -1,5 +1,7 @@
 2007-03-26  dima  <dima.exe@gmail.com>
 
+	* rails-lib.el, rails.el: fix compilation error [#9547]
+	
 	* rails.el (rails-templates-list): added support "erb" and "liquid"
 
 	* rails-lib.el: fixed compilation warnings
