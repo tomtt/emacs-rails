@@ -44,14 +44,15 @@
 
 (require 'rails-core)
 (require 'rails-lib)
+(require 'rails-cmd-proxy)
 (require 'rails-navigation)
 (require 'rails-find)
 (require 'rails-scripts)
+(require 'rails-rake)
 (require 'rails-ws)
 (require 'rails-log)
 (require 'rails-snippets)
 (require 'rails-ui)
-(require 'rails-cmd-proxy)
 (require 'rails-model-layout)
 (require 'rails-controller-layout)
 

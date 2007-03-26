@@ -42,28 +42,40 @@
              (list (replace-regexp-in-string local remote root)
                    args)))))
 
-(defun rails-cmd-proxy:apply-remote (path command command-args)
-  (let (cmd)
-    (setq cmd (concat cmd (format "cd %s && %s " path command)))
-    (dolist (it (car command-args))
-      (setq cmd (concat cmd " " it)))
-    (concat "\"" cmd "\"")))
+(defun rails-cmd-proxy:apply-remote (path command &optional command-args)
+  (if command-args
+      (format "\"cd %s && %s %s\"" path command command-args)
+    (format "\"cd %s && %s\"" path command)))
+
+;; remote wrappers
 
 (defun rails-cmd-proxy:start-process (name buffer command command-args)
   (let ((remote (rails-cmd-proxy:get-remote)))
     (if remote
         (let* ((remote-path (car remote))
                (remote-args (car (cdr remote)))
-               (remote-cmd-args (list remote-args
-                                      (rails-cmd-proxy:apply-remote remote-path command command-args))))
-           (start-process
-                  name
-                  buffer
-                  rails-cmd-proxy:remote-cmd
-                  remote-cmd-args))
+               (remote-cmd-args (format "%s %s"
+                                        remote-args
+                                        (rails-cmd-proxy:apply-remote remote-path command command-args))))
+           (start-process-shell-command name
+                                        buffer
+                                        rails-cmd-proxy:remote-cmd
+                                        remote-cmd-args))
       (start-process-shell-command name
                                    buffer
                                    command
                                    command-args))))
+
+(defun rails-cmd-proxy:shell-command-to-string (command)
+  (let ((remote (rails-cmd-proxy:get-remote)))
+    (if remote
+        (let* ((remote-path (car remote))
+               (remote-args (car (cdr remote)))
+               (command (format "%s %s %s"
+                                rails-cmd-proxy:remote-cmd
+                                remote-args
+                                (rails-cmd-proxy:apply-remote remote-path command))))
+          (shell-command-to-string command))
+      (shell-command-to-string command))))
 
 (provide 'rails-cmd-proxy)

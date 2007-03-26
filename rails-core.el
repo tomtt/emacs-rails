@@ -320,15 +320,23 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
     #'rails-core:class-by-file
     (find-recursive-files "_helper\\.rb$" (rails-core:file "app/helpers/")))))
 
-(defun rails-core:migrations ()
+(defun rails-core:migrations (&optional strip-numbers)
   "Return a list of Rails migrations."
-  (reverse
-   (mapcar
-    #'(lambda (migration)
-        (replace-regexp-in-string "^\\([0-9]+\\)" "\\1 " migration))
-    (mapcar
-     #'rails-core:class-by-file
-     (find-recursive-files "^[0-9]+_.*\\.rb$" (rails-core:file "db/migrate/"))))))
+  (let (migrations)
+    (setq
+     migrations
+     (reverse
+      (mapcar
+       #'(lambda (migration)
+           (replace-regexp-in-string "^\\([0-9]+\\)" "\\1 " migration))
+       (mapcar
+        #'rails-core:class-by-file
+        (find-recursive-files "^[0-9]+_.*\\.rb$" (rails-core:file "db/migrate/"))))))
+    (if strip-numbers
+        (mapcar #'(lambda(i) (car (last (split-string i " "))))
+                migrations)
+      migrations)))
+
 
 (defun rails-core:plugins ()
   "Return a list of Rails plugins."

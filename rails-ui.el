@@ -80,19 +80,9 @@
                                       (rails-core:find-file "config/environments/development.rb"))))
 
   ([rails scr] (cons "Scripts" (make-sparse-keymap "Scripts")))
-  ([rails scr proj]    '("Create project" . rails-script:create-project))
-  ([rails scr rake]    '("Rake..."        . rails-rake))
-  ([rails scr console] '("Console"        . rails-run-console))
-  ([rails scr break]   '("Breakpointer"   . rails-run-breakpointer))
-
-  ([rails scr tests] (cons "Tests" (make-sparse-keymap "Tests")))
-  ([rails scr tests integration] '("Integration tests" . (lambda() (interactive) (rails-rake-tests "integration"))))
-  ([rails scr tests unit]        '("Unit tests"        . (lambda() (interactive) (rails-rake-tests "unit"))))
-  ([rails scr tests functional]  '("Functional tests"  . (lambda() (interactive) (rails-rake-tests "functionals"))))
-  ([rails scr tests recent]      '("Recent tests"      . (lambda() (interactive) (rails-rake-tests "recent"))))
-  ([rails scr tests tests]       '("All"               . (lambda() (interactive) (rails-rake-tests "all"))))
-  ([rails scr tests separator]   '("--"))
-  ([rails scr tests run]         '("Run tests ..."     . rails-rake-tests))
+  ([rails scr rake]    '("Rake..."        . rails-rake:task))
+  ([rails scr console] '("Console"        . rails-script:console))
+  ([rails scr break]   '("Breakpointer"   . rails-script:breakpointer))
 
   ([rails scr gen] (cons "Generate" (make-sparse-keymap "Generate")))
   ([rails scr gen resource]   '("Resource"         . rails-script:generate-resource))
@@ -116,6 +106,17 @@
   ([rails scr destr controller] '("Controller"      . rails-script:destroy-controller))
   ([rails scr destr separator]  '("--"))
   ([rails scr destr run]        '("Run destroy ..." . rails-script:destroy))
+
+  ([rails tests] (cons "Tests" (make-sparse-keymap "Tests")))
+  ([rails tests integration]    '("Integration tests" . (lambda() (interactive) (rails-rake:test "integration"))))
+  ([rails tests unit]           '("Unit tests"        . (lambda() (interactive) (rails-rake:test "units"))))
+  ([rails tests functional]     '("Functional tests"  . (lambda() (interactive) (rails-rake:test "functionals"))))
+  ([rails tests recent]         '("Recent tests"      . (lambda() (interactive) (rails-rake:test "recent"))))
+  ([rails tests tests]          '("All"               . (lambda() (interactive) (rails-rake:test "all"))))
+  ([rails tests separator]      '("--"))
+  ([rails tests run]            '("Run tests ..."     . rails-rake:test))
+
+
 
   ([rails ws] (cons "Web Server" (make-sparse-keymap "WebServer")))
 
@@ -191,11 +192,9 @@
   ;; Scripts & SQL
   ((kbd "\C-c \C-c e")   'rails-script:generate)
   ((kbd "\C-c \C-c d")   'rails-script:destroy)
-  ((kbd "\C-c \C-c j")   'rails-script:create-project)
-  ((kbd "\C-c \C-c s c") 'rails-run-console)
-  ((kbd "\C-c \C-c s b") 'rails-run-breakpointer)
+  ((kbd "\C-c \C-c s c") 'rails-script:console)
+  ((kbd "\C-c \C-c s b") 'rails-script:breakpointer)
   ((kbd "\C-c \C-c s s") 'rails-run-sql)
-  ((kbd "\C-c \C-c r")   'rails-rake)
   ((kbd "\C-c \C-c w s") 'rails-ws:toggle-start-stop)
   ((kbd "\C-c \C-c w d") 'rails-ws:start-development)
   ((kbd "\C-c \C-c w p") 'rails-ws:start-production)
@@ -220,7 +219,8 @@
   ((kbd "\C-c \C-c f o") 'rails-find:config)
 
   ;; Tests
-  ((kbd "\C-c \C-c t")   'rails-rake-tests)
+  ((kbd "\C-c \C-c r")   'rails-rake:task)
+  ((kbd "\C-c \C-c t")   'rails-rake:test)
 
   ;; Navigation
 
@@ -234,5 +234,15 @@
   ((kbd "C-c <f1>")      'rails-browse-api)
 
   ([f9]                  'rails-svn-status-into-root))
+
+;; Global keys and menubar
+
+(global-set-key (kbd "\C-c \C-c j") 'rails-script:create-project)
+
+(when (lookup-key global-map  [menu-bar file])
+  (define-key-after
+    (lookup-key global-map  [menu-bar file])
+    [create-rails-project]
+    '("Create Rails Project" . rails-script:create-project) 'insert-file))
 
 (provide 'rails-ui)

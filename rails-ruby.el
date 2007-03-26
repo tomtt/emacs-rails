@@ -73,4 +73,16 @@
           (insert (format "'%s'" symbol-str))))))
     (goto-char initial-pos)))
 
+(defun run-ruby-in-buffer (cmd buf)
+  "Run CMD as a ruby process in BUF if BUF does not exist."
+  (let ((abuf (concat "*" buf "*")))
+    (when (not (comint-check-proc abuf))
+      (set-buffer (make-comint buf rails-ruby-command nil cmd)))
+    (inferior-ruby-mode)
+    (make-local-variable 'inferior-ruby-first-prompt-pattern)
+    (make-local-variable 'inferior-ruby-prompt-pattern)
+    (setq inferior-ruby-first-prompt-pattern "^>> "
+          inferior-ruby-prompt-pattern "^>> ")
+    (pop-to-buffer abuf)))
+
 (provide 'rails-ruby)

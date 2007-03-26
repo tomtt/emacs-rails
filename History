@@ -1,6 +1,6 @@
 SVN 
-* Improvement of rails scripts output; run async, colorize output,
-  create links in a buffer.
+* Improvement of tests and rails scripts output; run async, colorize
+  output, etc.
 * new [C-:] hotkey to easy switch between strings and symbols at point
   in ruby-mode
 * new [C-c f] hotkey to popup a menu with list of functions in

@@ -1,5 +1,18 @@
 2007-03-26  dima  <dima.exe@gmail.com>
 
+	* rails-ui.el: updated
+
+	* rails-scripts.el: updated
+	(rails-script:rake-tests-alist): removed
+
+	* rails-ruby.el (run-ruby-in-buffer): moved from rails-scripts.el
+
+	* rails-rake.el: created
+
+	* rails-core.el (rails-core:migrations): added optional parameter to stip numbers
+
+	* rails-cmd-proxy.el (rails-cmd-proxy:start-process): created
+
 	* rails-scripts.el (rails-script:sentinel-proc): updated
 	(rails-script:generation-buffer-name): removed
 	(rails-script:run): updated
