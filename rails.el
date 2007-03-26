@@ -132,7 +132,7 @@ Emacs w3m browser."
   :type 'string)
 
 (defvar rails-version "0.5")
-(defvar rails-templates-list '("rhtml" "rxml" "rjs" "haml"))
+(defvar rails-templates-list '("erb" "rhtml" "rxml" "rjs" "haml" "liquid"))
 (defvar rails-use-another-define-key nil)
 (defvar rails-primary-switch-func nil)
 (defvar rails-secondary-switch-func nil)
