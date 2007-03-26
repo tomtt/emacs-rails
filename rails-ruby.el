@@ -36,6 +36,9 @@
 ;;         (hippie-expand nil)
 ;;       ad-do-it)))
 
+(eval-when-compile
+  (require 'inf-ruby))
+
 (defun ruby-newline-and-indent ()
   (interactive)
   (newline)

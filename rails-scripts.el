@@ -61,6 +61,7 @@ For example -c to remove files from svn.")
 
 (defvar rails-script:push-first-button-after-stop t)
 (defvar rails-script:popup-buffer-after-stop-if-ok t)
+(defvar rails-script:call-after-stop nil)
 
 (defun rails-script:output-mode-make-links (start end len)
   (save-excursion
@@ -81,6 +82,7 @@ For example -c to remove files from svn.")
   (setq buffer-read-only t)
   (set (make-local-variable 'rails-script:push-first-button-after-stop) t)
   (set (make-local-variable 'rails-script:popup-buffer-after-stop-if-ok) t)
+  (set (make-local-variable 'rails-script:call-after-stop) nil)
   (make-local-variable 'after-change-functions)
   (add-hook 'after-change-functions 'rails-script:output-mode-make-links)
   (rails-minor-mode t))
@@ -94,6 +96,8 @@ For example -c to remove files from svn.")
          (ret-val (process-exit-status proc))
          (ret-message (if (zerop ret-val)
                           "successful" "failure"))
+         (after-stop (buffer-local-value 'rails-script:call-after-stop
+                                         (get-buffer rails-script:buffer-name)))
          (do-popup (buffer-local-value 'rails-script:popup-buffer-after-stop-if-ok
                                        (get-buffer rails-script:buffer-name)))
          (do-popup (if do-popup t (not (zerop ret-val)))))
@@ -112,8 +116,10 @@ For example -c to remove files from svn.")
             (push-button (button-start button))
           (pop-to-buffer buf)))
       (shrink-window-if-larger-than-buffer (get-buffer-window rails-script:buffer-name)))
-  (message
-   (replace-regexp-in-string "\n" "" msg))))
+  (message (replace-regexp-in-string "\n" "" msg))
+  (when after-stop
+    (apply after-stop (list)))))
+
 
 (defun rails-script:run (command parameters &optional buffer-major-mode)
   "Run a Rails script COMMAND with PARAMETERS with
