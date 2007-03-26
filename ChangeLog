@@ -1,3 +1,22 @@
+2007-03-27  dima  <dima.exe@gmail.com>
+
+	* rails-model-layout.el (rails-model-layout:switch-to)
+	(rails-model-layout:menu): added migrations support
+
+	* rails-migration-minor-mode.el (rails-migration-minor-mode): popup menu entry
+
+	* rails-core.el (rails-core:model-exist-p): return nil if observer
+	or mailer
+	(rails-core:migration-file): allow passing a migration name
+	without number (ex. "CreateUsers")
+	(rails-core:current-model): added migrations support
+	(rails-core:migration-file): renamed from migrate-file
+
+	* rails-controller-layout.el (rails-controller-layout:switch-to):
+	added migration support
+
+	* inflections.el (singularize-string, pluralize-string): allow passing nil
+
 2007-03-26  dima  <dima.exe@gmail.com>
 
 	* rails-find.el (rails-find:gen): call ido-find-file if possible

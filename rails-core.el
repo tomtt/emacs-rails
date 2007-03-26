@@ -151,9 +151,11 @@ it does not exist, ask to create it using QUESTION as a prompt."
 
 (defun rails-core:model-exist-p (model-name)
   "Return t if controller CONTROLLER-NAME exist."
-  (file-exists-p
-   (rails-core:file
-    (rails-core:model-file model-name))))
+  (and (file-exists-p
+        (rails-core:file
+         (rails-core:model-file model-name)))
+       (not (rails-core:observer-p model-name))
+       (not (rails-core:mailer-p model-name))))
 
 (defun rails-core:controller-file (controller-name)
   "Return the path to the controller CONTROLLER-NAME."
@@ -176,11 +178,21 @@ it does not exist, ask to create it using QUESTION as a prompt."
 (defalias 'rails-core:mailer-file 'rails-core:model-file
   "Return the path to the observer MAILER-NAME.")
 
-(defun rails-core:migrate-file (migrate-name)
-  "Return the model file from the MIGRATE-NAME."
-  (concat "db/migrate/" (replace-regexp-in-string
-                         " " "_"
-                         (rails-core:file-by-class migrate-name))))
+(defun rails-core:migration-file (migration-name)
+  "Return the model file from the MIGRATION-NAME."
+  (let ((dir "db/migrate/")
+        (name (replace-regexp-in-string
+               " " "_"
+               (rails-core:file-by-class migration-name))))
+    (when (string-match "^[^0-9]+[^_]" name) ; try search when the name without migration number
+      (let ((files (directory-files (rails-core:file dir)
+                                    nil
+                                    (concat "[0-9]+_" name "$"))))
+        (setq name (if files
+                       (car files)
+                     nil))))
+    (when name
+      (concat dir name))))
 
 (defun rails-core:plugin-file (plugin file)
   "Return the path to the FILE in Rails PLUGIN."
@@ -417,6 +429,10 @@ If the action is nil, return all views for the controller."
   "Return the current Rails model."
   (let ((file-class (rails-core:class-by-file (buffer-file-name))))
     (case (rails-core:buffer-type)
+      (:migration (let ((model-name (singularize-string
+                                     (string=~ "[0-9]+_create_\\(\\w+\\)\.rb" (buffer-name) $1))))
+                    (when (and model-name (rails-core:model-exist-p model-name))
+                      model-name)))
       (:model file-class)
       (:unit-test (remove-postfix file-class "Test"))
       (:fixture (singularize-string file-class)))))

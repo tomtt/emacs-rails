@@ -32,6 +32,6 @@
   " migration"
   nil
   (setq rails-primary-switch-func nil)
-  (setq rails-secondary-switch-func 'rails-nav:goto-migrate))
+  (setq rails-secondary-switch-func 'rails-model-layout:menu))
 
 (provide 'rails-migration-minor-mode)

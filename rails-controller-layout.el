@@ -111,13 +111,16 @@ If the action is nil, return all views for the controller."
 
 (defun rails-controller-layout:switch-to (type)
   (let* ((controller (rails-core:current-controller))
+         (model (singularize-string controller))
          (item (case type
-                 (:model (rails-core:model-file (singularize-string controller)))
                  (:helper (rails-core:helper-file controller))
                  (:functional-test (rails-core:functional-test-file controller))
-                 (:controller (rails-core:controller-file controller)))))
-    (rails-core:find-file-if-exist item)
-    (message (format "%s: %s" (substring (symbol-name type) 1) controller))))
+                 (:controller (rails-core:controller-file controller))
+                 (:model (rails-core:model-file model))
+                 (:migration (rails-core:migration-file (concat "Create" controller))))))
+    (when item
+      (rails-core:find-file-if-exist item)
+      (message (format "%s: %s" (substring (symbol-name type) 1) controller)))))
 
 (defun rails-controller-layout:menu ()
   (interactive)
@@ -125,12 +128,13 @@ If the action is nil, return all views for the controller."
          (title (capitalize (substring (symbol-name type) 1)))
          (controller (rails-core:current-controller))
          (action (rails-core:current-action))
+         (model (singularize-string controller))
          (item (rails-controller-layout:views-menu controller)))
-
     (add-to-list 'item (rails-core:menu-separator))
-
     (unless (rails-core:mailer-p controller)
-      (when (rails-core:model-exist-p (singularize-string controller))
+      (when (rails-core:model-exist-p model)
+        (when (rails-core:migration-file (concat "Create" controller))
+          (add-to-list 'item (cons "Migration" :migration)))
         (add-to-list 'item (cons "Model" :model)))
       (unless (eq type :helper)
         (add-to-list 'item (cons "Helper" :helper)))
@@ -142,7 +146,6 @@ If the action is nil, return all views for the controller."
       (add-to-list 'item (cons "Unit test" (rails-core:unit-test-file controller)))
       (when (eq type :view)
         (add-to-list 'item (cons "Mailer" (rails-core:mailer-file controller)))))
-
     (setq item
           (rails-core:menu
            (list (concat title " " controller

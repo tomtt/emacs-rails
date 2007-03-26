@@ -101,7 +101,7 @@
   (rails-nav:goto-file-with-menu-from-list
    (rails-core:migrations)
    "Go to migrate.."
-   'rails-core:migrate-file))
+   'rails-core:migration-file))
 
 (defun rails-nav:goto-helpers ()
   "Go to helpers."
