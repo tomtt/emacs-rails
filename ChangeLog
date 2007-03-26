@@ -1,5 +1,7 @@
 2007-03-26  dima  <dima.exe@gmail.com>
 
+	* rails-lib.el: fixed compilation warnings
+
 	* rails-rake.el: fixed compilation warnings
 
 	* rails-ui.el: updated

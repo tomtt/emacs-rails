@@ -28,6 +28,9 @@
 
 ;;; Code:
 
+(eval-when-compile
+  (require 'rails))
+
 (defun rails-lib:run-primary-switch ()
   "Run the primary switch function."
   (interactive)
