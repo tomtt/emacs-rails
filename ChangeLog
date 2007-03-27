@@ -1,5 +1,7 @@
 2007-03-28  dima  <dima.exe@gmail.com>
 
+	* rails-scripts.el (rails-script:toggle-output-window): created
+
 	* rails-ws.el (rails-ws:start): fixed bug [#9619], incorect setup of default directory
 
 	* rails-snippets.el (rails-snippets-menu-list): removed
