@@ -1,5 +1,8 @@
 2007-03-28  dima  <dima.exe@gmail.com>
 
+	* rails-ws.el (rails-ws:start): added missing parameter the
+	rails-ws:default-server-type to startup command
+
 	* rails-scripts.el (rails-script:toggle-output-window): created
 
 	* rails-ws.el (rails-ws:start): fixed bug [#9619], incorect setup of default directory

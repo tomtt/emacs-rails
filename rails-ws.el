@@ -78,7 +78,7 @@
                                      msg)))))
 
 (defun rails-ws:start(&optional env)
-  "Start a WEBrick process with ENV environment if ENV is not set
+  "Start a server process with ENV environment if ENV is not set
 using `rails-default-environment'."
   (interactive (list (rails-read-enviroment-name)))
   (rails-core:with-root
@@ -92,7 +92,9 @@ using `rails-default-environment'."
                (rails-cmd-proxy:start-process rails-ruby-command
                                               rails-ws:buffer-name
                                               rails-ruby-command
-                                              (format "script/server -p %s -e %s" rails-ws:port env))))
+                                              (format "script/server %s -p %s -e %s"
+                                                      rails-ws:default-server-type
+                                                      rails-ws:port env))))
            (set-process-sentinel proc 'rails-ws:sentinel-proc)
            (setq rails-ws:process-environment env)
            (message (format "%s (%s) starting with port %s"
