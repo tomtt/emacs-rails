@@ -1,4 +1,7 @@
 SVN
+* Added hotkeys for tests:
+  - [C-c C-c .] running a test for current model/controller (global)
+  - [C-c .] running a test for current method (in a functional/unit test)
 * Prints total of tests, asertions, failures, errors after end of
   tests running
 * Fixed recursive "require" error after compilation [#9547]

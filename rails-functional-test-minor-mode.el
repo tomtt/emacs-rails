@@ -32,6 +32,7 @@
   " func-test"
   nil
   (setq rails-primary-switch-func (lambda() (interactive) (rails-controller-layout:switch-to :controller)))
-  (setq rails-secondary-switch-func 'rails-controller-layout:menu))
+  (setq rails-secondary-switch-func 'rails-controller-layout:menu)
+  (local-set-key (kbd "\C-c .") 'rails-rake:test-current-method))
 
 (provide 'rails-functional-test-minor-mode)

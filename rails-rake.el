@@ -140,4 +140,34 @@
                      (concat "test:" task))))
     (rails-rake:task task-name)))
 
+(defun rails-rake:run-test-file (file &optional param)
+  (let ((param (if param (append (list file) (list param))
+                 (list file))))
+    (rails-script:run "ruby" param 'rails-rake:output-mode)))
+
+(defun rails-rake:test-current (&optional method)
+  (interactive)
+  (let* ((model (rails-core:current-model))
+         (controller (rails-core:current-controller))
+         (func-test (rails-core:functional-test-file controller))
+         (unit-test (rails-core:unit-test-file model))
+         (mailer-test (rails-core:unit-test-file controller)))
+    (cond
+     ;; model
+     ((and model unit-test)
+      (rails-rake:run-test-file unit-test))
+     ;; controller
+     ((and controller (not (rails-core:mailer-p controller)) func-test)
+      (rails-rake:run-test-file func-test))
+     ;; mailer
+     ((and controller (rails-core:mailer-p controller) unit-test)
+      (rails-rake:run-test-file unit-test)))))
+
+(defun rails-rake:test-current-method ()
+  (interactive)
+  (let ((file (substring (buffer-file-name) (length (rails-core:root))))
+        (method (rails-core:current-method-name)))
+    (when method
+      (rails-rake:run-test-file file (format "--name=%s" method)))))
+
 (provide 'rails-rake)

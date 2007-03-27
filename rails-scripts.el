@@ -133,6 +133,8 @@ For example -c to remove files from svn.")
 (defun rails-script:run (command parameters &optional buffer-major-mode)
   "Run a Rails script COMMAND with PARAMETERS with
 BUFFER-MAJOR-MODE and process-sentinel SENTINEL."
+  (unless (listp parameters)
+    (error "rails-script:run PARAMETERS must be the list"))
   (rails-core:with-root
    (root)
    (let ((proc (rails-script:running-p)))

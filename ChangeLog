@@ -1,5 +1,20 @@
 2007-03-27  dima  <dima.exe@gmail.com>
 
+	* rails-rake.el (rails-rake:test-current): created
+	(rails-rake:run-test-file): created
+	(rails-rake:test-current-method): created
+
+	* rails-unit-test-minor-mode.el (rails-unit-test-minor-mode):
+	added hotkey [C-c .] to run test of current method
+
+	* rails-functional-test-minor-mode.el (rails-functional-test-minor-mode): 
+	added hotkey [C-c .] to run test of current method
+
+	* rails-core.el (rails-core:functional-test-file)
+	(rails-core:unit-test-file, rails-core:observer-p)
+	(rails-core:mailer-p): allow passing nil
+	(rails-core:current-method-name): renamed from rails-core:current-function-name
+
 	* rails-scripts.el (rails-script:output-mode-popup-buffer,
 	rails-script:output-mode-push-first-button): created
 	(rails-script:output-mode): using hooks instead local-variables

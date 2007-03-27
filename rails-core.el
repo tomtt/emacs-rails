@@ -236,12 +236,14 @@ CONTROLLER."
 (defun rails-core:functional-test-file (controller)
   "Return the functional test file name for the controller named
 CONTROLLER."
-  (format "test/functional/%s_test.rb"
-    (rails-core:file-by-class (rails-core:long-controller-name controller) t)))
+  (when controller
+    (format "test/functional/%s_test.rb"
+            (rails-core:file-by-class (rails-core:long-controller-name controller) t))))
 
 (defun rails-core:unit-test-file (model)
   "Return the unit test file name for the model named MODEL."
-  (format "test/unit/%s_test.rb" (rails-core:file-by-class model t)))
+  (when model
+    (format "test/unit/%s_test.rb" (rails-core:file-by-class model t))))
 
 (defun rails-core:fixture-file (model)
   "Return the fixtures file name for the model named MODEL."
@@ -279,12 +281,14 @@ CONTROLLER."
 
 ;;;;;;;;;; Functions that return collection of Rails objects  ;;;;;;;;;;
 (defun rails-core:observer-p (name)
-  (if (string-match "\\(Observer\\|_observer\\(\\.rb\\)?\\)$" name)
-      t nil))
+  (when name
+    (if (string-match "\\(Observer\\|_observer\\(\\.rb\\)?\\)$" name)
+        t nil)))
 
 (defun rails-core:mailer-p (name)
-  (if (string-match "\\(Mailer\\|Notifier\\|_mailer\\|_notifier\\(\\.rb\\)?\\)$" name)
-      t nil))
+  (when name
+    (if (string-match "\\(Mailer\\|Notifier\\|_mailer\\|_notifier\\(\\.rb\\)?\\)$" name)
+        t nil)))
 
 (defun rails-core:controllers (&optional cut-contoller-suffix)
   "Return a list of Rails controllers. Remove the '_controller'
@@ -440,8 +444,8 @@ If the action is nil, return all views for the controller."
 (defun rails-core:current-action ()
   "Return the current action in the current Rails controller."
   (case (rails-core:buffer-type)
-    (:controller (rails-core:current-function-name))
-    (:mailer (rails-core:current-function-name))
+    (:controller (rails-core:current-method-name))
+    (:mailer (rails-core:current-method-name))
     (:view (string-match "/\\([a-z0-9_]+\\)\.[a-z]+$" (buffer-file-name))
            (match-string 1 (buffer-file-name)))))
 
@@ -455,10 +459,10 @@ If the action is nil, return all views for the controller."
     (when (string-match "vendor\\/plugins\\/\\([^\\/]+\\)" name)
       (match-string 1 name))))
 
-(defun rails-core:current-function-name ()
+(defun rails-core:current-method-name ()
   (save-excursion
     (when (search-backward-regexp "^[ ]*def \\([a-z0-9_]+\\)" nil t)
-      (match-string 1))))
+      (match-string-no-properties 1))))
 
 ;;;;;;;;;; Determination of buffer type ;;;;;;;;;;
 
