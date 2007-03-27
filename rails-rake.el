@@ -80,9 +80,9 @@
 
 (define-derived-mode rails-rake:output-mode rails-script:output-mode "Rails Rake Output"
   "Major mode to Rails Rake Output."
-  (setq rails-script:push-first-button-after-stop nil)
-  (setq rails-script:popup-buffer-after-stop-if-ok nil)
-  (setq rails-script:call-after-stop 'rails-rake:report-result)
+  (setq rails-script:popup-buffer-after-stop-if-success nil)
+  (remove-hook 'rails-script:output-mode-push-first-button t)
+  (add-hook 'rails-script:output-mode-after-stop-hook 'rails-rake:report-result nil t)
   (setq font-lock-defaults
         '((rails-rake:output-mode-font-lock-ketwords) nil t))
   (add-hook 'after-change-functions 'rails-rake:report-progress-of-test))

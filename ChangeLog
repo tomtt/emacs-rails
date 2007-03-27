@@ -1,5 +1,13 @@
 2007-03-27  dima  <dima.exe@gmail.com>
 
+	* rails-scripts.el (rails-script:output-mode-popup-buffer,
+	rails-script:output-mode-push-first-button): created
+	(rails-script:output-mode): using hooks instead local-variables
+
+	* rails-rake.el (rails-rake:output-mode): using hooks instead local-variables
+
+	* rails-lib.el (buffer-visible-p): optimization, using `get-buffer-window'
+
 	* rails-model-layout.el (rails-model-layout:switch-to): 
 	display message if file not exists
 
