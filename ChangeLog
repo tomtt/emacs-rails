@@ -1,5 +1,8 @@
 2007-03-27  dima  <dima.exe@gmail.com>
 
+	* rails-snippets.el (rails-snippets-menu-list): updated snippets,
+	add the "assert_template" snippet
+
 	* rails-rake.el (rails-rake:test-current): created
 	(rails-rake:run-test-file): created
 	(rails-rake:test-current-method): created
