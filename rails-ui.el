@@ -169,7 +169,7 @@
 
 (define-keys rails-minor-mode-map
   ([menu-bar] rails-minor-mode-menu-bar-map)
-  ([menu-bar snippets] (cons "Snippets" (create-snippets-and-menumap-from-dsl rails-snippets-menu-list)))
+  ([menu-bar snippets] (cons "Snippets" (rails-snippets:create-keymap)))
   ;; Goto
   ((kbd "\C-c \C-c g m") 'rails-nav:goto-models)
   ((kbd "\C-c \C-c g c") 'rails-nav:goto-controllers)

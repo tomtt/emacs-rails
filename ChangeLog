@@ -1,3 +1,11 @@
+2007-03-28  dima  <dima.exe@gmail.com>
+
+	* rails-snippets.el (rails-snippets-menu-list): removed
+	(rails-snippets:create-keymap, rails-snippets:create-lambda)
+	(rails-snippets:list): created
+
+	* rails-lib.el (create-snippets-and-menumap-from-dsl): removed
+
 2007-03-27  dima  <dima.exe@gmail.com>
 
 	* rails-snippets.el (rails-snippets-menu-list): updated snippets,
