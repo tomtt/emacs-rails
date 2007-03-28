@@ -118,7 +118,10 @@
   ([rails tests recent]         '("Recent tests"      . (lambda() (interactive) (rails-rake:test "recent"))))
   ([rails tests tests]          '("All"               . (lambda() (interactive) (rails-rake:test "all"))))
   ([rails tests separator]      '("--"))
-  ([rails tests toggle]         '("Toggle output window"                 . rails-script:toggle-output-window))
+  ([rails tests method]         '(menu-item "Test current method" rails-rake:test-current-method
+                                            :enable (find (rails-core:buffer-type) '(:unit-test :functional-test))))
+  ([rails tests toggle]         '(menu-item "Toggle output window" rails-script:toggle-output-window
+                                            :enable (get-buffer rails-script:buffer-name)))
   ([rails tests run-current]    '("Test current model/controller/mailer" . rails-rake:test-current))
   ([rails tests run]            '("Run tests ..."                        . rails-rake:test))
 

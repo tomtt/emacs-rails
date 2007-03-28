@@ -1,5 +1,7 @@
 2007-03-28  dima  <dima.exe@gmail.com>
 
+	* rails-ui.el (rails-minor-mode-menu-bar-map): added menu item for "test current method"
+
 	* rails-ws.el (rails-ws:start): added missing parameter the
 	rails-ws:default-server-type to startup command
 
