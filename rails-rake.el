@@ -41,17 +41,28 @@
     (write-string-to-file file-name (prin1-to-string tasks))
     tasks))
 
-(defun rails-rake:tasks-list ()
-  "Return all tasks list and create tasks cache file."
+(defun rails-rake:list-of-tasks ()
+  "Return all available tasks and create tasks cache file."
   (rails-core:in-root
    (let* ((cache-file (rails-core:file "tmp/.tasks-cache")))
      (if (file-exists-p cache-file)
          (read-from-file cache-file)
        (rails-rake:create-tasks-cache cache-file)))))
 
+(defun rails-rake:list-of-tasks-without-tests ()
+  "Return available tasks without test actions."
+  (when-bind
+   (tasks (rails-rake:list-of-tasks))
+   (sort (delete* nil
+                  (mapcar
+                   #'(lambda (it) (if (string=~ "^test\\($\\|:\\)" it t) nil it))
+                   (rails-rake:list-of-tasks))
+                  :if 'null)
+         'string<)))
+
 (defun rails-rake:task (task &optional major-mode)
   "Run a Rake task in RAILS_ROOT with MAJOR-MODE."
-  (interactive (rails-completing-read "What task run" (rails-rake:tasks-list)
+  (interactive (rails-completing-read "What task run" (rails-rake:list-of-tasks-without-tests)
                                       'rails-rake:history nil))
   (when task
     (rails-script:run "rake" (list task) major-mode)))

@@ -93,19 +93,19 @@
                     (compilation-set-window-height win))))
             t t))
 
-(defun rails-test:list ()
+(defun rails-test:list-of-tasks ()
   "Return a list contains test tasks."
   (append (list "all")
           (delete* nil
                    (mapcar
                     #'(lambda (task) (string=~ "^test\\:\\([^ ]+\\)" task $1))
-                    (rails-rake:tasks-list))
-                   :if #'(lambda (it) (not it)))))
+                    (rails-rake:list-of-tasks))
+                   :if 'null)))
 
 (defun rails-test:run (task)
   "Run rake tests in RAILS_ROOT."
   (interactive (rails-completing-read "What test run"
-                                      (rails-test:list)
+                                      (rails-test:list-of-tasks)
                                       'rails-test:history t))
   (unless task
     (setq task "all")

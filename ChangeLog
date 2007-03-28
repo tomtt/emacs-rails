@@ -1,5 +1,10 @@
 2007-03-29  dima  <dima.exe@gmail.com>
 
+	* rails-test.el (rails-test:run): cleanup
+
+	* rails-rake.el (rails-rake:list-of-tasks-without-tests): created
+	(rails-rake:list-of-tasks): renamed from rails-rake:tasks-list
+
 	* rails-ui.el: created seperate menu group for tests
 
 	* rails-test.el: created, Added tests integration with the compile library
