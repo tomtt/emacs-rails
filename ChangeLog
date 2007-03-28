@@ -1,5 +1,13 @@
 2007-03-28  dima  <dima.exe@gmail.com>
 
+	* rails.el: added forward declaration of try-complete-abbrev,
+	index-or-complete and setup variable
+	hippie-expand-try-function-alist
+
+	* rails-snippets.el (rails-snippets:list): updated
+
+	* rails-core.el (rails-core:menu-position): fixed error at `window-live-p'
+
 	* rails-ui.el (rails-minor-mode-menu-bar-map): added menu item for "test current method"
 
 	* rails-ws.el (rails-ws:start): added missing parameter the

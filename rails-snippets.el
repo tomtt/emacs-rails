@@ -71,6 +71,8 @@
        ("forin" "for $${element} in $${collection}\n$>$${element}.$.\nend$>" "for ... in ... end")
        ("dow" "downto($${0}) { |$${n}|$. }" "downto(0) { |n| ... }")) ; loops
     (1 "general" ruby-mode-abbrev-table
+       ("ha" "{ $>:$. }" "{ :key => 'value' }")
+       (":"  ":$${key} => '$${value}'" ":key => 'value'")
        ("yl" "File.open($${yaml}) { |$${file}| YAML.load($${file}) }" "YAML.load(file)")
        ("yd" "File.open($${yaml}, \"w\") { |$${file}| YAML.dump($${obj}, $${file}) }" "YAML.dump(..., file)")
        ("y" " :yields: $${arguments}" ":yields:")

@@ -377,6 +377,8 @@ necessary."
   (make-local-variable 'rails-primary-switch-func)
   (make-local-variable 'rails-secondary-switch-func))
 
+;; hooks
+
 (add-hook 'ruby-mode-hook
           (lambda()
             (require 'rails-ruby)
@@ -392,7 +394,7 @@ necessary."
                            'indent-or-complete)
             (local-set-key (kbd "C-c f") '(lambda()
                                             (interactive)
-                                            (mouse-major-mode-menu rails-core:menu-position)))
+                                            (mouse-major-mode-menu (rails-core:menu-position))))
             (local-set-key (kbd "C-:") 'ruby-toggle-string<>simbol)
             (local-set-key (if rails-use-another-define-key
                                (kbd "RET") (kbd "<return>"))
@@ -420,11 +422,14 @@ necessary."
                (rails-minor-mode t)
                (rails-apply-for-buffer-type)))))
 
-;;; Run rails-minor-mode in dired
+;; Run rails-minor-mode in dired
+
 (add-hook 'dired-mode-hook
           (lambda ()
             (if (rails-core:root)
                 (rails-minor-mode t))))
+
+;; helpers
 
 (autoload 'haml-mode "haml-mode" "" t)
 
@@ -438,5 +443,38 @@ necessary."
 (modify-coding-system-alist 'file "\\.rb$" 'utf-8)
 (modify-coding-system-alist 'file "\\.rake$" 'utf-8)
 (modify-coding-system-alist 'file (rails-core:regex-for-match-view) 'utf-8)
+
+;; from emacs-rc-functions.el
+
+(unless (fboundp 'indent-or-complete)
+  (defun indent-or-complete ()
+    "Complete if point is at end of a word, otherwise indent line."
+    (interactive)
+    (if (and (boundp 'snippet)
+             snippet)
+        (snippet-next-field)
+      (if (looking-at "\\>")
+          (flet ((message (format-string &rest args) nil)) ; skip message output
+            (hippie-expand nil))
+        (indent-for-tab-command)))))
+
+(unless (fboundp 'try-complete-abbrev)
+  (defun try-complete-abbrev (old)
+    (let ((point-end (point))
+          (point-start (point))
+          distance)
+      (save-excursion
+        (while (not (zerop (setq distance (skip-syntax-backward "w"))))
+          (setq point-start (+ point-start distance))))
+      (when (not (= point-start point-end))
+        (let ((abbr (buffer-substring-no-properties point-start point-end)))
+          (when (and (abbrev-symbol abbr)
+                     (expand-abbrev))
+            t))))))
+
+;; from emacs-rc-globalmodes.el
+
+(unless (find 'try-complete-abbrev hippie-expand-try-functions-list)
+  (add-to-list 'hippie-expand-try-functions-list 'try-complete-abbrev))
 
 (provide 'rails)
