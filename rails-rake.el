@@ -119,7 +119,7 @@
   "Run a Rake task in RAILS_ROOT."
   (interactive (list (completing-read "Rake task (use autocomplete): " (list->alist (rails-rake:tasks-list)))))
   (save-some-buffers)
-  (rails-script:run "rake" (list task) 'rails-rake:output-mode))
+  (rails-script:run "rake" (list task)))
 
 (defun rails-rake:test (&optional task)
   "Run Rake tests in RAILS_ROOT."

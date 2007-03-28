@@ -1,5 +1,7 @@
 2007-03-28  dima  <dima.exe@gmail.com>
 
+	* rails-rake.el (rails-rake:task): removed rails-rake:output-mode
+
 	* rails.el: added forward declaration of try-complete-abbrev,
 	index-or-complete and setup variable
 	hippie-expand-try-function-alist
