@@ -522,7 +522,7 @@ the Rails minor mode log."
 (defun rails-core:menu-separator ()
   (unless (rails-use-text-menu) 'menu (list "--" "--")))
 
-(defun rails-core:menu-position
+(defun rails-core:menu-position ()
   (list '(300 50) (get-buffer-window (current-buffer))))
 
 (defun rails-core:menu (menu)
