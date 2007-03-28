@@ -50,6 +50,7 @@
 (require 'rails-find)
 (require 'rails-scripts)
 (require 'rails-rake)
+(require 'rails-test)
 (require 'rails-ws)
 (require 'rails-log)
 (require 'rails-snippets)

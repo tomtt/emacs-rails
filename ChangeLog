@@ -1,3 +1,15 @@
+2007-03-29  dima  <dima.exe@gmail.com>
+
+	* rails-ui.el: created seperate menu group for tests
+
+	* rails-test.el: created, Added tests integration with the compile library
+
+	* rails-scripts.el: refactored
+
+	* rails-rake.el: refactored
+
+	* rails-lib.el (rails-completing-read): created
+
 2007-03-28  dima  <dima.exe@gmail.com>
 
 	* rails-rake.el (rails-rake:task): removed rails-rake:output-mode

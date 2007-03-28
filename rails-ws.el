@@ -46,7 +46,7 @@
   :tag "Rails Server Type")
 
 (defvar rails-ws:available-servers-list (list "mongrel" "lighttpd" "webrick"))
-(defvar rails-ws:buffer-name "*RailsWebServer*")
+(defvar rails-ws:buffer-name "*RWebServer*")
 (defvar rails-ws:process-environment nil)
 
 (defun rails-ws:default-server-type-p (type)

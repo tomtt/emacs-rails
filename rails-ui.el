@@ -28,6 +28,23 @@
 
 ;;;;;;;;;; Some init code ;;;;;;;;;;
 
+(defconst rails-minor-mode-tests-menu-bar-map
+  (let ((map (make-sparse-keymap)))
+    (define-keys map
+      ([integration] '("Integration tests" . (lambda() (interactive) (rails-test:run "integration"))))
+      ([unit]        '("Unit tests"        . (lambda() (interactive) (rails-test:run "units"))))
+      ([functional]  '("Functional tests"  . (lambda() (interactive) (rails-test:run "functionals"))))
+      ([recent]      '("Recent tests"      . (lambda() (interactive) (rails-test:run "recent"))))
+      ([tests]       '("All"               . (lambda() (interactive) (rails-test:run "all"))))
+      ([separator]   '("--"))
+      ([method]      '(menu-item "Test current method" rails-test:run-current-method
+                                 :enable (find (rails-core:buffer-type) '(:unit-test :functional-test))))
+      ([toggle]      '(menu-item "Toggle output window" rails-script:toggle-output-window
+                                 :enable (get-buffer rails-script:buffer-name)))
+      ([run-current] '("Test current model/controller/mailer" . rails-test:run-current))
+      ([run]         '("Run tests ..."                        . rails-test:run)))
+    map))
+
 (define-keys rails-minor-mode-menu-bar-map
 
   ([rails] (cons "RubyOnRails" (make-sparse-keymap "RubyOnRails")))
@@ -110,23 +127,6 @@
   ([rails scr console] '("Console"              . rails-script:console))
   ([rails scr rake]    '("Rake..."              . rails-rake:task))
 
-
-  ([rails tests] (cons "Tests" (make-sparse-keymap "Tests")))
-  ([rails tests integration]    '("Integration tests" . (lambda() (interactive) (rails-rake:test "integration"))))
-  ([rails tests unit]           '("Unit tests"        . (lambda() (interactive) (rails-rake:test "units"))))
-  ([rails tests functional]     '("Functional tests"  . (lambda() (interactive) (rails-rake:test "functionals"))))
-  ([rails tests recent]         '("Recent tests"      . (lambda() (interactive) (rails-rake:test "recent"))))
-  ([rails tests tests]          '("All"               . (lambda() (interactive) (rails-rake:test "all"))))
-  ([rails tests separator]      '("--"))
-  ([rails tests method]         '(menu-item "Test current method" rails-rake:test-current-method
-                                            :enable (find (rails-core:buffer-type) '(:unit-test :functional-test))))
-  ([rails tests toggle]         '(menu-item "Toggle output window" rails-script:toggle-output-window
-                                            :enable (get-buffer rails-script:buffer-name)))
-  ([rails tests run-current]    '("Test current model/controller/mailer" . rails-rake:test-current))
-  ([rails tests run]            '("Run tests ..."                        . rails-rake:test))
-
-
-
   ([rails ws] (cons "Web Server" (make-sparse-keymap "WebServer")))
 
   ([rails ws use-webrick]  '(menu-item "Use WEBrick" (lambda() (interactive)
@@ -177,6 +177,7 @@
 
 (define-keys rails-minor-mode-map
   ([menu-bar] rails-minor-mode-menu-bar-map)
+  ([menu-bar rails-tests] (cons "Tests" rails-minor-mode-tests-menu-bar-map))
   ([menu-bar snippets] (cons "Snippets" (rails-snippets:create-keymap)))
   ;; Goto
   ((kbd "\C-c \C-c g m") 'rails-nav:goto-models)
@@ -229,8 +230,8 @@
 
   ;; Tests
   ((kbd "\C-c \C-c r")   'rails-rake:task)
-  ((kbd "\C-c \C-c t")   'rails-rake:test)
-  ((kbd "\C-c \C-c .")   'rails-rake:test-current)
+  ((kbd "\C-c \C-c t")   'rails-test:run)
+  ((kbd "\C-c \C-c .")   'rails-test:run-current)
 
   ;; Navigation
 
@@ -250,9 +251,9 @@
 
 (global-set-key (kbd "\C-c \C-c j") 'rails-script:create-project)
 
-(when (lookup-key global-map  [menu-bar file])
+(when-bind (map (lookup-key global-map  [menu-bar file]))
   (define-key-after
-    (lookup-key global-map  [menu-bar file])
+    map
     [create-rails-project]
     '("Create Rails Project" . rails-script:create-project) 'insert-file))
 

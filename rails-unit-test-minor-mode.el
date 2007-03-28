@@ -37,6 +37,6 @@
                                         (rails-model-layout:switch-to :mailer)
                                       (rails-model-layout:switch-to :model))))
   (setq rails-secondary-switch-func 'rails-model-layout:menu)
-  (local-set-key (kbd "\C-c .") 'rails-rake:test-current-method))
+  (local-set-key (kbd "\C-c .") 'rails-test:run-current-method))
 
 (provide 'rails-unit-test-minor-mode)

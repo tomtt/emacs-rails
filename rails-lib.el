@@ -296,6 +296,22 @@ as the value of the symbol, and the hook as the function definition."
                  (ansi-color-apply-on-region start end)))
     (set-buffer buffer)))
 
+;; completion-read
+(defun rails-completing-read (prompt table history require-match)
+  (let ((history-value (symbol-value history)))
+  (list (completing-read
+         (format "%s?%s: "
+                 prompt
+                 (if (car history-value)
+                     (format " (%s)" (car history-value))
+                   ""))
+         (list->alist table) ; table
+         nil ; predicate
+         require-match ; require-match
+         nil ; initial input
+         history ; hist
+         (car history-value))))) ;def
+
 ;; MMM
 
 ;; (defvar mmm-indent-sandbox-finish-position nil)

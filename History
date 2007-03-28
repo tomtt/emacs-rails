@@ -1,4 +1,5 @@
 SVN
+* added tests integration with the compile library
 * new [C-c /] hotkey to toggle output window
 
 0.5.99.1
