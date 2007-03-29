@@ -1,5 +1,11 @@
 2007-03-29  dima  <dima.exe@gmail.com>
 
+	* rails-cmd-proxy.el: updated
+
+	* rails-scripts.el (rails-script:output-mode): updated
+
+	* rails.el (indent-or-complete): updated
+
 	* rails-test.el (rails-test:run): cleanup
 
 	* rails-rake.el (rails-rake:list-of-tasks-without-tests): created

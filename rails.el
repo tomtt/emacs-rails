@@ -454,7 +454,7 @@ necessary."
     (if (and (boundp 'snippet)
              snippet)
         (snippet-next-field)
-      (if (looking-at "\\>")
+      (if (looking-at "\\_>")
           (flet ((message (format-string &rest args) nil)) ; skip message output
             (hippie-expand nil))
         (indent-for-tab-command)))))

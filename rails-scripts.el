@@ -134,7 +134,7 @@ For example -c to remove files from svn.")
   (rails-script:make-buttons (point-min) (point-max) (point-max))
   (add-hook 'rails-script:run-after-stop-hook 'rails-script:popup-buffer t t)
   (add-hook 'rails-script:run-after-stop-hook 'rails-script:push-first-button t t)
-  (add-hook 'after-change-functions 'rails-script:make-buttons)
+  (add-hook 'after-change-functions 'rails-script:make-buttons nil t)
   (run-hooks 'rails-script:output-mode-hook))
 
 (defun rails-script:running-p ()
