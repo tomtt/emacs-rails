@@ -209,7 +209,7 @@ Rules for actions/controllers:
  If you in view, the view file related to the action will be opened.
  Use prefix before the command to change this navigation direction."
   (interactive "P")
-  (rails-core:with-root
+  (rails-project:with-root
    (root)
    (save-match-data
      (unless

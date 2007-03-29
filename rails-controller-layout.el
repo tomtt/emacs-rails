@@ -85,7 +85,7 @@
 (defun rails-controller-layout:view-files (controller-name &optional action)
   "Retun a list containing the view file for CONTROLLER-NAME#ACTION.
 If the action is nil, return all views for the controller."
-  (rails-core:with-root
+  (rails-project:with-root
    (root)
    (directory-files
     (rails-core:file

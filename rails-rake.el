@@ -43,7 +43,7 @@
 
 (defun rails-rake:list-of-tasks ()
   "Return all available tasks and create tasks cache file."
-  (rails-core:in-root
+  (rails-project:in-root
    (let* ((cache-file (rails-core:file "tmp/.tasks-cache")))
      (if (file-exists-p cache-file)
          (read-from-file cache-file)

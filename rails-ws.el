@@ -81,7 +81,7 @@
   "Start a server process with ENV environment if ENV is not set
 using `rails-default-environment'."
   (interactive (list (rails-read-enviroment-name)))
-  (rails-core:with-root
+  (rails-project:with-root
    (root)
    (let ((proc (get-buffer-process rails-ws:buffer-name)))
      (if proc
@@ -178,7 +178,7 @@ file."
   "Autodetect the current action and open browser on it with.
 Prefix the command to ask parameters for action."
   (interactive "P")
-  (rails-core:with-root
+  (rails-project:with-root
    (root)
    (if (find (rails-core:buffer-type) '(:view :controller))
        (when-bind (controller (rails-core:current-controller))

@@ -66,7 +66,8 @@ otherwise if set REVERSE convert from remote to local."
 ;; remote wrappers
 
 (defun rails-cmd-proxy:start-process (name buffer command command-args)
-  (rails-core:with-root
+  ""
+  (rails-project:with-root
    (root)
    (let ((proxy-struct (rails-cmd-proxy:lookup root))
          (command command)
@@ -84,7 +85,7 @@ otherwise if set REVERSE convert from remote to local."
                                   command-args))))
 
 (defun rails-cmd-proxy:shell-command-to-string (command)
-  (rails-core:with-root
+  (rails-project:with-root
    (root)
    (let ((proxy-struct (rails-cmd-proxy:lookup root))
          (command command))

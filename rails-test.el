@@ -144,7 +144,7 @@
 (defun rails-test:run-current-method ()
   "Run a test for the current method."
   (interactive)
-  (let ((file (substring (buffer-file-name) (length (rails-core:root))))
+  (let ((file (substring (buffer-file-name) (length (rails-project:root))))
         (method (rails-core:current-method-name)))
     (when method
       (rails-test:run-single-file file (format "--name=%s" method)))))

@@ -67,7 +67,7 @@
              end-pos
              (> current-pos begin-pos)
              (< current-pos end-pos))
-        (let* ((helper-file (concat (rails-core:root) (rails-core:helper-file (rails-core:current-controller))))
+        (let* ((helper-file (concat (rails-project:root) (rails-core:helper-file (rails-core:current-controller))))
                (content (replace-regexp-in-string "\\(<%=?\\|-?%>\\)" ""
                                                   (buffer-substring-no-properties begin-pos end-pos)))
                (helper-defination (if helper-name helper-name

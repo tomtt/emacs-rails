@@ -159,7 +159,7 @@ For example -c to remove files from svn.")
 BUFFER-MAJOR-MODE and process-sentinel SENTINEL."
   (unless (listp parameters)
     (error "rails-script:run PARAMETERS must be the list"))
-  (rails-core:with-root
+  (rails-project:with-root
    (root)
    (save-some-buffers)
    (let ((proc (rails-script:running-p)))
@@ -290,18 +290,18 @@ BUFFER-MAJOR-MODE and process-sentinel SENTINEL."
   (interactive "FNew Rails project directory: ")
   (make-directory dir t)
   (let ((default-directory (concat (expand-file-name dir) "/")))
-    (flet ((rails-core:root () default-directory))
-      (rails-script:run "rails" (list "--skip" (rails-core:root))))))
+    (flet ((rails-project:root () default-directory))
+      (rails-script:run "rails" (list "--skip" (rails-project:root))))))
 
 ;;;;;;;;;; Shells ;;;;;;;;;;
 
 (defun rails-script:run-interactive (name script)
   "Run an interactive shell with SCRIPT in a buffer named
 *rails-<project-name>-<name>*."
-  (rails-core:with-root
+  (rails-project:with-root
    (root)
    (run-ruby-in-buffer (rails-core:file script)
-                       (format "rails-%s-%s" (rails-core:project-name) name))
+                       (format "rails-%s-%s" (rails-project:name) name))
    (rails-minor-mode t)))
 
 (defun rails-script:console ()

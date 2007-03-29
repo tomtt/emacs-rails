@@ -49,12 +49,9 @@
 
   ([rails] (cons "RubyOnRails" (make-sparse-keymap "RubyOnRails")))
 
-  ([rails rails-customize] '(menu-item "Customize"
-                                       (lambda () (interactive) (customize-group 'rails))
-                                       :enable (rails-core:root)))
+  ([rails rails-customize] '("Customize" . (lambda () (interactive) (customize-group 'rails))))
   ([rails separator0] '("--"))
-  ([rails svn-status] '(menu-item "SVN status" rails-svn-status-into-root
-                                  :enable (rails-core:root)))
+  ([rails svn-status] '("SVN status" . rails-svn-status-into-root))
   ([rails api-doc]           '("Rails API doc at point" . rails-browse-api-at-point))
   ([rails sql]               '("SQL Rails buffer"       . rails-run-sql))
   ([rails tag]               '("Update TAGS file"       . rails-create-tags))

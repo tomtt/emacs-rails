@@ -28,45 +28,6 @@
 (eval-when-compile
   (require 'rails-lib))
 
-(defun rails-core:root ()
-  "Return RAILS_ROOT if this file is a part of a Rails application,
-else return nil"
-  (let ((curdir default-directory)
-        (max 10)
-        (found nil))
-    (while (and (not found) (> max 0))
-      (progn
-        (if (file-exists-p (concat curdir "config/environment.rb"))
-            (progn
-              (setq found t))
-          (progn
-            (setq curdir (concat curdir "../"))
-            (setq max (- max 1))))))
-    (if found (expand-file-name curdir))))
-
-(defmacro* rails-core:with-root ((root) &body body)
-  "If you use `rails-core:root' or functions related on it
-several times in a block of code, you can optimize your code by
-using this macro. Also, blocks of code will be executed only if
-rails-root exist.
- (rails-core:with-root (root)
-    (foo root)
-    (bar (rails-core:file \"some/path\")))
- "
- `(let ((,root (rails-core:root)))
-    (when ,root
-      (flet ((rails-core:root () ,root))
-        ,@body))))
-
-(defmacro rails-core:in-root (&rest body)
-  "Set the default directory to the Rails root directory while
-BODY is executed."
-  (let ((root (gensym)))
-    `(rails-core:with-root
-      (,root)
-      (let ((default-dir ,root))
-        ,@body))))
-
 (defvar rails-core:class-dirs
   '("app/controllers"
     "app/views"
@@ -105,13 +66,6 @@ will not append \".rb\" to result."
     (concat (downcase path)
             (unless do-not-append-ext ".rb"))))
 
-;;;;;;;;;; Project ;;;;;;;;;;
-
-(defun rails-core:project-name ()
-  "Return the name of current Rails project."
-  (replace-regexp-in-string "^.*/\\(.*\\)/$" "\\1"
-          (directory-name (rails-core:root))))
-
 ;;;;;;;;;; Files ;;;;;;;;;;
 
 (defun rails-core:file (file-name)
@@ -119,8 +73,8 @@ will not append \".rb\" to result."
   (when file-name
     (if (file-name-absolute-p file-name)
         file-name
-      (when-bind
-       (root (rails-core:root))
+      (rails-project:with-root
+       (root)
        (concat root file-name)))))
 
 (defun rails-core:quoted-file (file-name)
@@ -204,7 +158,7 @@ it does not exist, ask to create it using QUESTION as a prompt."
         filename)
     (while (and (car its)
                 (not filename))
-      (when (file-exists-p (format "%sapp/views/layouts/%s.%s" (rails-core:root) layout (car its)))
+      (when (file-exists-p (format "%sapp/views/layouts/%s.%s" (rails-project:root) layout (car its)))
         (setq filename (format "app/views/layouts/%s.%s" layout (car its))))
       (setq its (cdr its)))
     filename))
@@ -404,7 +358,7 @@ The file extensions used for views are defined in `rails-templates-list'."
 (defun rails-core:get-view-files (controller-class &optional action)
   "Retun a list containing the view file for CONTROLLER-CLASS#ACTION.
 If the action is nil, return all views for the controller."
-    (rails-core:with-root
+    (rails-project:with-root
      (root)
      (directory-files
       (rails-core:file
@@ -519,7 +473,7 @@ cannot be determinated."
 
 (defun rails-log-add (message)
   "Add MESSAGE to the Rails minor mode log in RAILS_ROOT."
-  (rails-core:with-root
+  (rails-project:with-root
    (root)
    (append-string-to-file (rails-core:file "log/rails-minor-mode.log")
                           (format "%s: %s\n"
@@ -530,7 +484,7 @@ cannot be determinated."
 the Rails minor mode log."
   (shell-command (format "%s %s" rails-ruby-command command) buffer)
   (rails-log-add
-   (format "\n%s> %s\n%s" (rails-core:project-name)
+   (format "\n%s> %s\n%s" (rails-project:name)
            command (buffer-string-by-name buffer))))
 
 ;;;;;;;;;; Rails menu ;;;;;;;;;;

@@ -42,6 +42,9 @@
 
 (require 'inflections)
 
+(require 'rails-compat)
+(require 'rails-project)
+
 (require 'rails-core)
 (require 'rails-ruby)
 (require 'rails-lib)
@@ -177,8 +180,8 @@ Emacs w3m browser."
 ;;;;;;;; hack ;;;;
 (defun rails-svn-status-into-root ()
   (interactive)
-  (rails-core:with-root (root)
-                        (svn-status root)))
+  (rails-project:with-root (root)
+                           (svn-status root)))
 
 ;; helper functions/macros
 (defun rails-search-doc (&optional item)
@@ -206,7 +209,7 @@ Emacs w3m browser."
 (defun rails-create-tags()
   "Create tags file"
   (interactive)
-  (rails-core:in-root
+  (rails-project:in-root
    (message "Creating TAGS, please wait...")
    (let ((tags-file-name (rails-core:file "TAGS")))
      (shell-command
@@ -263,7 +266,7 @@ Emacs w3m browser."
 (defun* rails-run-sql (&optional env)
   "Run a SQL process for the current Rails project."
   (interactive (list (rails-read-enviroment-name "development")))
-  (rails-core:with-root (root)
+  (rails-project:with-root (root)
     (cd root)
     (if (bufferp (sql-find-sqli-buffer))
         (switch-to-buffer-other-window (sql-find-sqli-buffer))
@@ -280,7 +283,7 @@ Emacs w3m browser."
 (defun rails-has-api-root ()
   "Test whether `rails-api-root' is configured or not, and offer to configure
 it in case it's still empty for the project."
-  (rails-core:with-root
+  (rails-project:with-root
    (root)
    (unless (or (file-exists-p (rails-core:file "doc/api/index.html"))
          (not (yes-or-no-p (concat "This project has no API documentation. "
@@ -400,10 +403,7 @@ necessary."
             (local-set-key (if rails-use-another-define-key
                                (kbd "RET") (kbd "<return>"))
                            'ruby-newline-and-indent)
-            (when (and (fboundp 'predictive-mode)
-                       (fboundp 'flyspell-prog-mode))
-              (require 'flyspell)
-              (add-hook 'after-change-functions 'activate-predictive-inside-strings nil t))))
+            (predictive-prog-mode)))
 
 (add-hook 'speedbar-mode-hook
           (lambda()
@@ -411,16 +411,11 @@ necessary."
 
 (add-hook 'find-file-hooks
           (lambda()
-            (rails-core:with-root
+            (rails-project:with-root
              (root)
              (progn
                (unless (string-match "[Mm]akefile" mode-name)
-                 (add-hook 'local-write-file-hooks
-                           '(lambda()
-                              (when (eq this-command 'save-buffer)
-                                (save-excursion
-                                  (untabify (point-min) (point-max))
-                                  (delete-trailing-whitespace))))))
+                 (untabify-before-save))
                (local-set-key (if rails-use-another-define-key
                                   (kbd "TAB") (kbd "<tab>"))
                               'indent-or-complete)
@@ -431,73 +426,22 @@ necessary."
 
 (add-hook 'dired-mode-hook
           (lambda ()
-            (if (rails-core:root)
+            (if (rails-project:root)
                 (rails-minor-mode t))))
 
 ;; helpers
 
 (autoload 'haml-mode "haml-mode" "" t)
 
-(setq auto-mode-alist  (cons '("\\.rb$" . ruby-mode) auto-mode-alist))
-(setq auto-mode-alist  (cons '("\\.rake$" . ruby-mode) auto-mode-alist))
-(setq auto-mode-alist  (cons '("\\.haml$" . haml-mode) auto-mode-alist))
-(setq auto-mode-alist  (cons '("\\.rjs$" . ruby-mode) auto-mode-alist))
-(setq auto-mode-alist  (cons '("\\.rxml$" . ruby-mode) auto-mode-alist))
+(setq auto-mode-alist  (cons '("\\.rb$"    . ruby-mode) auto-mode-alist))
+(setq auto-mode-alist  (cons '("\\.rake$"  . ruby-mode) auto-mode-alist))
+(setq auto-mode-alist  (cons '("\\.haml$"  . haml-mode) auto-mode-alist))
+(setq auto-mode-alist  (cons '("\\.rjs$"   . ruby-mode) auto-mode-alist))
+(setq auto-mode-alist  (cons '("\\.rxml$"  . ruby-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.rhtml$" . html-mode) auto-mode-alist))
 
 (modify-coding-system-alist 'file "\\.rb$" 'utf-8)
 (modify-coding-system-alist 'file "\\.rake$" 'utf-8)
 (modify-coding-system-alist 'file (rails-core:regex-for-match-view) 'utf-8)
-
-;; from emacs-rc-functions.el
-
-(unless (fboundp 'indent-or-complete)
-  (defun indent-or-complete ()
-    "Complete if point is at end of a word, otherwise indent line."
-    (interactive)
-    (cond
-     ;; snippet
-     ((and (boundp 'snippet)
-           snippet)
-      (snippet-next-field))
-     ;; completion-ui
-     ((and (fboundp 'completion-overlay-at-point)
-           (completion-overlay-at-point))
-      (let* ((ov (completion-overlay-at-point))
-             (end (overlay-end ov)))
-        (delete-overlay ov)
-        (goto-char end)))
-     ;; hippie-expand
-     ((looking-at "\\_>")
-      (flet ((message (format-string &rest args) nil)) ; skip message output
-        (hippie-expand nil)))
-     ;; indent default
-     (t (indent-for-tab-command)))))
-
-(unless (fboundp 'try-complete-abbrev)
-  (defun try-complete-abbrev (old)
-    (let ((point-end (point))
-          (point-start (point))
-          distance)
-      (save-excursion
-        (while (not (zerop (setq distance (skip-syntax-backward "w"))))
-          (setq point-start (+ point-start distance))))
-      (when (not (= point-start point-end))
-        (let ((abbr (buffer-substring-no-properties point-start point-end)))
-          (when (and (abbrev-symbol abbr)
-                     (expand-abbrev))
-            t))))))
-
-(defun activate-predictive-inside-strings (start end len)
-  (save-excursion
-    (let ((f (get-text-property (point) 'face)))
-      (if (memq f flyspell-prog-text-faces)
-          (predictive-mode 1)
-          (predictive-mode 0)))))
-
-;; from emacs-rc-globalmodes.el
-
-(unless (find 'try-complete-abbrev hippie-expand-try-functions-list)
-  (add-to-list 'hippie-expand-try-functions-list 'try-complete-abbrev))
 
 (provide 'rails)
