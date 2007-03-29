@@ -59,7 +59,7 @@
                 (not (zerop errors))
                 (not (zerop failures))
                 (not (buffer-visible-p (current-buffer))))
-        (rails-script:popup-buffer)))))
+        (rails-script:popup-buffer t)))))
 
 (defun rails-test:print-progress (start end len)
   (let (content)

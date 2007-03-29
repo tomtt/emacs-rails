@@ -117,8 +117,7 @@ For example -c to remove files from svn.")
 (defun rails-script:setup-output-buffer ()
   "Setup default variables and values for the output buffer."
   (set (make-local-variable 'font-lock-keywords-only) t)
-  (set (make-local-variable 'font-lock-defaults)
-       '((rails-script:font-lock-ketwords) nil t))
+  (make-local-variable 'font-lock-defaults)
   (set (make-local-variable 'scroll-margin) 0)
   (set (make-local-variable 'scroll-preserve-screen-position) nil)
   (make-local-hook 'rails-script:run-after-stop-hook)
@@ -129,6 +128,7 @@ For example -c to remove files from svn.")
 (define-derived-mode rails-script:output-mode fundamental-mode "ROutput"
   "Major mode to Rails Script Output."
   (rails-script:setup-output-buffer)
+  (setq font-lock-defaults '((rails-script:font-lock-ketwords) nil t))
   (buffer-disable-undo)
   (setq buffer-read-only t)
   (rails-script:make-buttons (point-min) (point-max) (point-max))

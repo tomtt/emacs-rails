@@ -161,19 +161,21 @@
 
   ([rails separator2] '("--"))
 
-  ([rails goto-fixtures]    '("Go to fixtures"    . rails-nav:goto-fixtures))
-  ([rails goto-plugins]     '("Go to plugins"     . rails-nav:goto-plugins))
-  ([rails goto-migrate]     '("Go to migrations"  . rails-nav:goto-migrate))
-  ([rails goto-layouts]     '("Go to layouts"     . rails-nav:goto-layouts))
-  ([rails goto-stylesheets] '("Go to stylesheets" . rails-nav:goto-stylesheets))
-  ([rails goto-javascripts] '("Go to javascripts" . rails-nav:goto-javascripts))
-  ([rails goto-helpers]     '("Go to helpers"     . rails-nav:goto-helpers))
-  ([rails goto-mailers]     '("Go to mailers"     . rails-nav:goto-mailers))
-  ([rails goto-observers]   '("Go to observers"   . rails-nav:goto-observers))
-  ([rails goto-models]      '("Go to models"      . rails-nav:goto-models))
-  ([rails goto-controllers] '("Go to controllers" . rails-nav:goto-controllers)))
+  ([rails goto-fixtures]    '("Go to fixtures"         . rails-nav:goto-fixtures))
+  ([rails goto-plugins]     '("Go to plugins"          . rails-nav:goto-plugins))
+  ([rails goto-migrate]     '("Go to migrations"       . rails-nav:goto-migrate))
+  ([rails goto-layouts]     '("Go to layouts"          . rails-nav:goto-layouts))
+  ([rails goto-stylesheets] '("Go to stylesheets"      . rails-nav:goto-stylesheets))
+  ([rails goto-javascripts] '("Go to javascripts"      . rails-nav:goto-javascripts))
+  ([rails goto-helpers]     '("Go to helpers"          . rails-nav:goto-helpers))
+  ([rails goto-mailers]     '("Go to mailers"          . rails-nav:goto-mailers))
+  ([rails goto-observers]   '("Go to observers"        . rails-nav:goto-observers))
+  ([rails goto-unit-tests]  '("Go to unit tests"       . rails-nav:goto-unit-tests))
+  ([rails goto-func-tests]  '("Go to functional tests" . rails-nav:goto-functional-tests))
+  ([rails goto-models]      '("Go to models"           . rails-nav:goto-models))
+  ([rails goto-controllers] '("Go to controllers"      . rails-nav:goto-controllers)))
 
-(setq rails-minor-mode-map (make-sparse-keymap))
+(defvar rails-minor-mode-map (make-sparse-keymap))
 
 (define-keys rails-minor-mode-map
   ([menu-bar] rails-minor-mode-menu-bar-map)
@@ -190,7 +192,9 @@
   ((kbd "\C-c \C-c g j") 'rails-nav:goto-javascripts)
   ((kbd "\C-c \C-c g g") 'rails-nav:goto-migrate)
   ((kbd "\C-c \C-c g p") 'rails-nav:goto-plugins)
-  ((kbd "\C-c \C-c g f") 'rails-nav:goto-fixtures)
+  ((kbd "\C-c \C-c g x") 'rails-nav:goto-fixtures)
+  ((kbd "\C-c \C-c g f") 'rails-nav:goto-functional-tests)
+  ((kbd "\C-c \C-c g u") 'rails-nav:goto-unit-tests)
 
   ;; Switch
   ((kbd "\C-c <up>")      'rails-lib:run-primary-switch)

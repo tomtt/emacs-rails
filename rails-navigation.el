@@ -79,6 +79,22 @@
    "Go to model.."
    'rails-core:model-file))
 
+(defun rails-nav:goto-functional-tests ()
+  "Go to functional tests."
+  (interactive)
+  (rails-nav:goto-file-with-menu-from-list
+   (rails-core:functional-tests)
+   "Go to functional test."
+   'rails-core:functional-test-file))
+
+(defun rails-nav:goto-unit-tests ()
+  "Go to functional tests."
+  (interactive)
+  (rails-nav:goto-file-with-menu-from-list
+   (rails-core:unit-tests)
+   "Go to unit test."
+   'rails-core:unit-test-file))
+
 (defun rails-nav:goto-observers ()
   "Go to observers."
   (interactive)

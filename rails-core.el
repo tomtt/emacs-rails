@@ -305,6 +305,14 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
                       controller))
     (find-recursive-files "\\.rb$" (rails-core:file "app/controllers/")))))
 
+(defun rails-core:functional-tests ()
+  "Return a list of Rails functional tests."
+  (mapcar
+   #'(lambda(it)
+       (remove-postfix (rails-core:class-by-file it)
+                       "ControllerTest"))
+   (find-recursive-files "\\.rb$" (rails-core:file "test/functional/"))))
+
 (defun rails-core:models ()
   "Return a list of Rails models."
   (mapcar
@@ -313,6 +321,14 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
     #'(lambda (file) (or (rails-core:observer-p file)
                          (rails-core:mailer-p file)))
     (find-recursive-files "\\.rb$" (rails-core:file "app/models/")))))
+
+(defun rails-core:unit-tests ()
+  "Return a list of Rails functional tests."
+  (mapcar
+   #'(lambda(it)
+       (remove-postfix (rails-core:class-by-file it)
+                       "Test"))
+   (find-recursive-files "\\.rb$" (rails-core:file "test/unit/"))))
 
 (defun rails-core:observers ()
   "Return a list of Rails observers."

@@ -1,5 +1,13 @@
 2007-03-29  dima  <dima.exe@gmail.com>
 
+	* rails-test.el (rails-test:print-result): don't scroll on top
+
+	* rails-navigation.el (rails-nav:goto-functional-tests): created
+	(rails-nav:goto-unit-tests): created
+
+	* rails-core.el (rails-core:functional-tests): created
+	(rails-core:unit-tests): created
+
 	* rails-cmd-proxy.el: updated
 
 	* rails-scripts.el (rails-script:output-mode): updated
