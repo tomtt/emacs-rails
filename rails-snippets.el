@@ -82,7 +82,6 @@
        ("sub" "sub(/$${pattern}/) { |$${match}|$. }" "sub(/.../) { |match| ... }")
        ("sca" "scan(/$${pattern}/) { |$${match}| $. }" "scan(/.../) { |match| ... }")
        ("rep" "results.report(\"$${name}:\") { TESTS.times { $. } }" "results.report(...) { ... }")
-       ("rdb" "RAILS_DEFAULT_LOGGER.debug '$${message}'$." "RAILS_DEFAULT_LOGGER.debug")
        ("rb" "#!/usr/bin/env ruby -w\n\n" "#!/usr/local/bin/ruby -w")
        ("r" "attr_reader :$${attr_names}" "attr_reader ...")
        ("pn" "PStore.new($${file_name})" "PStore.new( ... )")
@@ -247,6 +246,7 @@
        ("reca" "redirect_to :controller => '$${items}', :action => '$${list}'" "redirect_to (controller, action)")
        ("recai" "redirect_to :controller => '$${items}', :action => '$${show}', :id => $${item}" "redirect_to (controller, action, id)")) ; redirecto_to
     (0 "rails" ruby-mode-abbrev-table
+       ("rdl" "RAILS_DEFAULT_LOGGER.debug '$${message}'$." "RAILS_DEFAULT_LOGGER.debug")
        ("nr" "@$${item}.new_record?" "item.new_record?")) ; rails
     (0 "model" rails-model-minor-mode-abbrev-table
        ("va" "validates_associated :$${attribute}" "validates_associated")

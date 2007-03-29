@@ -1,5 +1,9 @@
 2007-03-29  dima  <dima.exe@gmail.com>
 
+	* rails.el (indented-or-complete): added support completion-ui
+	(activate-predictive-inside-strings): created
+	(ruby-mode-hook): added pcomplete activation code
+
 	* rails-test.el (rails-test:print-result): don't scroll on top
 
 	* rails-navigation.el (rails-nav:goto-functional-tests): created

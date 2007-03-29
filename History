@@ -1,4 +1,5 @@
 SVN
+* Added support pcompletion in ruby-mode (if possible)
 * Added new "Go to unit tests" and "Go to functional tests" hotkeys
   and menu entries
 * Added tests integration with the compile library
@@ -14,8 +15,8 @@ SVN
 * Fixed recursive "require" error after compilation #9547
 
 0.5.99
-* Improvement of tests and rails scripts output; run async, colorize
-  output, etc.
+* Improvement of tests and rails scripts output; run asynchronous,
+  colorize output, etc.
 * New [C-:] hotkey to easy switch between strings and symbols at point
   in ruby-mode
 * New [C-c f] hotkey to popup a menu with list of functions in

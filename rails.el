@@ -399,7 +399,11 @@ necessary."
             (local-set-key (kbd "C-:") 'ruby-toggle-string<>simbol)
             (local-set-key (if rails-use-another-define-key
                                (kbd "RET") (kbd "<return>"))
-                           'ruby-newline-and-indent)))
+                           'ruby-newline-and-indent)
+            (when (and (fboundp 'predictive-mode)
+                       (fboundp 'flyspell-prog-mode))
+              (require 'flyspell)
+              (add-hook 'after-change-functions 'activate-predictive-inside-strings nil t))))
 
 (add-hook 'speedbar-mode-hook
           (lambda()
@@ -451,13 +455,24 @@ necessary."
   (defun indent-or-complete ()
     "Complete if point is at end of a word, otherwise indent line."
     (interactive)
-    (if (and (boundp 'snippet)
-             snippet)
-        (snippet-next-field)
-      (if (looking-at "\\_>")
-          (flet ((message (format-string &rest args) nil)) ; skip message output
-            (hippie-expand nil))
-        (indent-for-tab-command)))))
+    (cond
+     ;; snippet
+     ((and (boundp 'snippet)
+           snippet)
+      (snippet-next-field))
+     ;; completion-ui
+     ((and (fboundp 'completion-overlay-at-point)
+           (completion-overlay-at-point))
+      (let* ((ov (completion-overlay-at-point))
+             (end (overlay-end ov)))
+        (delete-overlay ov)
+        (goto-char end)))
+     ;; hippie-expand
+     ((looking-at "\\_>")
+      (flet ((message (format-string &rest args) nil)) ; skip message output
+        (hippie-expand nil)))
+     ;; indent default
+     (t (indent-for-tab-command)))))
 
 (unless (fboundp 'try-complete-abbrev)
   (defun try-complete-abbrev (old)
@@ -472,6 +487,13 @@ necessary."
           (when (and (abbrev-symbol abbr)
                      (expand-abbrev))
             t))))))
+
+(defun activate-predictive-inside-strings (start end len)
+  (save-excursion
+    (let ((f (get-text-property (point) 'face)))
+      (if (memq f flyspell-prog-text-faces)
+          (predictive-mode 1)
+          (predictive-mode 0)))))
 
 ;; from emacs-rc-globalmodes.el
 
