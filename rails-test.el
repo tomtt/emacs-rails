@@ -36,11 +36,11 @@
 
 (defconst rails-test:error-regexp-alist
   '((rails-test-failure
-     " \\[\\([^:]+\\):\\([0-9]+\\)\\]:" 1 2)
+     " \\[\\([^:\n]+\\):\\([0-9]+\\)\\]:" 1 2)
     (rails-test-trace
-     " +\\(\\(\\w:\\|\/\\|\\w\\w\\)[^:]+\\):\\([0-9]+\\)" 1 3 nil 0)
+     " +\\([^:\n]+\\):\\([0-9]+\\):in " 1 2 nil 0)
     (rails-test-error
-     " +\\(\\(\\w:\\|\/\\|\\w\\w\\|\\.\\)[^:]+\\):\\([0-9]+\\).*\n$" 1 3)))
+     " +\\([^:\n]+\\):\\([0-9]+\\):in .+\n$" 1 2)))
 
 (defun rails-test:print-result ()
   (with-current-buffer (get-buffer rails-script:buffer-name)
@@ -81,16 +81,18 @@
   (set (make-local-variable 'compilation-error-regexp-alist-alist)
        rails-test:error-regexp-alist)
   (set (make-local-variable 'compilation-error-regexp-alist)
-       '(rails-test-error
-         rails-test-failure
+       '(rails-test-failure
+         rails-test-error
          rails-test-trace))
-  (add-hook 'rails-script:run-after-stop-hook 'rails-test:print-result nil t)
   (add-hook 'after-change-functions 'rails-test:print-progress nil t)
+  (add-hook 'rails-script:run-after-stop-hook 'rails-test:print-result nil t)
   (add-hook 'rails-script:show-buffer-hook
             #'(lambda()
                 (let ((win (get-buffer-window (current-buffer))))
                   (when (window-live-p win)
-                    (compilation-set-window-height win))))
+                    (set-window-point win 0)
+                    (unless (buffer-visible-p (current-buffer))
+                      (compilation-set-window-height win)))))
             t t))
 
 (defun rails-test:list-of-tasks ()

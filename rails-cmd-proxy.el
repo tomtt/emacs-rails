@@ -98,4 +98,22 @@ otherwise if set REVERSE convert from remote to local."
                                                            command))))
      (shell-command-to-string command))))
 
+;; helper functions
+
+(defun rails-cmd-proxy:convert-buffer-from-remote (start end len)
+  (when-bind
+   (struct (rails-cmd-proxy:lookup default-directory))
+   (save-excursion
+     (goto-char start)
+     (let* ((local (rails-cmd-proxy:struct-local struct))
+            (remote (rails-cmd-proxy:struct-remote struct))
+            (root default-directory)
+            (remote-with-root (concat remote (substring root (length local))))
+            (buffer-read-only nil))
+       (while (setq point (re-search-forward (format "^\\s-*\\(%s\\)"
+                                                     remote-with-root) end t))
+         (replace-match (format "%s "
+                                (string-repeat " " (- (length (match-string 1)) 1)))
+                        nil t nil 1))))))
+
 (provide 'rails-cmd-proxy)

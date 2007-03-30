@@ -176,7 +176,8 @@ BUFFER-MAJOR-MODE and process-sentinel SENTINEL."
              (kill-region (point-min) (point-max)))
            (if buffer-major-mode
                (apply buffer-major-mode (list))
-             (rails-script:output-mode)))
+             (rails-script:output-mode))
+           (add-hook 'after-change-functions 'rails-cmd-proxy:convert-buffer-from-remote nil t))
          (set-process-coding-system proc 'utf-8-dos 'utf-8-dos)
          (set-process-sentinel proc 'rails-script:sentinel-proc)
          (setq rails-script:running-script-name

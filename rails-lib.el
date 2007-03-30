@@ -73,6 +73,15 @@ If EXPR is not nil exeutes BODY.
 
 ;; Strings
 
+(defun string-repeat (char num)
+  (let ((len num)
+        (str ""))
+  (while (not (zerop len))
+    (setq len (- len 1))
+    (setq str (concat char str)))
+  str))
+
+
 (defmacro string=~ (regex string &rest body)
   "regex matching similar to the =~ operator found in other languages."
   (let ((str (gensym)))

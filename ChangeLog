@@ -1,5 +1,17 @@
 2007-03-30  Dmitry Galinsky  <dima.exe@gmail.com>
 
+	* rails-test.el (rails-test:error-regexp-alist): updated
+
+	* rails-scripts.el (rails-script:run): added
+	`rails-cmd-proxy:convert-buffer-from-remote' to
+	`after-change-functions'
+
+	* rails-ruby.el: added `align' integration code
+
+	* rails-lib.el (string-repeat): created
+
+	* rails-cmd-proxy.el (rails-cmd-proxy:convert-buffer-from-remote): created
+
 	* rails-project.el: created
 
 	* rails-compat.el: created
