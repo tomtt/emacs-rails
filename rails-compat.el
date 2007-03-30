@@ -27,9 +27,11 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'snippet)
   (require 'flyspell)
-  (require 'predictive))
+  (require 'ruby-mode)
+  (require 'snippet nil t)
+  (require 'predictive nil t)
+  (require 'completion-ui nil t))
 
 (when (fboundp 'indent-or-complete)
   (message "WARNNING: the `indent-or-complete' already defined."))
@@ -41,18 +43,6 @@
    ;; snippet
    ((and (boundp 'snippet) snippet)
     (snippet-next-field))
-
-   ;; completion-ui
-   ((and (fboundp 'completion-overlay-at-point)
-         (completion-overlay-at-point))
-    (let* ((ov (completion-overlay-at-point))
-           (end (overlay-end ov))
-           ;; setup <SPACE> as last command
-           (last-input-event 32)
-           (last-command-event 32))
-      ;; skip message output
-      (flet ((message (format-string &rest args) nil))
-        (completion-self-insert))))
 
    ;; hippie-expand
    ((looking-at "\\_>")
@@ -83,6 +73,8 @@
   (add-to-list 'hippie-expand-try-functions-list 'try-complete-abbrev))
 
 (defun activate-predictive-inside-strings (start end len)
+  "Looking at symbol at point and activate the `predictive-mode'
+if there a string or a comment."
   (save-excursion
     (let ((f (get-text-property (point) 'face)))
       (if (memq f flyspell-prog-text-faces)
@@ -90,6 +82,8 @@
         (predictive-mode -1)))))
 
 (defun predictive-prog-mode ()
+  "Enable the `predictive-mode' inside strings and comments
+only, like `flyspell-prog-mode'."
   (interactive)
   (when (fboundp 'predictive-mode)
     ;; load flyspell before
@@ -103,9 +97,20 @@
         (set (make-local-variable 'predictive-use-auto-learn-cache) nil)
         (add-hook 'after-change-functions 'activate-predictive-inside-strings nil t)))))
 
+(when (fboundp 'predictive-mode)
+  (defadvice ruby-electric-space (around ruby-electric-space-with-completion-ui first (arg) activate)
+    "Override the ruby <space> command if predictive-mode enabled."
+    (if (find 'predictive-mode
+              minor-mode-alist
+              :key (lambda(i) (car i)))
+        (completion-self-insert)
+      ad-do-it)))
+
 (defvar untabify-before-save-enabled nil)
 
 (defun untabify-before-save ()
+  "Strip all trailing whitespaces and untabify buffer before
+save."
   ;; guard
   (unless untabify-before-save-enabled
     (set (make-local-variable 'untabify-before-save-enabled) t)
