@@ -67,4 +67,31 @@
   (when task
     (rails-script:run "rake" (list task) major-mode)))
 
+(defun rails-rake:migrate (&optional version)
+  "Run the db:migrate task"
+  (interactive)
+  (rails-rake:task
+   (concat
+    "db:migrate"
+    (typecase version
+      (integer (format " VERSION=%.3i" version))
+      (string (format " VERSION=%s" version))))))
+
+(defun rails-rake:migrate-to-version (version)
+  "Run migrate with VERSION."
+  (interactive (rails-completing-read "Version of migration"
+                                      (rails-core:migration-versions t)
+                                      nil
+                                      t))
+  (when version
+    (rails-rake:migrate version)))
+
+(defun rails-rake:migrate-to-prev-version ()
+  "Migrate to a previous version."
+  (interactive)
+  (let ((versions (rails-core:migration-versions t)))
+    (rails-rake:migrate
+     (when (< 2  (length versions))
+       (nth 1 versions)))))
+
 (provide 'rails-rake)

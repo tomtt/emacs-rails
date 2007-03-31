@@ -129,8 +129,7 @@ it does not exist, ask to create it using QUESTION as a prompt."
   "Return the path to the observer OBSERVER-NAME."
   (rails-core:model-file (concat observer-name "Observer")))
 
-(defalias 'rails-core:mailer-file 'rails-core:model-file
-  "Return the path to the observer MAILER-NAME.")
+(defalias 'rails-core:mailer-file 'rails-core:model-file)
 
 (defun rails-core:migration-file (migration-name)
   "Return the model file from the MIGRATION-NAME."
@@ -323,6 +322,16 @@ suffix if CUT-CONTOLLER-SUFFIX is non nil."
                 migrations)
       migrations)))
 
+(defun rails-core:migration-versions (&optional with-zero)
+  "Return a list of migtaion versions as the list of strings. If
+second argument WITH-ZERO is present, append the \"000\" version
+of migration."
+  (let ((ver (mapcar
+              #'(lambda(it) (car (split-string it " ")))
+              (rails-core:migrations))))
+    (if with-zero
+        (append ver '("000"))
+      ver)))
 
 (defun rails-core:plugins ()
   "Return a list of Rails plugins."

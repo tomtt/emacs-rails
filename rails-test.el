@@ -38,9 +38,9 @@
   '((rails-test-failure
      " \\[\\([^:\n]+\\):\\([0-9]+\\)\\]:" 1 2)
     (rails-test-trace
-     " +\\([^:\n]+\\):\\([0-9]+\\):in " 1 2 nil 0)
+     " \\(\\(\\w:\\)?[^: \n]+\\):\\([0-9]+\\):in " 1 3 nil 0)
     (rails-test-error
-     " +\\([^:\n]+\\):\\([0-9]+\\):in .+\n$" 1 2)))
+     " \\(\\(\\w:\\)?[^: \n]+\\):\\([0-9]+\\)\\(:in .+\\)?\n$" 1 2)))
 
 (defun rails-test:print-result ()
   (with-current-buffer (get-buffer rails-script:buffer-name)
@@ -55,11 +55,11 @@
           (add-to-list 'msg (match-string-no-properties 1))))
       (unless (zerop (length msg))
         (message (strings-join " || " (reverse msg))))
-      (when (or (not (zerop rails-script:output-mode-ret-value))
-                (not (zerop errors))
-                (not (zerop failures))
-                (not (buffer-visible-p (current-buffer))))
-        (rails-script:popup-buffer t)))))
+      (when (and (or (not (zerop rails-script:output-mode-ret-value))
+                     (not (zerop errors))
+                     (not (zerop failures)))
+                 (not (buffer-visible-p (current-buffer))))
+        (rails-script:popup-buffer)))))
 
 (defun rails-test:print-progress (start end len)
   (let (content)

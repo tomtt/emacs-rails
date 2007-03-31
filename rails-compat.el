@@ -44,6 +44,18 @@
    ((and (boundp 'snippet) snippet)
     (snippet-next-field))
 
+   ;; completion-ui
+   ((and (fboundp 'completion-overlay-at-point)
+         (completion-overlay-at-point))
+    (let* ((ov (completion-overlay-at-point))
+           (end (overlay-end ov))
+           ;; setup <SPACE> as last command
+           (last-input-event 32)
+           (last-command-event 32))
+      ;; skip message output
+      (flet ((message (format-string &rest args) nil))
+        (completion-self-insert))))
+
    ;; hippie-expand
    ((looking-at "\\_>")
     ;; skip message output

@@ -1,4 +1,12 @@
 SVN
+* Added new dynamic snippets for RESTful, 
+    for instance: in controller UsersController type "rshow<TAB>" 
+    will be expand to "user_url(@user)" and display tooltip "GET /users/1"
+* Added migration support - migrate, migrate to previous version,
+  migrate to version
+* Created separate menubar entries named "Navigate", "Database", "Tests"
+* Fixed bug #9721: Emacs 21.4.x can't load rails-core.el with error "Wrong
+  number of arguments: #<subr defalias>"
 * Added support pcompletion in ruby-mode (if possible)
 * Added new "Go to unit tests" and "Go to functional tests" hotkeys
   and menu entries

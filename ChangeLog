@@ -1,3 +1,24 @@
+2007-04-01  Dmitry Galinsky  <dima.exe@gmail.com>
+
+	* rails-ui.el (rails-minor-mode-nav-menu-bar-map): created separate menu entry for "Navigate", "Database", "Tests"
+
+	* rails-test.el (rails-test:error-regexp-alist): updated regexp to match errors
+
+	* rails-snippets.el (rails-snippets:list): new snippet group RESTful
+
+	* rails-ruby.el (ruby-align-rules-list): updated regexp for align
+
+	* rails-rake.el (rails-rake:migrate)
+	(rails-rake:migrate-with-version)
+	(rails-rake:migrate-to-prev-version): created
+
+	* rails-lib.el: added alias string-join to strings-join
+
+	* rails-core.el (rails-core:mailer-file): fixed bug #9721
+	(rails-core:migration-versions): created
+
+	* rails-compat.el (indent-or-complete): restored completion-ui support
+
 2007-03-30  Dmitry Galinsky  <dima.exe@gmail.com>
 
 	* rails-test.el (rails-test:error-regexp-alist): updated

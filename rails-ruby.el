@@ -36,10 +36,13 @@
   "align-perl-modes is a variable defined in `align.el'.")
 
 (defconst ruby-align-rules-list
-  '(ruby-comma-delimiter
-    (regexp . ",\\(\\s-*\\)[^/ \t\n]")
-    (modes  . align-ruby-modes)
-    (repeat . t))
+  '((ruby-comma-delimiter
+     (regexp . ",\\(\\s-*\\)[^/ \t\n]")
+     (modes  . align-ruby-modes)
+     (repeat . t))
+    (ruby-symbol-after-func
+     (regexp . "^\\s-*\\w+\\(\\s-+\\):\\w+")
+     (modes  . align-ruby-modes)))
   "Alignment rules specific to the ruby mode.
 See the variable `align-rules-list' for more details.")
 
@@ -47,7 +50,8 @@ See the variable `align-rules-list' for more details.")
 (add-to-list 'align-dq-string-modes 'ruby-mode)
 (add-to-list 'align-sq-string-modes 'ruby-mode)
 (add-to-list 'align-open-comment-modes 'ruby-mode)
-(add-to-list 'align-rules-list ruby-align-rules-list)
+(dolist (it ruby-align-rules-list)
+  (add-to-list 'align-rules-list it))
 
 (defun ruby-newline-and-indent ()
   (interactive)
