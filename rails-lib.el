@@ -292,8 +292,12 @@ as the value of the symbol, and the hook as the function definition."
     (mapatoms
      (lambda(it)
        (or (intern-soft (symbol-name it) new)
-           (define-abbrev new (symbol-name it)
-             (symbol-value it) (symbol-function it))))
+           (define-abbrev new
+             (symbol-name it)
+             (symbol-value it)
+             (symbol-function it)
+             nil
+             t)))
      old)))
 
 ;; Colorize
