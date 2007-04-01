@@ -1,5 +1,7 @@
 2007-04-01  Dmitry Galinsky  <dima.exe@gmail.com>
 
+	* rails-snippets.el: updated snippets
+
 	* rails-ui.el (rails-minor-mode-nav-menu-bar-map): created separate menu entry for "Navigate", "Database", "Tests"
 
 	* rails-test.el (rails-test:error-regexp-alist): updated regexp to match errors
