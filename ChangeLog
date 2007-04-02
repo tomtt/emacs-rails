@@ -1,3 +1,9 @@
+2007-04-03  Dmitry Galinsky  <dima.exe@gmail.com>
+
+	* rails-ruby.el: added flymake support to on the fly syntax check in ruby-mode
+
+	* rails-test.el (rails-test:error-regexp-alist): updated
+
 2007-04-02  Dmitry Galinsky  <dima.exe@gmail.com>
 
 	* rails-lib.el (merge-abbrev-tables): mark abbrev as system 
