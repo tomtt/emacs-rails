@@ -129,12 +129,25 @@ it does not exist, ask to create it using QUESTION as a prompt."
      (rails-core:file
       (rails-core:controller-file controller-name)))))
 
+(defun rails-core:controller-file-by-model (model)
+  (when model
+    (let ((controller (pluralize-string model)))
+      (when (rails-core:controller-exist-p controller)
+        (rails-core:controller-file controller)))))
+
 (defun rails-core:observer-file (observer-name)
   "Return the path to the observer OBSERVER-NAME."
   (when observer-name
     (rails-core:model-file (concat observer-name "Observer"))))
 
-(defalias 'rails-core:mailer-file 'rails-core:model-file)
+(defun rails-core:mailer-file (mailer)
+  (when (and mailer
+             (rails-core:mailer-p mailer))
+    (rails-core:model-file mailer)))
+
+(defun rails-core:mailer-exist-p (mailer)
+  (when mailer
+    (file-exists-p (rails-core:file (rails-core:mailer-file mailer)))))
 
 (defun rails-core:migration-file (migration-name)
   "Return the model file from the MIGRATION-NAME."
@@ -152,6 +165,19 @@ it does not exist, ask to create it using QUESTION as a prompt."
                        nil))))
       (when name
         (concat dir name)))))
+
+(defun rails-core:migration-file-by-model (model)
+  (when model
+    (rails-core:migration-file
+     (concat "Create" (rails-core:class-by-file (pluralize-string model))))))
+
+(defun rails-core:model-by-migration-filename (migration-filename)
+  (when migration-filename
+    (let ((model-name (singularize-string
+                       (string=~ "[0-9]+_create_\\(\\w+\\)\.rb" (buffer-name) $1))))
+      (when (and model-name
+                 (rails-core:model-exist-p model-name))
+        model-name))))
 
 (defun rails-core:plugin-file (plugin file)
   "Return the path to the FILE in Rails PLUGIN."
@@ -205,10 +231,21 @@ CONTROLLER."
   (when model
     (format "test/unit/%s_test.rb" (rails-core:file-by-class model t))))
 
+(defun rails-core:unit-test-exist-p (model)
+  "Return the unit test file name for the model named MODEL."
+  (let ((test (rails-core:unit-test-file model)))
+    (when test
+      (file-exists-p (rails-core:file test)))))
+
 (defun rails-core:fixture-file (model)
   "Return the fixtures file name for the model named MODEL."
   (when model
     (format "test/fixtures/%s.yml" (pluralize-string (rails-core:file-by-class model t)))))
+
+(defun rails-core:fixture-exist-p (model)
+  (when model
+    (file-exists-p
+     (rails-core:file (rails-core:fixture-file model)))))
 
 (defun rails-core:views-dir (controller)
   "Return the view directory name for the controller named CONTROLLER."
@@ -407,26 +444,36 @@ If the action is nil, return all views for the controller."
 
 (defun rails-core:current-controller ()
   "Return the current Rails controller."
-  (let ((file-class (rails-core:class-by-file (buffer-file-name))))
-    (case (rails-core:buffer-type)
-      (:controller (rails-core:short-controller-name file-class))
-      (:view (rails-core:class-by-file
-              (directory-file-name (directory-of-file (buffer-file-name)))))
-      (:mailer file-class)
-      (:helper (remove-postfix file-class "Helper"))
-      (:functional-test (remove-postfix file-class "ControllerTest")))))
+  (let* ((file-class (rails-core:class-by-file (buffer-file-name))))
+    (unless (rails-core:mailer-p file-class)
+      (case (rails-core:buffer-type)
+        (:controller (rails-core:short-controller-name file-class))
+        (:view (rails-core:class-by-file
+                (directory-file-name (directory-of-file (buffer-file-name)))))
+        (:helper (remove-postfix file-class "Helper"))
+        (:functional-test (remove-postfix file-class "ControllerTest"))))))
 
 (defun rails-core:current-model ()
   "Return the current Rails model."
-  (let ((file-class (rails-core:class-by-file (buffer-file-name))))
-    (case (rails-core:buffer-type)
-      (:migration (let ((model-name (singularize-string
-                                     (string=~ "[0-9]+_create_\\(\\w+\\)\.rb" (buffer-name) $1))))
-                    (when (and model-name (rails-core:model-exist-p model-name))
-                      model-name)))
-      (:model file-class)
-      (:unit-test (remove-postfix file-class "Test"))
-      (:fixture (singularize-string file-class)))))
+  (let* ((file-class (rails-core:class-by-file (buffer-file-name))))
+    (unless (rails-core:mailer-p file-class)
+      (case (rails-core:buffer-type)
+        (:migration (rails-core:model-by-migration-filename (buffer-name)))
+        (:model file-class)
+        (:unit-test (remove-postfix file-class "Test"))
+        (:fixture (singularize-string file-class))))))
+
+(defun rails-core:current-mailer ()
+  "Return the current Rails Mailer, else return nil."
+  (let* ((file-class (rails-core:class-by-file (buffer-file-name)))
+         (test (remove-postfix file-class "Test")))
+    (when (or (rails-core:mailer-p file-class)
+              (rails-core:mailer-p test))
+      (case (rails-core:buffer-type)
+        (:mailer    file-class)
+        (:unit-test test)
+        (:view (rails-core:class-by-file
+                (directory-file-name (directory-of-file (buffer-file-name)))))))))
 
 (defun rails-core:current-action ()
   "Return the current action in the current Rails controller."
