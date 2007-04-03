@@ -29,9 +29,8 @@
 
 (define-minor-mode rails-mailer-minor-mode
   "Minor mode for RubyOnRails mailers."
-  nil
-  " mailer"
-  nil
+  :lighter " Mailer"
+  :keymap (rails-controller-layout:keymap :mailer)
   (setq rails-secondary-switch-func 'rails-controller-layout:menu)
   (setq rails-primary-switch-func 'rails-controller-layout:toggle-action-view))
 

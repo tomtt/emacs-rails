@@ -100,9 +100,8 @@
 
 (define-minor-mode rails-view-minor-mode
   "Minor mode for RubyOnRails views."
-  nil
-  " view"
-  nil
+  :lighter " View"
+  :keymap (rails-controller-layout:keymap :view)
   (setq rails-primary-switch-func 'rails-controller-layout:toggle-action-view)
   (setq rails-secondary-switch-func 'rails-controller-layout:menu)
   (if (boundp 'mmm-mode-map)

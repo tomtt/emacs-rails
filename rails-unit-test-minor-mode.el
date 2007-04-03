@@ -28,15 +28,16 @@
 
 (define-minor-mode rails-unit-test-minor-mode
   "Minor mode for RubyOnRails unit tests."
-  nil
-  " unit-test"
-  nil
+  :lighter " UTest"
+  :keymap (let ((map (rails-model-layout:keymap :unit-test)))
+            (define-key map (kbd "\C-c .") 'rails-test:run-current-method)
+            (define-key map [menu-bar rails-model-layout run] '("Test current method" . rails-test:run-current-method))
+            map)
   (setq rails-primary-switch-func (lambda()
                                     (interactive)
                                     (if (rails-core:mailer-p (rails-core:current-model))
-                                        (rails-model-layout:switch-to :mailer)
-                                      (rails-model-layout:switch-to :model))))
-  (setq rails-secondary-switch-func 'rails-model-layout:menu)
-  (local-set-key (kbd "\C-c .") 'rails-test:run-current-method))
+                                        (rails-model-layout:switch-to-mailer)
+                                      (rails-model-layout:switch-to-model))))
+  (setq rails-secondary-switch-func 'rails-model-layout:menu))
 
 (provide 'rails-unit-test-minor-mode)

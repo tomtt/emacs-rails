@@ -109,7 +109,8 @@ otherwise if set REVERSE convert from remote to local."
             (remote (rails-cmd-proxy:struct-remote struct))
             (root default-directory)
             (remote-with-root (concat remote (substring root (length local))))
-            (buffer-read-only nil))
+            (buffer-read-only nil)
+            point)
        (while (setq point (re-search-forward (format "^\\s-*\\(%s\\)"
                                                      remote-with-root) end t))
          (replace-match (format "%s "

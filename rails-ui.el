@@ -87,8 +87,6 @@
       ([recent]      '("Recent tests"      . (lambda() (interactive) (rails-test:run "recent"))))
       ([tests]       '("All"               . (lambda() (interactive) (rails-test:run "all"))))
       ([separator]   '("--"))
-      ([method]      '(menu-item "Test current method" rails-test:run-current-method
-                                 :enable (find (rails-core:buffer-type) '(:unit-test :functional-test))))
       ([toggle]      '(menu-item "Toggle output window" rails-script:toggle-output-window
                                  :enable (get-buffer rails-script:buffer-name)))
       ([run-current] '("Test current model/controller/mailer" . rails-test:run-current))
@@ -208,10 +206,10 @@
   ((kbd "\C-c \C-c g u") 'rails-nav:goto-unit-tests)
 
   ;; Switch
-  ((kbd "\C-c <up>")     'rails-lib:run-primary-switch)
-  ((kbd "\C-c <down>")   'rails-lib:run-secondary-switch)
   ((kbd "<M-S-up>")      'rails-lib:run-primary-switch)
   ((kbd "<M-S-down>")    'rails-lib:run-secondary-switch)
+  ((kbd "\C-c <up>")     'rails-lib:run-primary-switch)
+  ((kbd "\C-c <down>")   'rails-lib:run-secondary-switch)
   ((kbd "<C-return>")    'rails-goto-file-on-current-line)
 
   ;; Scripts & SQL

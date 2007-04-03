@@ -28,10 +28,9 @@
 
 (define-minor-mode rails-helper-minor-mode
   "Minor mode for RubyOnRails helpers."
-  nil
-  " helper"
-  nil
-  (setq rails-primary-switch-func (lambda() (interactive) (rails-controller-layout:switch-to :controller)))
+  :lighter " Helper"
+  :keymap (rails-controller-layout:keymap :helper)
+  (setq rails-primary-switch-func 'rails-controller-layout:switch-to-controller)
   (setq rails-secondary-switch-func 'rails-controller-layout:menu))
 
 (provide 'rails-helper-minor-mode)

@@ -29,9 +29,8 @@
 
 (define-minor-mode rails-controller-minor-mode
   "Minor mode for RubyOnRails controllers."
-  nil
-  " controller"
-  nil
+  :lighter " Controller"
+  :keymap (rails-controller-layout:keymap :controller)
   (setq rails-secondary-switch-func 'rails-controller-layout:menu)
   (setq rails-primary-switch-func 'rails-controller-layout:toggle-action-view))
 

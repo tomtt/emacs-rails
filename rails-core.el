@@ -447,8 +447,9 @@ If the action is nil, return all views for the controller."
 
 (defun rails-core:buffer-file-match (regexp)
   "Match the current buffer file name to RAILS_ROOT + REGEXP."
-  (string-match (rails-core:file regexp)
-                (buffer-file-name (current-buffer))))
+  (when-bind (file (rails-core:file regexp))
+             (string-match file
+                           (buffer-file-name (current-buffer)))))
 
 (defun rails-core:buffer-type ()
   "Return the type of the current Rails file or nil if the type

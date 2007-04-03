@@ -28,10 +28,9 @@
 
 (define-minor-mode rails-model-minor-mode
   "Minor mode for RubyOnRails models."
-  nil
-  " model"
-  nil
-  (setq rails-primary-switch-func (lambda() (interactive) (rails-model-layout:switch-to :unit-test)))
+  :lighter " Model"
+  :keymap (rails-model-layout:keymap :model)
+  (setq rails-primary-switch-func 'rails-model-layout:switch-to-unit-test)
   (setq rails-secondary-switch-func 'rails-model-layout:menu))
 
 (provide 'rails-model-minor-mode)
