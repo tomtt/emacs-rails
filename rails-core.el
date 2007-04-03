@@ -101,51 +101,57 @@ it does not exist, ask to create it using QUESTION as a prompt."
 
 (defun rails-core:model-file (model-name)
   "Return the model file from the model name."
-  (concat "app/models/" (rails-core:file-by-class model-name)))
+  (when model-name
+    (concat "app/models/" (rails-core:file-by-class model-name))))
 
 (defun rails-core:model-exist-p (model-name)
   "Return t if controller CONTROLLER-NAME exist."
-  (and (file-exists-p
-        (rails-core:file
-         (rails-core:model-file model-name)))
-       (not (rails-core:observer-p model-name))
-       (not (rails-core:mailer-p model-name))))
+  (when model-name
+    (and (file-exists-p
+          (rails-core:file
+           (rails-core:model-file model-name)))
+         (not (rails-core:observer-p model-name))
+         (not (rails-core:mailer-p model-name)))))
 
 (defun rails-core:controller-file (controller-name)
   "Return the path to the controller CONTROLLER-NAME."
-  (concat "app/controllers/"
-    (rails-core:file-by-class
-     (rails-core:short-controller-name controller-name) t)
-    (unless (string-equal controller-name "Application") "_controller")
-    ".rb"))
+  (when controller-name
+    (concat "app/controllers/"
+            (rails-core:file-by-class
+             (rails-core:short-controller-name controller-name) t)
+            (unless (string-equal controller-name "Application") "_controller")
+            ".rb")))
 
 (defun rails-core:controller-exist-p (controller-name)
   "Return t if controller CONTROLLER-NAME exist."
-  (file-exists-p
-   (rails-core:file
-    (rails-core:controller-file controller-name))))
+  (when controller-name
+    (file-exists-p
+     (rails-core:file
+      (rails-core:controller-file controller-name)))))
 
 (defun rails-core:observer-file (observer-name)
   "Return the path to the observer OBSERVER-NAME."
-  (rails-core:model-file (concat observer-name "Observer")))
+  (when observer-name
+    (rails-core:model-file (concat observer-name "Observer"))))
 
 (defalias 'rails-core:mailer-file 'rails-core:model-file)
 
 (defun rails-core:migration-file (migration-name)
   "Return the model file from the MIGRATION-NAME."
-  (let ((dir "db/migrate/")
-        (name (replace-regexp-in-string
-               " " "_"
-               (rails-core:file-by-class migration-name))))
-    (when (string-match "^[^0-9]+[^_]" name) ; try search when the name without migration number
-      (let ((files (directory-files (rails-core:file dir)
-                                    nil
-                                    (concat "[0-9]+_" name "$"))))
-        (setq name (if files
-                       (car files)
-                     nil))))
-    (when name
-      (concat dir name))))
+  (when migration-name
+    (let ((dir "db/migrate/")
+          (name (replace-regexp-in-string
+                 " " "_"
+                 (rails-core:file-by-class migration-name))))
+      (when (string-match "^[^0-9]+[^_]" name) ; try search when the name without migration number
+        (let ((files (directory-files (rails-core:file dir)
+                                      nil
+                                      (concat "[0-9]+_" name "$"))))
+          (setq name (if files
+                         (car files)
+                       nil))))
+      (when name
+        (concat dir name)))))
 
 (defun rails-core:plugin-file (plugin file)
   "Return the path to the FILE in Rails PLUGIN."
@@ -182,9 +188,10 @@ it does not exist, ask to create it using QUESTION as a prompt."
 (defun rails-core:helper-file (controller)
   "Return the helper file name for the controller named
 CONTROLLER."
-  (format "app/helpers/%s_helper.rb"
-          (replace-regexp-in-string "_controller" ""
-                                    (rails-core:file-by-class controller t))))
+  (when controller
+    (format "app/helpers/%s_helper.rb"
+            (replace-regexp-in-string "_controller" ""
+                                      (rails-core:file-by-class controller t)))))
 
 (defun rails-core:functional-test-file (controller)
   "Return the functional test file name for the controller named
@@ -200,7 +207,8 @@ CONTROLLER."
 
 (defun rails-core:fixture-file (model)
   "Return the fixtures file name for the model named MODEL."
-  (format "test/fixtures/%s.yml" (pluralize-string (rails-core:file-by-class model t))))
+  (when model
+    (format "test/fixtures/%s.yml" (pluralize-string (rails-core:file-by-class model t)))))
 
 (defun rails-core:views-dir (controller)
   "Return the view directory name for the controller named CONTROLLER."

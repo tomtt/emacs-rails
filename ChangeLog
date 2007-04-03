@@ -1,5 +1,11 @@
 2007-04-03  Dmitry Galinsky  <dima.exe@gmail.com>
 
+	* rails-model-layout.el (rails-model-layout:keymap): removed mode specific menu
+
+	* rails-controller-layout.el (rails-controller-layout:keymap): removed mode specific menu
+
+	* rails-compat.el (predictive-prog-mode): don't start inside strings
+
 	* rails-core.el: using completion-posn-at-point-as-event instead custom function
 
 	* rails-ui.el (rails-minor-mode-db-menu-bar-map): updated

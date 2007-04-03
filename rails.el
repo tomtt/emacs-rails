@@ -402,8 +402,7 @@ necessary."
             (local-set-key (kbd "C-:") 'ruby-toggle-string<>simbol)
             (local-set-key (if rails-use-another-define-key
                                (kbd "RET") (kbd "<return>"))
-                           'ruby-newline-and-indent)
-            (predictive-prog-mode)))
+                           'ruby-newline-and-indent)))
 
 (add-hook 'speedbar-mode-hook
           (lambda()

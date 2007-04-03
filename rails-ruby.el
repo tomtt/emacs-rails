@@ -57,9 +57,9 @@ See the variable `align-rules-list' for more details.")
 (require 'flymake)
 
 (defconst flymake-allowed-ruby-file-name-masks
-  '((".rb" flymake-ruby-init)
+  '((".rb"   flymake-ruby-init)
     (".rxml" flymake-ruby-init)
-    (".rjs" flymake-ruby-init))
+    (".rjs"  flymake-ruby-init))
   "Filename extensions that switch on flymake-ruby mode syntax checks.")
 
 (defconst flymake-ruby-error-line-pattern-regexp
