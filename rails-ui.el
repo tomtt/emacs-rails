@@ -96,9 +96,13 @@
 (defconst rails-minor-mode-db-menu-bar-map
   (let ((map (make-sparse-keymap)))
     (define-keys map
-      ([migrate] '("Migrate"                     . rails-rake:migrate))
-      ([version] '("Migrate to version ..."      . rails-rake:migrate-to-version))
-      ([prev]    '("Migrate to previous version" . rails-rake:migrate-to-prev-version)))
+      ([clone-db]    '("Clone Development DB to Test DB" . (lambda() (interactive) (rails-rake:task "db:test:clone"))))
+      ([load-schema] '("Load schema to DB"               . (lambda() (interactive) (rails-rake:task "db:schema:load"))))
+      ([dump-schema] '("Dump DB to schema"               . (lambda() (interactive) (rails-rake:task "db:schema:dump"))))
+      ([sep]         '("--"))
+      ([prev]        '("Migrate to previous version" . rails-rake:migrate-to-prev-version))
+      ([version]     '("Migrate to version ..."      . rails-rake:migrate-to-version))
+      ([migrate]     '("Migrate"                     . rails-rake:migrate)))
     map))
 
 (define-keys rails-minor-mode-menu-bar-map
