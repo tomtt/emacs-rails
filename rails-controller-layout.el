@@ -155,7 +155,7 @@ If the action is nil, return all views for the controller."
         (if (file-exists-p file)
             (progn
               (find-file file)
-              (message (format "%s: %s" (substring (symbol-name type) 1) controller)))
+              (message (format "%s: %s" (substring (symbol-name type) 1) item)))
           (message "File %s not exists" file))))))
 
 (defun rails-controller-layout:switch-to-helper () (interactive) (rails-controller-layout:switch-to :helper))

@@ -1,5 +1,7 @@
 2007-04-03  Dmitry Galinsky  <dima.exe@gmail.com>
 
+	* rails-core.el: using completion-posn-at-point-as-event instead custom function
+
 	* rails-ui.el (rails-minor-mode-db-menu-bar-map): updated
 
 	* rails-model-layout.el (rails-model-layout:keymap): created

@@ -502,8 +502,11 @@ the Rails minor mode log."
 (defun rails-core:menu-separator ()
   (unless (rails-use-text-menu) 'menu (list "--" "--")))
 
-(defun rails-core:menu-position ()
-  (list '(300 50) (get-buffer-window (current-buffer))))
+(if (fboundp 'completion-posn-at-point-as-event)
+    (defun rails-core:menu-position ()
+      (completion-posn-at-point-as-event nil nil nil (+ (frame-char-height) 2)))
+  (defun rails-core:menu-position ()
+    (list '(300 50) (get-buffer-window (current-buffer)))))
 
 (defun rails-core:menu (menu)
   "Show a menu."
