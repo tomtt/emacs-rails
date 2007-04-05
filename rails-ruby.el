@@ -82,8 +82,10 @@ See the variable `align-rules-list' for more details.")
                        "\\|"
                        (mapcar 'car flymake-allowed-ruby-file-name-masks)))
               (buffer-file-name)))
-    (setq flymake-allowed-file-name-masks (append flymake-allowed-file-name-masks flymake-allowed-ruby-file-name-masks))
-    (setq flymake-err-line-patterns (cons flymake-ruby-error-line-pattern-regexp flymake-err-line-patterns))
+    (setq flymake-allowed-file-name-masks
+          (append flymake-allowed-file-name-masks flymake-allowed-ruby-file-name-masks))
+    (setq flymake-err-line-patterns
+          (cons flymake-ruby-error-line-pattern-regexp flymake-err-line-patterns))
     (flymake-mode t)
     (local-set-key (kbd "\C-c d") 'flymake-display-err-menu-for-current-line)))
 

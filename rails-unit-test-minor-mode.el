@@ -30,7 +30,7 @@
   "Minor mode for RubyOnRails unit tests."
   :lighter " UTest"
   :keymap (let ((map (rails-model-layout:keymap :unit-test)))
-            (define-key map (kbd "\C-c .") 'rails-test:run-current-method)
+            (define-key map rails-minor-mode-test-current-method-key 'rails-test:run-current-method)
             (define-key map [menu-bar rails-model-layout run] '("Test current method" . rails-test:run-current-method))
             map)
   (setq rails-primary-switch-func (lambda()

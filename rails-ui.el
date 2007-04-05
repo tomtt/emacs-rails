@@ -194,6 +194,8 @@
   ([rails ws default] '(menu-item "Start/Stop Web Server (With Default Environment)" rails-ws:toggle-start-stop))
   )
 
+(defconst rails-minor-mode-test-current-method-key (kbd "\C-c \C-c ,"))
+
 (defvar rails-minor-mode-map (make-sparse-keymap))
 
 (define-keys rails-minor-mode-map

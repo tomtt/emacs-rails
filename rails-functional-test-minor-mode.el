@@ -30,7 +30,7 @@
   "Minor mode for RubyOnRails functional tests."
   :lighter " FTest"
   :keymap (let ((map (rails-controller-layout:keymap :functional-test)))
-            (define-key map (kbd "\C-c .") 'rails-test:run-current-method)
+            (define-key map rails-minor-mode-test-current-method-key 'rails-test:run-current-method)
             (define-key map [menu-bar rails-controller-layout run] '("Test current method" . rails-test:run-current-method))
             map)
   (setq rails-primary-switch-func 'rails-controller-layout:switch-to-controller)
