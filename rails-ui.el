@@ -201,9 +201,7 @@
 (define-keys rails-minor-mode-map
   ([menu-bar] rails-minor-mode-menu-bar-map)
   ([menu-bar rails-tests] (cons "Tests" rails-minor-mode-tests-menu-bar-map))
-  ([menu-bar snippets] (cons "Snippets" (rails-snippets:create-keymap)))
   ([menu-bar rails-db] (cons "Database" rails-minor-mode-db-menu-bar-map))
-;;   ([menu-bar rails-nav] (cons "Navigate" rails-minor-mode-nav-menu-bar-map))
 
   ;; Goto
   ((kbd "\C-c \C-c g m") 'rails-nav:goto-models)

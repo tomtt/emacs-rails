@@ -35,10 +35,8 @@
 
 (require 'sql)
 (require 'ansi-color)
-(require 'snippet)
 (require 'etags)
 (require 'find-recursive)
-(require 'autorevert)
 
 (require 'inflections)
 
@@ -48,6 +46,7 @@
 (require 'rails-core)
 (require 'rails-ruby)
 (require 'rails-lib)
+
 (require 'rails-cmd-proxy)
 (require 'rails-navigation)
 (require 'rails-find)
@@ -56,10 +55,11 @@
 (require 'rails-test)
 (require 'rails-ws)
 (require 'rails-log)
-(require 'rails-snippets)
 (require 'rails-ui)
 (require 'rails-model-layout)
 (require 'rails-controller-layout)
+(require 'rails-features)
+
 
 ;;;;;;;;;; Variable definition ;;;;;;;;;;
 
@@ -379,7 +379,8 @@ necessary."
   (abbrev-mode -1)
   (make-local-variable 'tags-file-name)
   (make-local-variable 'rails-primary-switch-func)
-  (make-local-variable 'rails-secondary-switch-func))
+  (make-local-variable 'rails-secondary-switch-func)
+  (rails-features:install))
 
 ;; hooks
 
@@ -413,8 +414,6 @@ necessary."
             (rails-project:with-root
              (root)
              (progn
-               (unless (string-match "[Mm]akefile" mode-name)
-                 (untabify-before-save))
                (local-set-key (if rails-use-another-define-key
                                   (kbd "TAB") (kbd "<tab>"))
                               'indent-or-complete)
