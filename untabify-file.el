@@ -26,12 +26,16 @@
 
 ;;; Code:
 
+(require 'cl)
+(require 'custom)
+
 (defcustom untabify-exclude-list
   '(makefile-mode
     makefile-bsdmake-mode
     change-log-mode
     "Makefile$")
-  "List of regexp or modes to which is not applied untabify")
+  "List of regexp or modes to which is not applied untabify."
+  :group 'untabify)
 
 (defun untabify-before-write ()
   "Strip all trailing whitespaces and untabify buffer before
