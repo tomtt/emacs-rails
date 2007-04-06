@@ -140,8 +140,8 @@ BlaPostfix -> Bla."
 
 (defun capital-word-p (word)
   "Return t if first letter of WORD is uppercased."
-  (and (>= (elt word 0) 65)
-       (<= (elt word 0) 90)))
+  (= (elt word 0)
+     (elt (capitalize word) 0)))
 
 ;;;;;;;; def-snips stuff ;;;;
 

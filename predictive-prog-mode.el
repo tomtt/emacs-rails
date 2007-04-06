@@ -1,4 +1,4 @@
-;;; rails-predictive-prog-mode-feature.el ---
+;;; predictive-prog-mode.el ---
 
 ;; Copyright (C) 2006 Dmitry Galinsky <dima dot exe at gmail dot com>
 
@@ -27,17 +27,21 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'flyspell)
-  (require 'ruby-mode)
   (require 'predictive nil t)
   (require 'completion-ui nil t))
+
+(require 'flyspell)
+
+(defcustom predictive-prog-text-faces
+  '(font-lock-comment-face font-lock-doc-face)
+  "Faces corresponding to text in programming-mode buffers.")
 
 (defun activate-predictive-inside-comments (start end len)
   "Looking at symbol at point and activate the `predictive-mode'
 if there a string or a comment."
   (save-excursion
     (let ((f (get-text-property (point) 'face)))
-      (if (memq f '(font-lock-comment-face font-lock-doc-face))
+      (if (memq f predictive-prog-text-faces)
           (predictive-mode 1)
         (predictive-mode -1)))))
 
@@ -45,24 +49,22 @@ if there a string or a comment."
   "Enable the `predictive-mode' inside strings and comments
 only, like `flyspell-prog-mode'."
   (interactive)
-  ;; load flyspell before
-  (unless (featurep 'flyspell)
-    (require 'flyspell))
-  (if (find 'activate-predictive-inside-comments after-change-functions)
+  (when (fboundp 'predictive-mode)
+    (if (find 'activate-predictive-inside-comments after-change-functions)
+        (progn
+          (remove-hook 'after-change-functions 'activate-predictive-inside-comments t)
+          (predictive-mode -1))
       (progn
-        (remove-hook 'after-change-functions 'activate-predictive-inside-comments t)
-        (predictive-mode -1))
-    (progn
-      (set (make-local-variable 'predictive-use-auto-learn-cache) nil)
-      (add-hook 'after-change-functions 'activate-predictive-inside-comments nil t))))
+        (set (make-local-variable 'predictive-use-auto-learn-cache) nil)
+        (add-hook 'after-change-functions 'activate-predictive-inside-comments nil t)))))
 
-(defun rails-predictive-prog-mode-feature:install ()
-  (when (fboundp 'predictive-mode)    
-    (defadvice ruby-electric-space (around ruby-electric-space-with-completion-ui first (arg) activate)
-      "Override the ruby <space> command if predictive-mode enabled."
-      (if (memq (get-text-property (point) 'face) '(font-lock-comment-face font-lock-doc-face))
-          (completion-self-insert)
-        ad-do-it))
-    (add-hook 'ruby-mode-hook 'predictive-prog-mode)))
-  
-(provide 'rails-predictive-prog-mode-feature)
+;; (defun rails-predictive-prog-mode-feature:install ()
+;;   (when (fboundp 'predictive-mode)
+;;     (defadvice ruby-electric-space (around ruby-electric-space-with-completion-ui first (arg) activate)
+;;       "Override the ruby <space> command if predictive-mode enabled."
+;;       (if (memq (get-text-property (point) 'face) '(font-lock-comment-face font-lock-doc-face))
+;;           (completion-self-insert)
+;;         ad-do-it))
+;;     (add-hook 'ruby-mode-hook 'predictive-prog-mode)))
+
+(provide 'predictive-prog-mode)

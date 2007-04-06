@@ -1,7 +1,11 @@
 2007-04-06  Dmitry Galinsky  <dima.exe@gmail.com>
 
-	* rails-compat.el: removed predictive-prog-mode declaration
+	* rails-lib.el (capital-word-p): better word comparsion
 
+	* predictive-prog-mode.el, untabify-file.el: created separate minor-mode
+ 
+	* rails-compat.el: removed predictive-prog-mode declaration
+ 
 	* rails-features.el: created
 
 	* rails-predictive-prog-mode-feature.el: created and place into it

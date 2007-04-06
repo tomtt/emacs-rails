@@ -38,6 +38,9 @@
 (require 'etags)
 (require 'find-recursive)
 
+(require 'untabify-file)
+(require 'predictive-prog-mode)
+
 (require 'inflections)
 
 (require 'rails-compat)
@@ -389,6 +392,7 @@ necessary."
             (require 'rails-ruby)
             (require 'ruby-electric)
             (ruby-electric-mode t)
+            (predictive-prog-mode)
             (imenu-add-to-menubar "IMENU")
             (modify-syntax-entry ?! "w" (syntax-table))
             (modify-syntax-entry ?: "w" (syntax-table))

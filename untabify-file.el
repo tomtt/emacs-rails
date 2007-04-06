@@ -1,4 +1,4 @@
-;;; rails-untabify-feature.el ---
+;;; untabify-file.el --- automatic untabify files before save
 
 ;; Copyright (C) 2006 Dmitry Galinsky <dima dot exe at gmail dot com>
 
@@ -26,32 +26,27 @@
 
 ;;; Code:
 
-(require 'rails-project)
+(defcustom untabify-exclude-list
+  '(makefile-mode
+    makefile-bsdmake-mode
+    change-log-mode
+    "Makefile$")
+  "List of regexp or modes to which is not applied untabify")
 
-(defvar rails-untabify-feature:enabled-p nil)
-
-(defvar rails-untabify-feature:exclude-list
-  '("Makefile$"))
-
-(defun rails-untabify-feature:untabify ()
+(defun untabify-before-write ()
+  "Strip all trailing whitespaces and untabify buffer before
+save."
   (when (and (eq this-command 'save-buffer)
              (not (find nil
-                        rails-untabify-feature:exclude-list
+                        untabify-exclude-list
                         :if #'(lambda (r)
-                                (string-match r (buffer-name))))))
+                                (typecase r
+                                  (string (string-match r (buffer-name)))
+                                  (symbol (eq major-mode r)))))))
     (save-excursion
       (untabify (point-min) (point-max))
       (delete-trailing-whitespace))))
 
-(defun rails-untabify-feature:install ()
-  "Strip all trailing whitespaces and untabify buffer before
-save."
-  (add-hook 'find-file-hook
-            (lambda ()
-              (rails-project:with-root
-               (root)
-               (unless rails-untabify-feature:enabled-p
-                 (set (make-local-variable 'rails-untabify-feature:enabled-p) t)
-                 (add-hook 'local-write-file-hooks 'rails-untabify-feature:untabify))))))
+(add-hook 'write-file-hooks 'untabify-before-write)
 
-(provide 'rails-untabify-feature)
+(provide 'untabify-file)

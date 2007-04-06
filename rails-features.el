@@ -27,9 +27,7 @@
 ;;; Code:
 
 (defvar rails-features:list
-  '(rails-snippets-feature
-    rails-untabify-feature
-    rails-predictive-prog-mode-feature)
+  '(rails-snippets-feature)
   "List of features")
 
 (defvar rails-features:installed-p nil)
