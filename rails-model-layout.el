@@ -56,12 +56,12 @@
                                        rails-model-layout:switch-to-mailer
                                        :enable (rails-core:mailer-exist-p (rails-core:current-mailer)))))
       (define-keys map
-        ((kbd "\C-c m")         'rails-model-layout:switch-to-model)
-        ((kbd "\C-c u")         'rails-model-layout:switch-to-unit-test)
-        ((kbd "\C-c g")         'rails-model-layout:switch-to-migration)
-        ((kbd "\C-c c")         'rails-model-layout:switch-to-controller)
-        ((kbd "\C-c x")         'rails-model-layout:switch-to-fixture)
-        ((kbd "\C-c n")         'rails-model-layout:switch-to-mailer)
+        ((rails-key "m")         'rails-model-layout:switch-to-model)
+        ((rails-key "u")         'rails-model-layout:switch-to-unit-test)
+        ((rails-key "g")         'rails-model-layout:switch-to-migration)
+        ((rails-key "c")         'rails-model-layout:switch-to-controller)
+        ((rails-key "x")         'rails-model-layout:switch-to-fixture)
+        ((rails-key "n")         'rails-model-layout:switch-to-mailer)
         ([menu-bar rails-model-layout] (cons name menu))))
     map))
 

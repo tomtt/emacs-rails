@@ -1,5 +1,8 @@
 2007-04-09  Dmitry Galinsky  <dima.exe@gmail.com>
 
+	* rails-ui.el (rails-minor-mode-prefix-key): created
+	(rails-key): created
+
 	* predictive-prog-mode.el (predictive-prog-text-faces): fixed compilation warning 
 
 2007-04-08  Dmitry Galinsky  <dima.exe@gmail.com>

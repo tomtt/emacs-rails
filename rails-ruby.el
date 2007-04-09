@@ -165,7 +165,7 @@ See the variable `align-rules-list' for more details.")
     (setq flymake-err-line-patterns
           (cons flymake-ruby-error-line-pattern-regexp flymake-err-line-patterns))
     (flymake-mode t)
-    (local-set-key (kbd "\C-c d") 'flymake-display-err-menu-for-current-line)))
+    (local-set-key (rails-key "d") 'flymake-display-err-menu-for-current-line)))
 
 (add-hook 'ruby-mode-hook 'flymake-ruby-load)
 

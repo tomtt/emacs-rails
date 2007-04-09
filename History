@@ -1,7 +1,9 @@
+SVN
+* Fixed bug [#9991]: allow setup key prefix for rails-minor-mode
+
 0.5.99.3
 * Added speedbar integration, type [F11] to toogle speedbar
 * Fixed #9880: the hotkey "C-c ." conflicted with ECB, changed to "C-c C-c ,"
-
 * New hotkeys, to easy switch without a popup menu between a
   controller or a model related files
   In model layout:
