@@ -1,3 +1,9 @@
+2007-04-10  Dmitry Galinsky  <dima.exe@gmail.com>
+
+	* rails-snippets-feature.el (rails-snippets-feature:list): updated
+
+	* rails-test.el (rails-test:error-regexp-alist): updated
+
 2007-04-09  Dmitry Galinsky  <dima.exe@gmail.com>
 
 	* rails-ui.el (rails-minor-mode-prefix-key): created

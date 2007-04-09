@@ -36,9 +36,9 @@
 
 (defconst rails-test:error-regexp-alist
   '((rails-test-trace
-     "\\(\\(\\.\\|[A-Za-z]:\\)?\\([a-z0-9_\/\\.]+\\.rb\\)\\):\\([0-9]+\\)" 1 4 nil 0)
+     "\\(#{RAILS_ROOT}\/\\)?\\(\\(\\.\\|[A-Za-z]:\\)?\\([a-z0-9_\/\\.]+\\.rb\\)\\):\\([0-9]+\\)" 2 5 nil 0)
     (rails-test-error
-     "\\(\\(\\.\\|[A-Za-z]:\\)?\\([a-z0-9_\/\\.]+\\.rb\\)\\):\\([0-9]+\\).*\n$" 1 4 nil 2)))
+     "\\(#{RAILS_ROOT}\/\\)?\\(\\(\\.\\|[A-Za-z]:\\)?\\([a-z0-9_\/\\.]+\\.rb\\)\\):\\([0-9]+\\).*\n$" 2 5 nil 2)))
 
 (defun rails-test:print-result ()
   (with-current-buffer (get-buffer rails-script:buffer-name)
