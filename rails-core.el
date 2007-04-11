@@ -53,7 +53,9 @@
      " " ""
      (replace-regexp-in-string
       "  " "::"
-      (capitalize path)))))
+      (if (capital-word-p path)
+          path
+        (capitalize path))))))
 
 (defun rails-core:file-by-class (classname &optional do-not-append-ext)
   "Return the filename associated with CLASSNAME.

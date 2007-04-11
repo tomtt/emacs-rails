@@ -1,3 +1,9 @@
+2007-04-12  Dmitry Galinsky  <dima.exe@gmail.com>
+
+	* predictive-prog-mode.el (activate-predictive-inside-comments): toggle predictive mode using 'predictive-main-dict variable
+
+	* rails-core.el (rails-core:class-by-file): detect already capitalized words
+
 2007-04-10  Dmitry Galinsky  <dima.exe@gmail.com>
 
 	* rails-snippets-feature.el (rails-snippets-feature:list): updated
