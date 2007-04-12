@@ -1,5 +1,6 @@
 SVN
 * Fixed bug [#9991]: allow setup key prefix for rails-minor-mode.
+* Fixed bug [#10053]: do not match rhtml/rxml/rjs files in test output.
 
 0.5.99.3
 * Added speedbar integration, type [F11] to toogle speedbar.

@@ -42,9 +42,10 @@
   "Looking at symbol at point and activate the `predictive-mode'
 if there a string or a comment."
   (save-excursion
-    (let ((f (get-text-property (point) 'face)))
-      ;; skip message output
-      (if (memq f predictive-prog-text-faces)
+    (let ((p (get-text-property (- (point) 1) 'face))
+          (f (get-text-property (point) 'face)))
+      (if (or (memq f predictive-prog-text-faces)
+              (memq p predictive-prog-text-faces))
           (setq predictive-main-dict predictive-prog-mode-main-dict)
         (setq predictive-main-dict nil)))))
 
@@ -60,7 +61,7 @@ only, like `flyspell-prog-mode'."
           (remove-hook 'after-change-functions 'activate-predictive-inside-comments t)
           (predictive-mode -1))
       (progn
-        (set (make-local-variable 'predictive-use-auto-learn-cache) nil)
+;        (set (make-local-variable 'predictive-use-auto-learn-cache) nil)
         (set (make-local-variable 'predictive-dict-autosave-on-kill-buffer) nil)
         (predictive-mode 1)
         (add-hook 'after-change-functions 'activate-predictive-inside-comments nil t)))))

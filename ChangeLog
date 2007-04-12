@@ -1,6 +1,8 @@
 2007-04-12  Dmitry Galinsky  <dima.exe@gmail.com>
 
-	* predictive-prog-mode.el (activate-predictive-inside-comments): toggle predictive mode using 'predictive-main-dict variable
+	* rails-test.el: fixed #10053 bug, added rails-core:regexp-for-match-views to compilation-error-regexp
+
+	* predictive-prog-mode.el (activate-predictive-inside-comments): toggle predictive mode using 'predictive-main-dict variable, looking at previous word 
 
 	* rails-core.el (rails-core:class-by-file): detect already capitalized words
 
