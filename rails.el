@@ -161,9 +161,6 @@ Emacs w3m browser."
     (:migration        "db/migrate"))
   "Rails file types -- rails directories map")
 
-(apply
- (quote (lambda (file) (rails-core:observer-p file))) (list "test"))
-
 (defvar rails-enviroments '("development" "production" "test"))
 (defvar rails-default-environment (first rails-enviroments))
 
