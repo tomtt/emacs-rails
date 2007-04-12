@@ -1,6 +1,8 @@
 SVN
+* Fixed bug [#10056]: when one open file in a read only directory,
+  flymake try to open a new file and failed (thanks Rémi Vanicat).
 * Fixed bug [#9991]: allow setup key prefix for rails-minor-mode.
-* Fixed bug [#10053]: do not match rhtml/rxml/rjs files in test output.
+* Fixed bug [#10053]: don't match rhtml/rxml/rjs files in test output (thanks Rémi Vanicat).
 
 0.5.99.3
 * Added speedbar integration, type [F11] to toogle speedbar.

@@ -26,8 +26,7 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'inf-ruby))
+(require 'inf-ruby)
 
 ;; setup align for ruby-mode
 (require 'align)
@@ -135,9 +134,10 @@ See the variable `align-rules-list' for more details.")
 (require 'flymake)
 
 (defconst flymake-allowed-ruby-file-name-masks
-  '(("\\.rb\\'"   flymake-ruby-init)
-    ("\\.rxml\\'" flymake-ruby-init)
-    ("\\.rjs\\'"  flymake-ruby-init))
+  '(("\\.rb\\'"      flymake-ruby-init)
+    ("\\.rxml\\'"    flymake-ruby-init)
+    ("\\.builder\\'" flymake-ruby-init)
+    ("\\.rjs\\'"     flymake-ruby-init))
   "Filename extensions that switch on flymake-ruby mode syntax checks.")
 
 (defconst flymake-ruby-error-line-pattern-regexp
@@ -145,12 +145,14 @@ See the variable `align-rules-list' for more details.")
   "Regexp matching ruby error messages.")
 
 (defun flymake-ruby-init ()
-  (let* ((temp-file  (flymake-init-create-temp-buffer-copy
-                      'flymake-create-temp-inplace))
-         (local-file  (file-relative-name
-                       temp-file
-                       (file-name-directory buffer-file-name))))
-    (list rails-ruby-command (list "-c" local-file))))
+  (condition-case er
+      (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                         'flymake-create-temp-inplace))
+             (local-file  (file-relative-name
+                           temp-file
+                           (file-name-directory buffer-file-name))))
+        (list rails-ruby-command (list "-c" local-file)))
+    ('error ())))
 
 (defun flymake-ruby-load ()
   (when (and (buffer-file-name)
