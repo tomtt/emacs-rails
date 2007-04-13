@@ -54,7 +54,7 @@ if there a string or a comment."
 only, like `flyspell-prog-mode'."
   (interactive)
   (when (fboundp 'predictive-mode)
-    (make-local-variable 'predictive-main-dict)
+    (set (make-local-variable 'predictive-main-dict) nil)
     (set (make-local-variable 'predictive-prog-mode-main-dict) predictive-main-dict)
     (if (find 'activate-predictive-inside-comments after-change-functions)
         (progn
