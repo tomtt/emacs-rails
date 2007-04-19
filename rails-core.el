@@ -53,7 +53,7 @@
      " " ""
      (replace-regexp-in-string
       "  " "::"
-      (if (string-match "^[a-zA-Z0-9]*$" path)
+      (if (string-match "^ *\\([0-9]+ *\\)?[A-Z]" path)
           path
         (capitalize path))))))
 

@@ -1,3 +1,9 @@
+2007-04-19  Dmitry Galinsky  <dima.exe@gmail.com>
+
+	* rails-ruby.el (completion-dynamic-syntax-alist): removed
+
+	* rails-core.el (rails-core:class-by-file): updated
+
 2007-04-18  Dmitry Galinsky  <dima.exe@gmail.com>
 
 	* rails.el (ruby-mode-hook): removed predictive-prog-mode, it will incorect work in latest CVS builds of Emacs
