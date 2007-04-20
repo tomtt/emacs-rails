@@ -575,10 +575,44 @@ the Rails minor mode log."
          (if (rails-use-text-menu)
              (tmm-prompt menu)
            (x-popup-menu (rails-core:menu-position)
-                         menu))))
+                         (rails-core:prepare-menu  menu)))))
     (if (listp result)
         (first result)
       result)))
+
+(defvar rails-core:menu-letters-list
+  (let ((res '()))
+    (loop for i from (string-to-char "1") upto (string-to-char "9")
+          do (add-to-list 'res (char-to-string i) t))
+    (loop for i from (string-to-char "a") upto (string-to-char "z")
+          do (add-to-list 'res (char-to-string i) t))
+    res)
+  "List contains 0-9a-z letter")
+
+(defun rails-core:prepare-menu (menu)
+  "Append a prefix to each label of menu-item from MENU."
+  (let ((title (car menu))
+        (menu (cdr menu))
+        (result '())
+        (result-line '())
+        (letter 0))
+    (dolist (line menu)
+      (setq result-line '())
+      (dolist (it line)
+        (typecase it
+          (cons
+           (rails-core:menu-separator)
+           (if (and (string= (car (rails-core:menu-separator)) (car it))
+                    (string= (cadr (rails-core:menu-separator)) (cadr it)))
+               (add-to-list 'result-line it t)
+             (progn
+               (add-to-list 'result-line (cons (format "%s) %s" (nth letter rails-core:menu-letters-list) (car it))
+                                               (cdr it)) t)
+               (setq letter (+ 1 letter)))))
+          (t
+           (add-to-list 'result-line it t))))
+      (add-to-list 'result result-line t))
+    (cons title result)))
 
 ;;;;;;;;;; Misc ;;;;;;;;;;
 
