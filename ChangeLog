@@ -1,5 +1,8 @@
 2007-04-25  Dmitry Galinsky  <dima.exe@gmail.com>
 
+	* rails-speedbar-feature.el (rails-speedbar:expand-directory)
+	(rails-speedbar:display): updated view mode of "views"
+
 	* rails-compat.el (try-complete-abbrev): don't expand a snippet inside comments or strings.
 
 2007-04-20  Dmitry Galinsky  <dima.exe@gmail.com>

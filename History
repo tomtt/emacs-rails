@@ -1,4 +1,5 @@
 SVN
+* Updated view mode of "views".
 * Fixed bug [#10357]: code expansion shouldn't occur in comment lines.
 
 0.5.99.4
