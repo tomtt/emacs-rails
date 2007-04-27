@@ -1,7 +1,13 @@
+2007-04-27  Dmitry Galinsky  <dima.exe@gmail.com>
+
+	* rails.el: raise a error if emacs-rails run on old version of Emacs (less 22).
+
+	* rails-ruby.el: check available flymake before setup ruby-flymake.
+
 2007-04-25  Dmitry Galinsky  <dima.exe@gmail.com>
 
 	* rails-speedbar-feature.el (rails-speedbar:expand-directory)
-	(rails-speedbar:display): updated view mode of "views"
+	(rails-speedbar:display): updated view mode of "views".
 
 	* rails-compat.el (try-complete-abbrev): don't expand a snippet inside comments or strings.
 
