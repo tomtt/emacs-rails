@@ -27,6 +27,12 @@
 
 ;;; Code:
 
+(unless (>= 22 emacs-major-version)
+  (error
+   (format "emacs-rails require CVS version of Emacs (future Emacs 22), and not be running on your Emacs %s.%s"
+           emacs-major-version
+           emacs-minor-version)))
+
 (eval-when-compile
   (require 'speedbar)
   (require 'inf-ruby)
