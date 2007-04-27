@@ -1,5 +1,5 @@
 SVN
-* Fixed bug [#10417]: Append the ruby-flymake only if the flymake is
+* Fixed bug [#10417]: ruby-flymake had applying only if iflymake id
   available. Raise a error if emacs-rails run on old version of Emacs
   (less 22)
 * Updated view mode of "views"
