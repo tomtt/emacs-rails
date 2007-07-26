@@ -1,3 +1,11 @@
+2007-07-26  Dmitry Galinsky  <dima.exe@gmail.com>
+
+	* inflections.el: more inflections (by Edvard Majakari)
+
+	* rails-ruby.el (ruby-align-rules-list): improved `align` support
+
+	* rails-test.el (rails-test:line-regexp): added support of '-' symbol in file name
+
 2007-05-23  Dmitry Galinsky  <dima.exe@gmail.com>
 
 	* rails-test.el (rails-test:line-regexp): bug #10792: updated regexp

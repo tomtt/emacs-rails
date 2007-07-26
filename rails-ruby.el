@@ -39,8 +39,12 @@
      (regexp . ",\\(\\s-*\\)[^/ \t\n]")
      (modes  . align-ruby-modes)
      (repeat . t))
+    (ruby-string-after-func
+     (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\)['\"]\\w+['\"]")
+     (modes  . align-ruby-modes)
+     (repeat . t))
     (ruby-symbol-after-func
-     (regexp . "^\\s-*\\w+\\(\\s-+\\):\\w+")
+     (regexp . "^\\s-*[a-zA-Z0-9.:?_]+\\(\\s-+\\):\\w+")
      (modes  . align-ruby-modes)))
   "Alignment rules specific to the ruby mode.
 See the variable `align-rules-list' for more details.")
