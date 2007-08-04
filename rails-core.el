@@ -601,13 +601,16 @@ the Rails minor mode log."
       (dolist (it line)
         (typecase it
           (cons
-           (rails-core:menu-separator)
            (if (and (string= (car (rails-core:menu-separator)) (car it))
                     (string= (cadr (rails-core:menu-separator)) (cadr it)))
                (add-to-list 'result-line it t)
              (progn
-               (add-to-list 'result-line (cons (format "%s) %s" (nth letter rails-core:menu-letters-list) (car it))
-                                               (cdr it)) t)
+               (add-to-list 'result-line (cons
+                                          (format "%s) %s"
+                                                  (nth letter rails-core:menu-letters-list)
+                                                  (car it))
+                                          (cdr it))
+                            t)
                (setq letter (+ 1 letter)))))
           (t
            (add-to-list 'result-line it t))))

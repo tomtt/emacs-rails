@@ -1,3 +1,8 @@
+2007-08-04  Dmitry Galinsky  <dima.exe@gmail.com>
+
+	* rails-navigation.el (rails-nav:goto-layouts): fixed bug #12754,
+	broken `rails-nav:goto-layouts`
+
 2007-07-26  Dmitry Galinsky  <dima.exe@gmail.com>
 
 	* inflections.el: more inflections (by Edvard Majakari)

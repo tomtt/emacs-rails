@@ -147,7 +147,7 @@
 (defun rails-nav:goto-layouts ()
   "Go to layouts."
   (interactive)
-  (let ((items (list (cons "--" "--")
+  (let ((items (list (rails-core:menu-separator)
                      (cons "Create new layout" 'rails-nav:create-new-layout))))
     (rails-nav:goto-file-with-menu-from-list
      (rails-core:layouts)
