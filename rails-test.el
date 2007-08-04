@@ -164,4 +164,27 @@
     (when method
       (rails-test:run-single-file file (format "--name=%s" method)))))
 
+;; These functions were originally defined anonymously in ui. They are defined here so keys
+;; can be added to them dryly
+(defun rails-test:run-integration ()
+  "Run Integration Tests."
+  (interactive)
+  (rails-test:run "integration"))
+(defun rails-test:run-units ()
+  "Run Unit Tests."
+  (interactive)
+  (rails-test:run "units"))
+(defun rails-test:run-functionals ()
+  "Run Functional Tests."
+  (interactive)
+  (rails-test:run "functionals"))
+(defun rails-test:run-recent ()
+  "Run Recent Tests."
+  (interactive)
+  (rails-test:run "recent"))
+(defun rails-test:run-all ()
+  "Run All Tests."
+  (interactive)
+  (rails-test:run "all"))
+
 (provide 'rails-test)
