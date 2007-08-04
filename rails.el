@@ -402,7 +402,7 @@ necessary."
             (local-set-key (kbd "C-.") 'complete-tag)
             (local-set-key (if rails-use-another-define-key
                                (kbd "TAB") (kbd "<tab>"))
-                           'indent-or-complete)
+                           'indent-and-complete)
             (local-set-key (rails-key "f") '(lambda()
                                               (interactive)
                                               (mouse-major-mode-menu (rails-core:menu-position))))
@@ -422,7 +422,7 @@ necessary."
              (progn
                (local-set-key (if rails-use-another-define-key
                                   (kbd "TAB") (kbd "<tab>"))
-                              'indent-or-complete)
+                              'indent-and-complete)
                (rails-minor-mode t)
                (rails-apply-for-buffer-type)))))
 
