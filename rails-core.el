@@ -181,6 +181,11 @@ it does not exist, ask to create it using QUESTION as a prompt."
                  (rails-core:model-exist-p model-name))
         model-name))))
 
+(defun rails-core:configuration-file (file)
+  "Return the path to the configuration FILE."
+  (when file
+    (concat "config/" file)))
+
 (defun rails-core:plugin-file (plugin file)
   "Return the path to the FILE in Rails PLUGIN."
   (concat "vendor/plugins/" plugin "/" file))
@@ -409,6 +414,10 @@ of migration."
    #'(lambda (l)
        (replace-regexp-in-string "\\.[^.]+$" "" l))
    (find-recursive-files "\\.yml$" (rails-core:file "test/fixtures/"))))
+
+(defun rails-core:configuration-files ()
+  "Return a files of files from config folder."
+  (find-recursive-files nil (rails-core:file "config/")))
 
 (defun rails-core:regex-for-match-view ()
   "Return a regex to match Rails view templates.
