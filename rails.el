@@ -395,6 +395,7 @@ necessary."
             (require 'rails-ruby)
             (require 'ruby-electric)
             (ruby-electric-mode t)
+            (ruby-hs-minor-mode t)
             (imenu-add-to-menubar "IMENU")
             (modify-syntax-entry ?! "w" (syntax-table))
             (modify-syntax-entry ?: "w" (syntax-table))

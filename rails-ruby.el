@@ -26,8 +26,6 @@
 
 ;;; Code:
 
-(require 'inf-ruby)
-
 ;; setup align for ruby-mode
 (require 'align)
 
@@ -56,70 +54,33 @@ See the variable `align-rules-list' for more details.")
 (dolist (it ruby-align-rules-list)
   (add-to-list 'align-rules-list it))
 
-;; other stuff
+;; hideshow ruby support
 
-(defun ruby-newline-and-indent ()
+(defun display-code-line-counts (ov)
+  (when (eq 'code (overlay-get ov 'hs))
+    (overlay-put ov 'face 'font-lock-comment-face)
+    (overlay-put ov 'display
+                 (format " »»» %d lines"
+                         (count-lines (overlay-start ov)
+                                      (overlay-end ov))))))
+
+(defun ruby-hs-minor-mode (&optional arg)
   (interactive)
-  (newline)
-  (ruby-indent-command))
-
-(defun ruby-toggle-string<>simbol ()
-  "Easy to switch between strings and symbols."
-  (interactive)
-  (let ((initial-pos (point)))
-    (save-excursion
-      (when (looking-at "[\"']") ;; skip beggining quote
-        (goto-char (+ (point) 1))
-        (unless (looking-at "\\w")
-          (goto-char (- (point) 1))))
-      (let* ((point (point))
-             (start (skip-syntax-backward "w"))
-             (end (skip-syntax-forward "w"))
-             (end (+ point start end))
-             (start (+ point start))
-             (start-quote (- start 1))
-             (end-quote (+ end 1))
-             (quoted-str (buffer-substring-no-properties start-quote end-quote))
-             (symbol-str (buffer-substring-no-properties start end)))
-        (cond
-         ((or (string-match "^\"\\w+\"$" quoted-str)
-              (string-match "^\'\\w+\'$" quoted-str))
-          (setq quoted-str (substring quoted-str 1 (- (length quoted-str) 1)))
-          (kill-region start-quote end-quote)
-          (goto-char start-quote)
-          (insert (concat ":" quoted-str)))
-         ((string-match "^\:\\w+$" symbol-str)
-          (setq symbol-str (substring symbol-str 1))
-          (kill-region start end)
-          (goto-char start)
-          (insert (format "'%s'" symbol-str))))))
-    (goto-char initial-pos)))
-
-(defun run-ruby-in-buffer (cmd buf)
-  "Run CMD as a ruby process in BUF if BUF does not exist."
-  (let ((abuf (concat "*" buf "*")))
-    (when (not (comint-check-proc abuf))
-      (set-buffer (make-comint buf rails-ruby-command nil cmd)))
-    (inferior-ruby-mode)
-    (make-local-variable 'inferior-ruby-first-prompt-pattern)
-    (make-local-variable 'inferior-ruby-prompt-pattern)
-    (setq inferior-ruby-first-prompt-pattern "^>> "
-          inferior-ruby-prompt-pattern "^>> ")
-    (pop-to-buffer abuf)))
-
-(defun complete-ruby-method (prefix &optional maxnum)
-  (if (capital-word-p prefix)
-      (let* ((cmd "x = []; ObjectSpace.each_object(Class){|i| x << i.to_s}; x.map{|i| i.match(/^%s/) ? i.gsub(/^%s/, '') : nil }.compact.sort{|x,y| x.size <=> y.size}")
-             (cmd (if maxnum (concat cmd (format "[0...%s]" maxnum)) cmd)))
-        (el4r-ruby-eval (format cmd prefix prefix)))
-    (save-excursion
-      (goto-char (- (point) (+ 1 (length prefix))))
-      (when (and (looking-at "\\.")
-                 (capital-word-p (word-at-point))
-                 (el4r-ruby-eval (format "::%s rescue nil" (word-at-point))))
-        (let* ((cmd "%s.public_methods.map{|i| i.match(/^%s/) ? i.gsub(/^%s/, '') : nil }.compact.sort{|x,y| x.size <=> y.size}")
-               (cmd (if maxnum (concat cmd (format "[0...%s]" maxnum)) cmd)))
-          (el4r-ruby-eval (format cmd (word-at-point) prefix prefix)))))))
+  (require 'hideshow)
+  (unless (assoc 'ruby-mode hs-special-modes-alist)
+    (setq
+     hs-special-modes-alist
+     (cons (list 'ruby-mode
+                 "\\(def\\|do\\)"
+                 "end"
+                 "#"
+                 (lambda (&rest args) (ruby-end-of-block))
+                 ;(lambda (&rest args) (ruby-beginning-of-defun))
+                 )
+           hs-special-modes-alist)))
+  (unless hs-set-up-overlay
+    (setq hs-set-up-overlay 'display-code-line-counts))
+  (hs-minor-mode arg))
 
 ;; flymake ruby support
 
@@ -163,5 +124,73 @@ See the variable `align-rules-list' for more details.")
 
 (when (featurep 'flymake)
   (add-hook 'ruby-mode-hook 'flymake-ruby-load))
+
+;; other stuff
+
+(defun ruby-newline-and-indent ()
+  (interactive)
+  (newline)
+  (ruby-indent-command))
+
+(defun ruby-toggle-string<>simbol ()
+  "Easy to switch between strings and symbols."
+  (interactive)
+  (let ((initial-pos (point)))
+    (save-excursion
+      (when (looking-at "[\"']") ;; skip beggining quote
+        (goto-char (+ (point) 1))
+        (unless (looking-at "\\w")
+          (goto-char (- (point) 1))))
+      (let* ((point (point))
+             (start (skip-syntax-backward "w"))
+             (end (skip-syntax-forward "w"))
+             (end (+ point start end))
+             (start (+ point start))
+             (start-quote (- start 1))
+             (end-quote (+ end 1))
+             (quoted-str (buffer-substring-no-properties start-quote end-quote))
+             (symbol-str (buffer-substring-no-properties start end)))
+        (cond
+         ((or (string-match "^\"\\w+\"$" quoted-str)
+              (string-match "^\'\\w+\'$" quoted-str))
+          (setq quoted-str (substring quoted-str 1 (- (length quoted-str) 1)))
+          (kill-region start-quote end-quote)
+          (goto-char start-quote)
+          (insert (concat ":" quoted-str)))
+         ((string-match "^\:\\w+$" symbol-str)
+          (setq symbol-str (substring symbol-str 1))
+          (kill-region start end)
+          (goto-char start)
+          (insert (format "'%s'" symbol-str))))))
+    (goto-char initial-pos)))
+
+(require 'inf-ruby)
+
+(defun run-ruby-in-buffer (cmd buf)
+  "Run CMD as a ruby process in BUF if BUF does not exist."
+  (let ((abuf (concat "*" buf "*")))
+    (when (not (comint-check-proc abuf))
+      (set-buffer (make-comint buf rails-ruby-command nil cmd)))
+    (inferior-ruby-mode)
+    (make-local-variable 'inferior-ruby-first-prompt-pattern)
+    (make-local-variable 'inferior-ruby-prompt-pattern)
+    (setq inferior-ruby-first-prompt-pattern "^>> "
+          inferior-ruby-prompt-pattern "^>> ")
+    (pop-to-buffer abuf)))
+
+(defun complete-ruby-method (prefix &optional maxnum)
+  (if (capital-word-p prefix)
+      (let* ((cmd "x = []; ObjectSpace.each_object(Class){|i| x << i.to_s}; x.map{|i| i.match(/^%s/) ? i.gsub(/^%s/, '') : nil }.compact.sort{|x,y| x.size <=> y.size}")
+             (cmd (if maxnum (concat cmd (format "[0...%s]" maxnum)) cmd)))
+        (el4r-ruby-eval (format cmd prefix prefix)))
+    (save-excursion
+      (goto-char (- (point) (+ 1 (length prefix))))
+      (when (and (looking-at "\\.")
+                 (capital-word-p (word-at-point))
+                 (el4r-ruby-eval (format "::%s rescue nil" (word-at-point))))
+        (let* ((cmd "%s.public_methods.map{|i| i.match(/^%s/) ? i.gsub(/^%s/, '') : nil }.compact.sort{|x,y| x.size <=> y.size}")
+               (cmd (if maxnum (concat cmd (format "[0...%s]" maxnum)) cmd)))
+          (el4r-ruby-eval (format cmd (word-at-point) prefix prefix)))))))
+
 
 (provide 'rails-ruby)
