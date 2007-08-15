@@ -120,8 +120,6 @@ For example -c to remove files from svn.")
   (make-local-variable 'font-lock-defaults)
   (set (make-local-variable 'scroll-margin) 0)
   (set (make-local-variable 'scroll-preserve-screen-position) nil)
-  (make-local-hook 'rails-script:run-after-stop-hook)
-  (make-local-hook 'rails-script:show-buffer-hook)
   (make-local-variable 'after-change-functions)
   (rails-minor-mode t))
 
