@@ -1,5 +1,7 @@
 2007-08-15  Dmitry Galinsky  <dima.exe@gmail.com>
 
+	* rails-scripts.el (rails-script:setup-output-buffer): fixed compilation warning
+
 	* rails-ruby.el (ruby-hs-minor-mode): created, support ruby in hs-minor-mode
 
 2007-08-11  Dmitry Galinsky  <dima.exe@gmail.com>

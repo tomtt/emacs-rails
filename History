@@ -1,4 +1,5 @@
 SVN
+* Updated highlight of compilation output
 * Added ruby-mode support in hs-minor-mode (aka folding).
 * Added migrations and configuration files to speedbar.
 * More shortcuts for tests.
