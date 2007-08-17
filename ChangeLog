@@ -1,3 +1,7 @@
+2007-08-17  Dmitry Galinsky  <dima.exe@gmail.com>
+
+	* rails-ruby.el (hs-minor-mode-hook): created, placed in hs-setup-overlay initialization to fix a bug #13162
+
 2007-08-15  Dmitry Galinsky  <dima.exe@gmail.com>
 
 	* rails-scripts.el (rails-script:setup-output-buffer): fixed compilation warning

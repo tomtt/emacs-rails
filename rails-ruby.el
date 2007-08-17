@@ -64,9 +64,14 @@ See the variable `align-rules-list' for more details.")
                          (count-lines (overlay-start ov)
                                       (overlay-end ov))))))
 
-(eval-after-load "hs-mode"
-  (unless hs-set-up-overlay
+(eval-after-load "hideshow"
+  (unless 'hs-set-up-overlay
     (setq hs-set-up-overlay 'display-code-line-counts)))
+
+(add-hook 'hs-minor-mode-hook
+          (lambda ()
+            (unless hs-set-up-overlay
+              (setq hs-set-up-overlay 'display-code-line-counts))))
 
 (defun ruby-hs-minor-mode (&optional arg)
   (interactive)
