@@ -305,8 +305,10 @@ BUFFER-MAJOR-MODE and process-sentinel SENTINEL."
 *rails-<project-name>-<name>*."
   (rails-project:with-root
    (root)
-   (run-ruby-in-buffer (rails-core:file script)
-                       (format "rails-%s-%s" (rails-project:name) name))
+   (let ((buffer-name (format "rails-%s-%s" (rails-project:name) name)))
+     (run-ruby-in-buffer (rails-core:file script)
+                         buffer-name)
+     (setq ruby-buffer buffer-name))
    (rails-minor-mode t)))
 
 (defun rails-script:console ()
