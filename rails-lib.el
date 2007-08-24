@@ -252,6 +252,15 @@ it."
   "Return the parent directory of a file named FILE-NAME."
   (replace-regexp-in-string "[^/]*$" "" file-name))
 
+(defmacro* in-directory ((directory) &rest body)
+  (let ((before-directory (gensym)))
+  `(let ((,before-directory default-directory)
+         (default-directory ,directory))
+       (cd ,directory)
+       ,@body
+       (cd ,before-directory))))
+
+
 ;; Buffers
 
 (defun buffer-string-by-name (buffer-name)

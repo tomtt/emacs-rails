@@ -262,11 +262,20 @@
   ((rails-key "\C-c f p") 'rails-find:public)
   ((rails-key "\C-c f f") 'rails-find:fixtures)
   ((rails-key "\C-c f o") 'rails-find:config)
+  ;; Spec finds
+  ((rails-key "\C-c f r s") 'rails-find:spec)
+  ((rails-key "\C-c f r c") 'rails-find:spec-controllers)
+  ((rails-key "\C-c f r m") 'rails-find:spec-models)
+  ((rails-key "\C-c f r h") 'rails-find:spec-helpers)
+  ((rails-key "\C-c f r v") 'rails-find:spec-views)
+  ((rails-key "\C-c f r f") 'rails-find:spec-fixtures)
 
   ((rails-key "\C-c d m") 'rails-rake:migrate)
   ((rails-key "\C-c d v") 'rails-rake:migrate-to-version)
   ((rails-key "\C-c d p") 'rails-rake:migrate-to-prev-version)
   ((rails-key "\C-c d t") 'rails-rake:clone-development-db-to-test-db)
+
+
 
   ;; Tests
   ((rails-key "\C-c r")   'rails-rake:task)
