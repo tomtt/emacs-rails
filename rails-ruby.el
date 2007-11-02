@@ -60,7 +60,7 @@ See the variable `align-rules-list' for more details.")
   (when (eq 'code (overlay-get ov 'hs))
     (overlay-put ov 'face 'font-lock-comment-face)
     (overlay-put ov 'display
-                 (format " ··· %d lines"
+                 (format " ... %d lines"
                          (count-lines (overlay-start ov)
                                       (overlay-end ov))))))
 

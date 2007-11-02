@@ -104,12 +104,12 @@
   (:irregular "sex" "sexes")
   (:irregular "move" "moves")
 
-  (:uncountable "equipment" "information" "rice" "money" "species" "series" "fish" "sheep"))
+  (:uncountable "equipment" "information" "rice" "money" "species" "series" "fish" "sheep" "news"))
 
 (defun singularize-string (str)
   (when (stringp str)
     (or (car (member str inflection-uncountables))
-        (caar (member* str inflection-irregulars :key 'cadr :test 'equal))
+        (caar (member* (downcase str) inflection-irregulars :key 'cadr :test 'equal))
         (loop for (from to) in inflection-singulars
               for singular = (string=~ from str (sub to))
               when singular do (return singular))
@@ -118,7 +118,7 @@
 (defun pluralize-string (str)
   (when (stringp str)
     (or (car (member str inflection-uncountables))
-        (cadar (member* str inflection-irregulars :key 'car :test 'equal))
+        (cadar (member* (downcase str) inflection-irregulars :key 'car :test 'equal))
         (loop for (from to) in inflection-plurals
               for plurals = (string=~ from str (sub to))
               when plurals do (return plurals))

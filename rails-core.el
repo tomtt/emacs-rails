@@ -133,7 +133,8 @@ it does not exist, ask to create it using QUESTION as a prompt."
 
 (defun rails-core:controller-file-by-model (model)
   (when model
-    (let ((controller (pluralize-string model)))
+    (let* ((controller (pluralize-string model))
+           (controller (when controller (capitalize controller))))
       (when (rails-core:controller-exist-p controller)
         (rails-core:controller-file controller)))))
 
