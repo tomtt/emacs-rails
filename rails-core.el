@@ -99,15 +99,31 @@ will not append \".rb\" to result."
 it does not exist, ask to create it using QUESTION as a prompt."
   (find-or-ask-to-create question (rails-core:file file)))
 
+(defun rails-core:strip-namespace (class-name)
+  "Strip namespace of CLASS-NAME, eg Foo::Bar -> Bar."
+  (let ((name-list (split-string class-name "::")))
+    (car (last name-list))))
+
 ;; Funtions, that retrun Rails objects full pathes
 
 (defun rails-core:model-file (model-name)
   "Return the model file from the model name."
   (when model-name
-    (concat "app/models/" (rails-core:file-by-class model-name))))
+    (let* ((stripped-model-file
+            (rails-core:file-by-class
+             (rails-core:strip-namespace model-name)))
+           (model-file
+            (rails-core:file-by-class model-name)))
+      (cond
+       ((file-exists-p
+         (rails-core:file (concat "app/models/" model-file)))
+        (concat "app/models/" model-file))
+       ((file-exists-p
+         (rails-core:file (concat "app/models/" stripped-model-file)))
+        (concat "app/models/" stripped-model-file))))))
 
 (defun rails-core:model-exist-p (model-name)
-  "Return t if controller CONTROLLER-NAME exist."
+  "Return t if model MODEL-NAME exist."
   (when model-name
     (and (file-exists-p
           (rails-core:file
@@ -135,7 +151,11 @@ it does not exist, ask to create it using QUESTION as a prompt."
   (when model
     (let* ((controller (pluralize-string model))
            (controller (when controller (capitalize controller))))
-      (when (rails-core:controller-exist-p controller)
+      (setq controller
+            (cond
+             ((rails-core:controller-exist-p controller) controller) ;; pluralized
+             ((rails-core:controller-exist-p model) model))) ;; singularized
+      (when controller
         (rails-core:controller-file controller)))))
 
 (defun rails-core:observer-file (observer-name)

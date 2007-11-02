@@ -44,7 +44,6 @@
 (require 'etags)
 (require 'find-recursive)
 
-(require 'untabify-file)
 (require 'predictive-prog-mode)
 
 (require 'inflections)

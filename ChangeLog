@@ -1,10 +1,21 @@
-2007-11-02  Dmitry Galinsky  <dima.exe@gmail.com>
+2007-11-03  Dmitry Galinsky  <dima.exe@gmail.com>
 
-	* rails.el (rails-templates-list): added 'html.erb'
+	* rails-core.el (rails-core:model-file): search namespaced models.
+
+	* rails-test.el (rails-test:line-regexp): applled patch by Alan Shields, 
+	don't hightlight whitespaces in test output.
+
+	* rails-test.el: appled patch by Alan Shields,
+	can't run rails-test-current-* without a file.
+
+2007-11-02  Dmitry Galinsky  <dima.exe@gmail.com>
+	
+	* rails.el (rails-templates-list): added 'html.erb'.
 
 	* rails-snippets-feature.el (rails-snippets-feature:rest): replace *_url to *_path
+
 	* inflections.el (singularize-string pluralize-string): downcase
-	string befored searched
+	string befored searched.
 
 2007-10-12  Dmitry Galinsky  <dima.exe@gmail.com>
 
@@ -12,7 +23,8 @@
 	input string before find in irregular
 
 2007-09-11  Peter Rezikov  <crazypit13@gmail.com>
-        * rails.el: basic support of Markaby templates.
+
+	* rails.el: basic support of Markaby templates.
                                          
 2007-08-18  Peter Rezikov  <crazypit13@gmail.com>
         * rails-spec.el: base support for rspec. Function
