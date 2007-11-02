@@ -154,7 +154,17 @@ it does not exist, ask to create it using QUESTION as a prompt."
       (setq controller
             (cond
              ((rails-core:controller-exist-p controller) controller) ;; pluralized
-             ((rails-core:controller-exist-p model) model))) ;; singularized
+             ((rails-core:controller-exist-p model) model) ;; singularized
+             (t (let ((controllers (rails-core:controllers t)))
+                  (cond
+                   ;; with namespace
+                   ((find
+                     (list controller model)
+                     controllers
+                     :test #'(lambda(x y)
+                               (or
+                                (string= (car x) (rails-core:strip-namespace y))
+                                (string= (cadr x) (rails-core:strip-namespace y)))))))))))
       (when controller
         (rails-core:controller-file controller)))))
 
@@ -568,7 +578,6 @@ cannot be determinated."
       (find-file-other-window file)
       (when line-number
         (goto-line line-number)))))
-
 
 ;;;;;;;;;; Rails minor mode logs ;;;;;;;;;;
 
