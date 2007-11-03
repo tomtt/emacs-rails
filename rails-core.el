@@ -120,16 +120,16 @@ it does not exist, ask to create it using QUESTION as a prompt."
         (concat "app/models/" model-file))
        ((file-exists-p
          (rails-core:file (concat "app/models/" stripped-model-file)))
-        (concat "app/models/" stripped-model-file))))))
+        (concat "app/models/" stripped-model-file))
+       (t nil)))))
 
 (defun rails-core:model-exist-p (model-name)
   "Return t if model MODEL-NAME exist."
-  (when model-name
-    (and (file-exists-p
-          (rails-core:file
-           (rails-core:model-file model-name)))
-         (not (rails-core:observer-p model-name))
-         (not (rails-core:mailer-p model-name)))))
+  (let ((model-file (rails-core:model-file model-name)))
+    (when model-file
+      (and (file-exists-p (rails-core:file model-file))
+           (not (rails-core:observer-p model-name))
+           (not (rails-core:mailer-p model-name))))))
 
 (defun rails-core:controller-file (controller-name)
   "Return the path to the controller CONTROLLER-NAME."
