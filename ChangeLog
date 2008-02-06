@@ -1,3 +1,7 @@
+2008-02-07  Dmitry Galinsky  <dima.exe@gmail.com>
+
+	* rails-scripts.el (rails-script:console): passed default environment to script/console
+
 2007-12-23  Michael Klishin <michael.klishin@railsware.com>
         * rails-spec.el (rails-spec:run-this-spec): Run spec where the point is
         
