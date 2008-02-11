@@ -102,6 +102,16 @@ If EXPR is not nil exeutes BODY.
                                ($a (substring ,str (match-end 0) (length ,str))))
                ,@body)))))))
 
+(defun decamelize (string)
+  "Convert from CamelCaseString to camel_case_string."
+  (let ((case-fold-search nil))
+    (downcase
+     (replace-regexp-in-string
+      "\\([A-Z]+\\)\\([A-Z][a-z]\\)" "\\1_\\2"
+      (replace-regexp-in-string
+       "\\([a-z\\d]\\)\\([A-Z]\\)" "\\1_\\2"
+       string)))))
+
 (defun string-not-empty (str) ;(+)
   "Return t if string STR is not empty."
   (and (stringp str) (not (or (string-equal "" str)
