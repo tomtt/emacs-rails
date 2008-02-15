@@ -316,13 +316,14 @@ CONTROLLER."
 ;;;;;;;;;; Functions that return collection of Rails objects  ;;;;;;;;;;
 (defun rails-core:observer-p (name)
   (when name
-    (if (string-match "\\(Observer\\|_observer\\(\\.rb\\)?\\)$" name)
+    (if (string-match "\\(Observer\\|_observer\\)\\(\\.rb\\)?$" name)
         t nil)))
 
 (defun rails-core:mailer-p (name)
   (when name
-    (if (string-match "\\(Mailer\\|Notifier\\|_mailer\\|_notifier\\(\\.rb\\)?\\)$" name)
+    (if (string-match "\\(Mailer\\|Notifier\\|_mailer\\|_notifier\\)\\(\\.rb\\)?$" name)
         t nil)))
+
 
 (defun rails-core:controllers (&optional cut-contoller-suffix)
   "Return a list of Rails controllers. Remove the '_controller'
