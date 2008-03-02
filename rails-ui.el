@@ -172,6 +172,9 @@
   ([rails ws use-mongrel]  '(menu-item "Use Mongrel" (lambda() (interactive)
                                                        (rails-ws:switch-default-server-type "mongrel"))
                                        :button (:toggle . (rails-ws:default-server-type-p "mongrel"))))
+  ([rails ws use-thin]  '(menu-item "Use Thin" (lambda() (interactive)
+                                                    (rails-ws:switch-default-server-type "thin"))
+                                       :button (:toggle . (rails-ws:default-server-type-p "thin"))))
   ([rails ws separator] '("--"))
 
   ([rails ws brows]      '(menu-item "Open Browser..." rails-ws:open-browser-on-controller
