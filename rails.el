@@ -145,6 +145,11 @@ Emacs w3m browser."
   :group 'rails
   :type 'string)
 
+(defcustom rails-enable-ruby-electric t
+  "Indicates whether ruby electric minor mode should be enabled by default for ruby files"
+  :group 'rails
+  :type 'boolean)
+
 (defvar rails-version "0.5.99.6")
 (defvar rails-templates-list '("html.erb" "erb" "js.rjs" "builder" "rhtml" "rxml" "rjs" "haml" "liquid" "mab"))
 (defvar rails-use-another-define-key nil)
@@ -394,7 +399,7 @@ necessary."
           (lambda()
             (require 'rails-ruby)
             (require 'ruby-electric)
-            (ruby-electric-mode t)
+            (ruby-electric-mode (or rails-enable-ruby-electric -1))
             (ruby-hs-minor-mode t)
             (imenu-add-to-menubar "IMENU")
             (modify-syntax-entry ?! "w" (syntax-table))
