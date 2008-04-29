@@ -150,6 +150,11 @@ Emacs w3m browser."
   :group 'rails
   :type 'boolean)
 
+(defcustom rails-number-of-lines-shown-when-opening-log-file 130
+  "Specifies how many lines to show initially when opening a log file"
+  :group 'rails
+  :type 'integer)
+
 (defvar rails-version "0.5.99.6")
 (defvar rails-templates-list '("html.erb" "erb" "js.rjs" "builder" "rhtml" "rxml" "rjs" "haml" "liquid" "mab"))
 (defvar rails-use-another-define-key nil)
