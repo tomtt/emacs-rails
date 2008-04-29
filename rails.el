@@ -155,6 +155,7 @@ Emacs w3m browser."
 (defvar rails-use-another-define-key nil)
 (defvar rails-primary-switch-func nil)
 (defvar rails-secondary-switch-func nil)
+(defvar rails-required-lisp-eval-depth 1000) ; Specifies the minimum required value of max-lisp-eval-depth for rails mode to work
 
 (defvar rails-directory<-->types
   '((:controller       "app/controllers/")
@@ -458,5 +459,8 @@ necessary."
 (modify-coding-system-alist 'file "\\.rake$"   'utf-8)
 (modify-coding-system-alist 'file "Rakefile$" 'utf-8)
 (modify-coding-system-alist 'file (rails-core:regex-for-match-view) 'utf-8)
+
+;; Some navigation breaks if max-lisp-eval-depth is not high enough, up it if too low
+(setq max-lisp-eval-depth (max max-lisp-eval-depth rails-required-lisp-eval-depth))
 
 (provide 'rails)
