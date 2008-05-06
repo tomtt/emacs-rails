@@ -263,6 +263,9 @@
        ("flash" "flash[:$${notice}] = '$${Successfully}'$." "flash[...]")) ; environment
     (0 "tests" rails-functional-test-minor-mode-abbrev-table rails-unit-test-minor-mode-abbrev-table
        ("fix" "$${,rails-snippets-feature:fixture}(:$${one})$." "models(:name)")) ; functional tests
+    (0 "shoulda" rails-functional-test-minor-mode-abbrev-table rails-unit-test-minor-mode-abbrev-table
+       ("cont" "context \"$${description}\" do\n$>setup do\n$>$${setup}\n$>end\n $>should \"$${should_desc}\" do\n $>$.\n$>end\n$>end" "context block with setup")
+       ("should" "should \"$${description}\" do\n $>$.\n$>end" "should block")) ; shoulda tests
     (0 "assertions" rails-functional-test-minor-mode-abbrev-table rails-unit-test-minor-mode-abbrev-table
        ("art" "assert_redirected_to :action => '$${index}'" "assert_redirected_to")
        ("as" "assert $${test}" "assert(...)")
