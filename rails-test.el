@@ -200,9 +200,12 @@ Used when it's determined that the output buffer needs to be shown."
   "Run a test for the current method."
   (interactive)
   (let ((file (substring (buffer-file-name) (length (rails-project:root))))
-        (method (rails-core:current-method-name)))
+        (method (rails-core:current-method-name))
+        (shoulda-method (rails-shoulda:current-test)))
     (when method
-      (rails-test:run-single-file file (format "--name=%s" method)))))
+      (rails-test:run-single-file file (format "--name=%s" method)))
+    (when shoulda-method
+      (rails-test:run-single-file file (format "--name=/%s/" (replace-regexp-in-string "[\+\. \'\"\(\)]" "." shoulda-method))))))
 
 ;; These functions were originally defined anonymously in ui. They are defined here so keys
 ;; can be added to them dryly
