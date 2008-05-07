@@ -265,7 +265,21 @@
        ("fix" "$${,rails-snippets-feature:fixture}(:$${one})$." "models(:name)")) ; functional tests
     (0 "shoulda" rails-functional-test-minor-mode-abbrev-table rails-unit-test-minor-mode-abbrev-table
        ("cont" "context \"$${description}\" do\n$>setup do\n$>$${setup}\n$>end\n $>should \"$${should_desc}\" do\n $>$.\n$>end\n$>end" "context block with setup")
-       ("should" "should \"$${description}\" do\n $>$.\n$>end" "should block")) ; shoulda tests
+       ("should" "should \"$${description}\" do\n $>$.\n$>end" "should block")
+       ("sbt" "should_belong_to :$${object}" "should_belong_to")
+       ("selir" "should_ensure_length_in_range $${attribute}, ($${range})" "should_ensure_length_in_range")
+       ("sevir" "should_ensure_value_in_range $${attribute}, ($${range})" "should_ensure_value_in_range")
+       ("sho" "should_have_one :$${object}" "should_have_one")
+       ("snstf" "should_not_set_the_flash" "should_not_set_the_flash")
+       ("snat" "should_not_assign_to :$${variable}" "should_not_assign_to")
+       ("soanvf" "should_only_allow_numeric_values_for :$${attribute}" "should_only_allow_numeric_values_for")
+       ("sraf" "should_render_a_form" "should_render_a_form")
+       ("srt" "should_render_template :$${template}" "should_render_template")
+       ("sra" "should_require_attributes $${attribute}" "should_require_attributes")
+       ("srua" "should_require_unique_attributes $${attribute}" "should_require_unique_attributes")
+       ("srw" "should_respond_with :$${response}" "should_respond_with")
+       ("sstft" "should_set_the_flash_to $${value}" "should_set_the_flash_to")
+) ; shoulda tests
     (0 "assertions" rails-functional-test-minor-mode-abbrev-table rails-unit-test-minor-mode-abbrev-table
        ("art" "assert_redirected_to :action => '$${index}'" "assert_redirected_to")
        ("as" "assert $${test}" "assert(...)")
