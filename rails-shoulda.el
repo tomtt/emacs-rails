@@ -1,7 +1,7 @@
 ;;; rails-shoulda.el --- emacs-rails integraions with should plugin.
 
 ;; Copyright (C) 2006 Dmitry Galinsky <dima dot exe at gmail dot com>
-;; Authors: Dmitry Galinsky <dima dot exe at gmail dot com>,
+;; Authors: Rob Christie  <robchristie at gmail dot com>,
 ;; Keywords: ruby rails languages oop
 
 
@@ -34,6 +34,14 @@
         (concat context " should " should)))))
 
 
+(defun rails-shoulda:current-context ()
+  "Return the shoulda context name based on point"
+  (save-excursion
+    (ruby-end-of-block)
+    (when (search-backward-regexp "^[ ]*context \"\\([a-z0-9_ ]+\\)\"[ ]*do" nil t)
+      (match-string-no-properties 1))))
+
+
 (defun rails-shoulda:run-current-should ()
   "Run should assertion based on the location of point."
   (interactive)
@@ -42,6 +50,14 @@
     (when method
       (rails-test:run-single-file file (format "--name=/%s/" method)))))
 
+
+(defun rails-shoulda:run-current-context ()
+  "Run tests associated with the context based on the location of point."
+  (interactive)
+  (let ((file (substring (buffer-file-name) (length (rails-project:root))))
+        (method (replace-regexp-in-string "[\+\. \'\"\(\)]" "." (rails-shoulda:current-context))))
+    (when method
+      (rails-test:run-single-file file (format "--name=/%s/" method)))))
 
 
 
