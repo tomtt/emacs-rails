@@ -109,7 +109,7 @@ If EXPR is not nil exeutes BODY.
      (replace-regexp-in-string
       "\\([A-Z]+\\)\\([A-Z][a-z]\\)" "\\1_\\2"
       (replace-regexp-in-string
-       "\\([a-z\\d]\\)\\([A-Z]\\)" "\\1_\\2"
+       "\\([a-z0-9]\\)\\([A-Z]\\)" "\\1_\\2"
        string)))))
 
 (defun string-not-empty (str) ;(+)
@@ -345,6 +345,21 @@ as the value of the symbol, and the hook as the function definition."
          nil ; initial input
          history ; hist
          (car history-value))))) ;def
+
+;; railsy-replace
+(defun camelized-p (string)
+  "Return nil unless string is in camelized format (first character is capital, there is at least on lower capital and all characters are letters of numbers"
+  (let ((case-fold-search nil))
+      (string-match "^[A-Z][A-Za-z0-9]*[a-z]+[A-Za-z0-9]*$" string)))
+
+(defun underscored-p (string)
+  "Return nil unless string is in underscored format (containing only lower case characters, numbers or underscores)"
+  (let ((case-fold-search nil))
+    (string-match "^[a-z][a-z0-9_]*$" string)))
+
+(defun replace-rails-variable ()
+  (interactive)
+)
 
 ;; MMM
 
