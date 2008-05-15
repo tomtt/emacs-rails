@@ -4,7 +4,6 @@
 ;; Authors: Rob Christie  <robchristie at gmail dot com>,
 ;; Keywords: ruby rails languages oop
 
-
 ;;; License
 
 ;; This program is free software; you can redistribute it and/or
@@ -21,7 +20,6 @@
 ;; along with this program; if not, write to the Free Software
 ;; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-
 (defun rails-shoulda:current-test ()
   "Return the test name based on point"
   (save-excursion
@@ -33,14 +31,12 @@
       (when (and should context)
         (concat context " should " should)))))
 
-
 (defun rails-shoulda:current-context ()
   "Return the shoulda context name based on point"
   (save-excursion
     (ruby-end-of-block)
     (when (search-backward-regexp "^[ ]*context \"\\([a-z0-9_ ]+\\)\"[ ]*do" nil t)
       (match-string-no-properties 1))))
-
 
 (defun rails-shoulda:run-current-should ()
   "Run should assertion based on the location of point."
@@ -50,7 +46,6 @@
     (when method
       (rails-test:run-single-file file (format "--name=/%s/" method)))))
 
-
 (defun rails-shoulda:run-current-context ()
   "Run tests associated with the context based on the location of point."
   (interactive)
@@ -59,6 +54,4 @@
     (when method
       (rails-test:run-single-file file (format "--name=/%s/" method)))))
 
-
-
-  (provide 'rails-shoulda)
+(provide 'rails-shoulda)
