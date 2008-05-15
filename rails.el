@@ -68,6 +68,7 @@
 (require 'rails-controller-layout)
 (require 'rails-features)
 (require 'rails-spec)
+(require 'rails-shoulda)
 
 
 ;;;;;;;;;; Variable definition ;;;;;;;;;;
